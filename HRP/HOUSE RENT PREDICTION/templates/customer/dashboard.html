@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Find Properties{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Available Properties</h1>
+
+<form method="GET" class="row g-3 mb-4 bg-light p-3 rounded">
+    <div class="col-md-4">
+        {{ form.location.label(class="form-label") }}
+        {{ form.location(class="form-control", placeholder="City or Address") }}
+    </div>
+    <div class="col-md-2">
+        {{ form.min_price.label(class="form-label") }}
+        {{ form.min_price(class="form-control", placeholder="Min") }}
+    </div>
+    <div class="col-md-2">
+        {{ form.max_price.label(class="form-label") }}
+        {{ form.max_price(class="form-control", placeholder="Max") }}
+    </div>
+    <div class="col-md-2">
+        {{ form.bedrooms.label(class="form-label") }}
+        {{ form.bedrooms(class="form-select") }}
+    </div>
+    <div class="col-md-2 align-self-end">
+        {{ form.submit(class="btn btn-primary w-100") }}
+    </div>
+</form>
+
+{% if properties %}
+<div class="row">
+    {% for property in properties %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div style="height: 200px; overflow: hidden;">
+                {{ map_html|safe }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title }}</h5>
+                <p class="text-muted">{{ property.address }}, {{ property.city }}</p>
+                <div class="property-features">
+                    <span><i class="fas fa-bed feature-icon"></i> {{ property.bedrooms }} beds</span>
+                    <span><i class="fas fa-bath feature-icon"></i> {{ property.bathrooms }} baths</span>
+                    <span><i class="fas fa-dollar-sign feature-icon"></i> {{ property.price }}/mo</span>
+                </div>
+                <p class="card-text mt-3">{{ property.description[:150] }}...</p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('customer_property_detail', property_id=property.id) }}" 
+                   class="btn btn-primary w-100">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">No properties found matching your criteria.</div>
+{% endif %}
+{% endblock %}

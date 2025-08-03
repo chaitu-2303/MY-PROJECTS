@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+{% block content %}
+<h1>{{ property.title }}</h1>
+<p><strong>Address:</strong> {{ property.address }}, {{ property.city }}</p>
+<p><strong>Price:</strong> ${{ property.price }}/month</p>
+<p><strong>Bedrooms:</strong> {{ property.bedrooms }} | <strong>Bathrooms:</strong> {{ property.bathrooms }}</p>
+<p><strong>Description:</strong> {{ property.description }}</p>
+
+<h2 class="mt-4">Book This Property</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            {{ form.start_date.label(class="form-label") }}
+            {{ form.start_date(class="form-control") }}
+        </div>
+        <div class="col-md-6">
+            {{ form.end_date.label(class="form-label") }}
+            {{ form.end_date(class="form-control") }}
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

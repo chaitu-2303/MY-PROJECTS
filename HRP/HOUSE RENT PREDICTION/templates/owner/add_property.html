@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Add Property{% endblock %}
+{% block content %}
+<h1>Add Property</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows=4) }}
+    </div>
+    <div class="mb-3">
+        {{ form.address.label(class="form-label") }}
+        {{ form.address(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.city.label(class="form-label") }}
+        {{ form.city(class="form-control") }}
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control") }}
+        </div>
+        <div class="col-md-3 mb-3">
+            {{ form.bedrooms.label(class="form-label") }}
+            {{ form.bedrooms(class="form-control") }}
+        </div>
+        <div class="col-md-3 mb-3">
+            {{ form.bathrooms.label(class="form-label") }}
+            {{ form.bathrooms(class="form-control") }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form.latitude.label(class="form-label") }}
+            {{ form.latitude(class="form-control") }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form.longitude.label(class="form-label") }}
+            {{ form.longitude(class="form-control") }}
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

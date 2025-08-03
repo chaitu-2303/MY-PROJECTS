@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Owner Dashboard{% endblock %}
+{% block content %}
+<h1>Owner Dashboard</h1>
+<a href="{{ url_for('add_property') }}" class="btn btn-primary mb-3">Add Property</a>
+
+{% if properties %}
+<div class="row">
+    {% for property in properties %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title }}</h5>
+                <p class="card-text">{{ property.address }}, {{ property.city }}</p>
+                <p class="card-text">${{ property.price }}/month</p>
+                <a href="{{ url_for('owner_property_detail', property_id=property.id) }}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No properties found. <a href="{{ url_for('add_property') }}">Add your first property</a></p>
+{% endif %}
+{% endblock %}

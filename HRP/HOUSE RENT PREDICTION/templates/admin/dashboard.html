@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Users</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ users|length }} Users</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Properties</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ properties|length }} Properties</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Bookings</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ bookings|length }} Bookings</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="mt-4">Recent Bookings</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Property</th>
+            <th>Customer</th>
+            <th>Dates</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.id }}</td>
+            <td>{{ booking.property.title }}</td>
+            <td>{{ booking.customer.name }}</td>
+            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
+            <td>{{ booking.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

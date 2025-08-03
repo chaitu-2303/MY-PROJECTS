@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+{% block content %}
+<h1>{{ property.title }}</h1>
+<p><strong>Address:</strong> {{ property.address }}, {{ property.city }}</p>
+<p><strong>Price:</strong> ${{ property.price }}/month</p>
+<p><strong>Bedrooms:</strong> {{ property.bedrooms }} | <strong>Bathrooms:</strong> {{ property.bathrooms }}</p>
+<p><strong>Description:</strong> {{ property.description }}</p>
+<p><strong>Coordinates:</strong> ({{ property.latitude }}, {{ property.longitude }})</p>
+
+<h2 class="mt-4">Bookings</h2>
+{% if bookings %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Dates</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.customer.name }}</td>
+            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
+            <td>{{ booking.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No bookings yet.</p>
+{% endif %}
+{% endblock %}

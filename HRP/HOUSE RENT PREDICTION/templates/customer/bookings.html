@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<h1>My Bookings</h1>
+
+{% if bookings %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Dates</th>
+            <th>Total Price</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.property.title }}</td>
+            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
+            <td>${% if booking.property.price %}{{ booking.property.price * ((booking.end_date - booking.start_date).days) }}{% else %}N/A{% endif %}</td>
+            <td>{{ booking.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You haven't made any bookings yet.</p>
+{% endif %}
+{% endblock %}
