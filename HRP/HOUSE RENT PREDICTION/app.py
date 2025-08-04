@@ -4,12 +4,13 @@ from flask_login import LoginManager, login_user, current_user, logout_user, log
 from config import Config
 from database import db
 from models import User, Property, Booking, Favorite, Review
-from forms import LoginForm, RegistrationForm, PropertyForm, BookingForm, SearchForm, EditProfileForm, ChangePasswordForm, ReviewForm, RequestResetForm, ResetPasswordForm
+from forms import LoginForm, RegistrationForm, PropertyForm, BookingForm, SearchForm, EditProfileForm, ChangePasswordForm, ReviewForm, RequestResetForm, ResetPasswordForm, PredictRentForm
 import folium
 from datetime import datetime, timedelta
 from sqlalchemy import or_, func
 from wtforms import StringField, PasswordField, SelectField, validators
 import os
+import uuid
 from werkzeug.utils import secure_filename
 from flask_dance.contrib.google import make_google_blueprint, google
 import pandas as pd
