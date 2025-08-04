@@ -20,6 +20,9 @@ import functools
 from collections import defaultdict
 from flask_mail import Mail, Message
 
+# Define constants
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
