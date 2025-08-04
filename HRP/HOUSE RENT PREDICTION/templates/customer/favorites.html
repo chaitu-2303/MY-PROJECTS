@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}My Favorites{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>My Favorite Properties</h2>
+    
+    {% if favorites %}
+        <div class="row">
+            {% for favorite in favorites %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if favorite.property.image_file %}
+                            <img src="{{ url_for('static', filename='property_pics/' + favorite.property.image_file) }}" class="card-img-top" alt="{{ favorite.property.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='property_pics/default_property.jpg') }}" class="card-img-top" alt="{{ favorite.property.title }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ favorite.property.title }}</h5>
+                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> {{ favorite.property.address }}, {{ favorite.property.city }}</p>
+                            <p class="card-text">
+                                <span class="badge bg-primary">₹{{ favorite.property.price }}</span>
+                                <span class="badge bg-secondary">{{ favorite.property.bedrooms }} BHK</span>
+                                <span class="badge bg-info">{{ favorite.property.bathrooms }} Bath</span>
+                                {% if favorite.property.size %}
+                                    <span class="badge bg-success">{{ favorite.property.size }} sqft</span>
+                                {% endif %}
+                            </p>
+                            <p class="card-text"><small class="text-muted">Added to favorites on {{ favorite.created_at.strftime('%Y-%m-%d') }}</small></p>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex justify-content-between">
+                            <a href="{{ url_for('property_detail', property_id=favorite.property.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                            <form action="{{ url_for('toggle_favorite', property_id=favorite.property.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-heart-broken"></i> Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> You haven't added any properties to your favorites yet.
+        </div>
+        <a href="{{ url_for('customer_dashboard') }}" class="btn btn-primary">Browse Properties</a>
+    {% endif %}
+</div>
+{% endblock %}

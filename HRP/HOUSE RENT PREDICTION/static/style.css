@@ -1,10 +1,50 @@
 body {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
+    font-family: 'Nunito', sans-serif;
+    color: #222;
+    margin: 0;
+    padding: 0;
 }
 .card {
-    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    border-radius: 1rem;
+    transition: transform 0.3s, box-shadow 0.3s, opacity 0.8s;
+    background: #fff;
+    opacity: 0;
 }
-.card:hover {
-    transform: translateY(-5px);
+.card.show {
+    opacity: 1;
+}
+.btn-vibrant {
+    background: linear-gradient(90deg, #ff6e7f 0%, #bfe9ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 2rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.btn-vibrant:hover {
+    background: linear-gradient(90deg, #bfe9ff 0%, #ff6e7f 100%);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transform: scale(1.08);
+}
+.navbar {
+    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%) !important;
+}
+.hero-section {
+    background: linear-gradient(120deg, #ff6e7f 0%, #bfe9ff 100%);
+    color: #fff;
+}
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    .container {
+        padding: 0 1rem;
+    }
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
 }

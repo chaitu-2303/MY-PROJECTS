@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Security Error</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5>CSRF Validation Failed</h5>
+                        <p>The form submission failed due to a security check. This could be due to:</p>
+                        <ul>
+                            <li>The form has expired (session timeout)</li>
+                            <li>You may have used the back button in your browser</li>
+                            <li>The form was tampered with</li>
+                        </ul>
+                    </div>
+                    <p>Please try again by returning to the previous page and resubmitting the form.</p>
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
