@@ -27,8 +27,8 @@
 
         .navbar {
             background: rgba(255,255,255,0.10) !important;
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.10);
         }
 
@@ -117,6 +117,7 @@
             display: flex;
             gap: 2rem;
         }
+        
 
         .top-nav a {
             color: white;
@@ -126,6 +127,46 @@
 
         .top-nav a:hover {
             text-decoration: underline;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar li {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        
+        .sidebar i {
+            margin-right: 0.5rem;
         }
     </style>
 </head>
@@ -147,7 +188,12 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Available Properties</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('predict_rent') }}">Rent Prediction</a></li>{% if current_user.is_authenticated %}<li class="nav-item dropdown">
+                        <a class="nav-link" href="{{ url_for('predict_rent') }}">Rent Prediction</a></li><li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li><li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer_bookings') }}">Bookings</a></li><li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer_favorites') }}">Favorites</a></li><li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a></li><li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>{% if current_user.is_authenticated %}<li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 {% if current_user.profile_pic %}
                                     <img src="{{ url_for('static', filename='profile_pics/' ~ current_user.profile_pic) }}" class="rounded-circle me-2" width="32" height="32" alt="Profile">
@@ -177,6 +223,18 @@
     </nav>
 
     {% block hero %}{% endblock %}
+
+    <div class="sidebar">
+      <ul>
+        <li><a href="{{ url_for('available_properties') }}">Available Properties</a></li>
+        <li><a href="{{ url_for('rent_prediction') }}">Rent Prediction</a></li>
+        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('bookings') }}">Bookings</a></li>
+        <li><a href="{{ url_for('favorites') }}">Favorites</a></li>
+        <li><a href="{{ url_for('reviews') }}">Reviews</a></li>
+        <li><a href="{{ url_for('settings') }}">Settings</a></li>
+      </ul>
+    </div>
 
     <main class="container my-5">
         {% with messages = get_flashed_messages(with_categories=true) %}
