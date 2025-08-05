@@ -149,8 +149,8 @@
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 // Correctly assign Jinja2 values to JavaScript variables
-                                const lat = {{ property.latitude }};
-                                const lng = {{ property.longitude }};
+                                const lat = {{ property.latitude|tojson }};
+                                const lng = {{ property.longitude|tojson }};
                                 const title = "{{ property.title|e('js') }}";
                                 
                                 let map = L.map('map').setView([lat, lng], 15);
