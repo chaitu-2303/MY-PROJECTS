@@ -123,9 +123,13 @@ class ReviewForm(FlaskForm):
 
 class EditProfileForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[])
+    bio = StringField('Bio', validators=[])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone = StringField('Phone', validators=[DataRequired()])
     dob = DateField('Date of Birth', format='%Y-%m-%d')
+    location = StringField('Location', validators=[])
+    timezone = StringField('Time Zone', validators=[])
     profile_pic = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
     verified = BooleanField('Verified')
     submit = SubmitField('Update Profile')

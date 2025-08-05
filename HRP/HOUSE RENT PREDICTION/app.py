@@ -36,7 +36,7 @@ app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH  # 10MB limit
 app.config['SESSION_COOKIE_SECURE'] = True  # Only send cookies over HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access to session cookie
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Restrict cookie sending to same-site requests
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)  # Session expires after 1 hour
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # Session expires after 7 days
 
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
@@ -176,39 +176,9 @@ def root():
 
 @app.route('/home')
 def home():
-    featured_properties = [
-        {
-            'id': 1,
-            'title': 'Modern Downtown Apartment',
-            'city': 'New York',
-            'bedrooms': 2,
-            'bathrooms': 1,
-            'price': 2500,
-            'description': 'Beautiful modern apartment in the heart of downtown with great amenities.',
-            'image_id': '1560448204-e01f8e658d6a'
-        },
-        {
-            'id': 2,
-            'title': 'Cozy Suburban House',
-            'city': 'Chicago',
-            'bedrooms': 3,
-            'bathrooms': 2,
-            'price': 1800,
-            'description': 'Spacious house with backyard in a quiet suburban neighborhood.',
-            'image_id': '1564013799913-e644f80592f9'
-        },
-        {
-            'id': 3,
-            'title': 'Luxury Beachfront Condo',
-            'city': 'Miami',
-            'bedrooms': 2,
-            'bathrooms': 2,
-            'price': 3500,
-            'description': 'Stunning ocean views from this luxury beachfront property.',
-            'image_id': '1560520031-3a4e9a93f5a1'
-        }
-    ]
-    return render_template('home.html', featured_properties=featured_properties)
+    # Get 3 random properties from the database
+    properties = Property.query.order_by(func.random()).limit(3).all()
+    return render_template('home.html', featured_properties=properties)
 
 @app.route('/login', methods=['GET', 'POST'])
 @rate_limit(max_attempts=5, window_seconds=300)
@@ -615,26 +585,75 @@ def cancel_booking(booking_id):
 @login_required
 def profile():
     form = EditProfileForm(obj=current_user)
+
     if form.validate_on_submit():
         current_user.name = form.name.data
+        current_user.username = form.username.data
+        current_user.bio = form.bio.data
         current_user.email = form.email.data
         current_user.phone = form.phone.data
         current_user.dob = form.dob.data
+        current_user.location = form.location.data
+        current_user.timezone = form.timezone.data
         current_user.verified = form.verified.data
 
-        # Handle profile picture upload
-        if form.profile_pic.data:
-            pic_file = form.profile_pic.data
+        # Handle profile picture upload securely
+        pic_file = form.profile_pic.data
+        if hasattr(pic_file, 'filename') and pic_file.filename:
             filename = secure_filename(pic_file.filename)
-            pic_path = os.path.join('static/profile_pics', filename)
+            import uuid
+            filename = str(uuid.uuid4().hex) + '_' + filename
+            pic_dir = os.path.join(app.root_path, 'static/profile_pics')
+            os.makedirs(pic_dir, exist_ok=True)
+            pic_path = os.path.join(pic_dir, filename)
             pic_file.save(pic_path)
+            # Delete old profile pic if not default
+            if current_user.profile_pic and current_user.profile_pic != 'default.jpg':
+                old_pic_path = os.path.join(pic_dir, current_user.profile_pic)
+                if os.path.exists(old_pic_path):
+                    os.remove(old_pic_path)
             current_user.profile_pic = filename
 
         db.session.commit()
         flash('Profile updated successfully!', 'success')
         return redirect(url_for('profile'))
 
-    return render_template('customer/profile.html', form=form)
+    # Pass all new fields to template
+    profile_data = {
+        'profile_pic': current_user.profile_pic,
+        'name': current_user.name,
+        'username': current_user.username,
+        'bio': current_user.bio,
+        'email': current_user.email,
+        'phone': current_user.phone,
+        'dob': current_user.dob,
+        'location': current_user.location,
+        'timezone': current_user.timezone,
+        'verified': current_user.verified,
+        'role': current_user.role,
+        'member_since': current_user.member_since,
+        'two_factor_enabled': getattr(current_user, 'two_factor_enabled', False)
+    }
+
+    if current_user.role == 'admin':
+        template = 'admin/profile.html'
+    elif current_user.role == 'owner':
+        template = 'owner/profile.html'
+    else:
+        template = 'customer/profile.html'
+
+    return render_template(template, form=form, **profile_data)
+
+    # Choose template based on user role
+    if current_user.role == 'admin':
+        template = 'admin/profile.html'
+    elif current_user.role == 'owner':
+        template = 'owner/profile.html'
+    else:
+        template = 'customer/profile.html'
+
+    # Pass profile_pic filename to template
+    return render_template(template, form=form, profile_pic=current_user.profile_pic)
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required

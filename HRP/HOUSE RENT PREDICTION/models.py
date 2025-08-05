@@ -11,13 +11,19 @@ bcrypt = Bcrypt()
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=True)  # Unique handle
+    bio = db.Column(db.String(250), nullable=True)  # Short description
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # admin, owner, customer
     phone = db.Column(db.String(20))
     dob = db.Column(db.Date)  # New field
+    location = db.Column(db.String(100), nullable=True)
+    timezone = db.Column(db.String(50), nullable=True)
+    member_since = db.Column(db.DateTime, default=db.func.current_timestamp())
     profile_pic = db.Column(db.String(120), default='default.jpg')  # New field
     verified = db.Column(db.Boolean, default=False)  # New field
+    two_factor_enabled = db.Column(db.Boolean, default=False)
     properties = db.relationship('Property', backref='owner', lazy=True)
     bookings = db.relationship('Booking', backref='customer', lazy=True)
     favorites = db.relationship('Favorite', backref='user', lazy=True)
