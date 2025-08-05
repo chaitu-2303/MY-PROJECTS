@@ -97,6 +97,25 @@
       <a href="#" class="btn glass-btn glass-btn-secondary">Learn More</a>
       <a href="#" class="btn glass-btn glass-btn-outline">Documentation</a>
     </div>
+
+    <!-- New Dashboard Cards Section -->
+    <div class="dashboard-cards mt-5">
+      <div class="card">
+        <h3>Available Properties</h3>
+        <p>{{ properties_count }}+</p>
+        <span class="badge">+{{ growth_percent }}%</span>
+      </div>
+      <div class="card">
+        <h3>Rent Prediction</h3>
+        <p>₹{{ sample_prediction }}</p>
+        <a href="{{ url_for('predict_rent') }}">AI</a>
+      </div>
+      <div class="card">
+        <h3>Profile</h3>
+        <p>Welcome, {{ current_user.name }}!</p>
+        <a href="{{ url_for('profile') }}">Go to Profile</a>
+      </div>
+    </div>
   </div>
 </div>
 <style>
@@ -154,6 +173,43 @@
     background: transparent;
     border-color: #fff;
     color: #fff;
+  }
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .dashboard-cards .card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: transform 0.3s;
+  }
+  .dashboard-cards .card:hover {
+    transform: translateY(-5px);
+  }
+  .dashboard-cards h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .dashboard-cards p {
+    font-size: 2rem;
+    margin: 0;
+    color: #a78bfa;
+  }
+  .dashboard-cards .badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 0.875rem;
   }
 </style>
 <!-- Chart.js for demo chart rendering -->

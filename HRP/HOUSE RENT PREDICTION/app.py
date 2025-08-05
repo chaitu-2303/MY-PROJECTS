@@ -175,10 +175,17 @@ def root():
     return redirect(url_for('home'))
 
 @app.route('/home')
+@login_required
 def home():
-    # Get 3 random properties from the database
-    properties = Property.query.order_by(func.random()).limit(3).all()
-    return render_template('home.html', featured_properties=properties)
+    properties_count = Property.query.count()
+    growth_percent = 2.5  # Example, calculate as needed
+    sample_prediction = 18000  # Example, or use your model for a real value
+    return render_template(
+        'home.html',
+        properties_count=properties_count,
+        growth_percent=growth_percent,
+        sample_prediction=sample_prediction
+    )
 
 @app.route('/login', methods=['GET', 'POST'])
 @rate_limit(max_attempts=5, window_seconds=300)

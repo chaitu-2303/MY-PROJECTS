@@ -214,7 +214,7 @@
       <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
       <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
       <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
     </ul>
   </li>
   {% else %}
@@ -232,15 +232,14 @@
     {% block hero %}{% endblock %}
 
     <div class="sidebar">
-      <ul>
-        <li><a href="{{ url_for('available_properties') }}">Available Properties</a></li>
-        <li><a href="{{ url_for('rent_prediction') }}">Rent Prediction</a></li>
-        <li><a href="{{ url_for('profile') }}">Profile</a></li>
-        <li><a href="{{ url_for('bookings') }}">Bookings</a></li>
-        <li><a href="{{ url_for('favorites') }}">Favorites</a></li>
-        <li><a href="{{ url_for('reviews') }}">Reviews</a></li>
-        <li><a href="{{ url_for('settings') }}">Settings</a></li>
-      </ul>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('customer_dashboard') }}">Search</a>
+      <a href="{{ url_for('predict_rent') }}">Prediction</a>
+      <a href="{{ url_for('customer_bookings') }}">Bookings</a>
+      <a href="{{ url_for('customer_favorites') }}">Favorites</a>
+      <a href="{{ url_for('reviews') }}">Reviews</a>
+      <a href="{{ url_for('settings') }}">Settings</a>
+      <a href="{{ url_for('logout') }}">Log Out</a>
     </div>
 
     <main class="container my-5">
