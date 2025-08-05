@@ -1,32 +1,69 @@
 {% extends "base.html" %}
-{% block title %}Glassmorphism UI{% endblock %}
+{% block title %}Home & Dashboard{% endblock %}
 
 {% block content %}
-<div class="min-vh-100 w-100" style="background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%); padding: 2rem 0;">
-  <div class="container">
+<div class="d-flex" style="min-height: 100vh;">
+  <!-- Sidebar -->
+  <nav class="sidebar p-4" style="width: 250px; background: linear-gradient(135deg, #2b2e4a 0%, #23243a 100%); border-radius: 2rem; box-shadow: 0 8px 32px rgba(44,62,80,0.18); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);">
+    <div class="mb-4 text-center">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 60px; border-radius: 50%; box-shadow: 0 2px 8px rgba(58,59,69,0.10);">
+      <h4 class="mt-2 fw-bold text-light">House Rent</h4>
+    </div>
+    <ul class="nav flex-column" id="sidebarOptions">
+      <li class="nav-item mb-2"><a class="nav-link active text-light" href="#" data-section="properties"><i class="fas fa-search me-2"></i>Available Properties</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="prediction"><i class="fas fa-chart-line me-2"></i>Rent Prediction</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="profile"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="bookings"><i class="fas fa-calendar-check me-2"></i>Bookings</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="favorites"><i class="fas fa-heart me-2"></i>Favorites</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="reviews"><i class="fas fa-comments me-2"></i>Reviews</a></li>
+      <li class="nav-item mb-2"><a class="nav-link text-light" href="#" data-section="settings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+      <li class="nav-item mt-5"><a class="nav-link text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Log Out</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 p-4" style="background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);">
     <div class="text-center mb-5">
       <h1 class="display-3 fw-bold text-white mb-3">Find Your Perfect Rental Home</h1>
       <p class="lead text-white-50 mb-4">Discover, predict, and book rental properties with ease and confidence.</p>
     </div>
+    <!-- Feature Cards (dynamic dashboard area) -->
+    <div id="dashboardArea">
+      <div class="row justify-content-center g-4 mb-5" id="dashboardCards">
+        <!-- Default: Customer Care -->
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <span class="glass-icon mb-3"><i class="fas fa-headset"></i></span>
+            <h4 class="text-white mb-2">Customer Care</h4>
+            <p class="text-white-50">24/7 support for all your rental needs. Contact us for help, queries, or feedback.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <span class="glass-icon mb-3"><i class="fas fa-info-circle"></i></span>
+            <h4 class="text-white mb-2">Company Info</h4>
+            <p class="text-white-50">Learn more about our mission, values, and the team behind House Rental.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center">
+            <span class="glass-icon mb-3"><i class="fas fa-envelope-open-text"></i></span>
+            <h4 class="text-white mb-2">Contact Us</h4>
+            <p class="text-white-50">Reach out for partnership, business inquiries, or media requests.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Analytics Chart -->
+      <div class="card glass-card mb-4 p-4" style="min-height: 280px; background: linear-gradient(120deg, #23243a 80%, #a78bfa 100%);">
+        <h5 class="mb-3 text-light"><i class="fas fa-chart-bar me-2"></i> Analytics Overview</h5>
+        <div id="dashboardChart" style="height: 200px;">
+          <canvas id="mainAnalyticsChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Cards -->
     <div class="row justify-content-center g-4 mb-5">
-      <div class="col-md-4">
-        <div class="glass-card p-4">
-          <div class="d-flex align-items-center mb-3">
-            <span class="glass-icon"><i class="fas fa-search"></i></span>
-            <h4 class="text-white mb-0 ms-3">Smart Property Search</h4>
-          </div>
-          <p class="text-white-50">Filter and explore thousands of rental listings by location, price, and amenities.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="glass-card p-4">
-          <div class="d-flex align-items-center mb-3">
-            <span class="glass-icon"><i class="fas fa-chart-line"></i></span>
-            <h4 class="text-white mb-0 ms-3">Rent Prediction</h4>
-          </div>
-          <p class="text-white-50">Get instant, AI-powered rent estimates for any property to make informed decisions.</p>
-        </div>
-      </div>
       <div class="col-md-4">
         <div class="glass-card p-4">
           <div class="d-flex align-items-center mb-3">
@@ -34,15 +71,6 @@
             <h4 class="text-white mb-0 ms-3">Verified Listings</h4>
           </div>
           <p class="text-white-50">Browse only trusted, verified properties for a safe rental experience.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="glass-card p-4">
-          <div class="d-flex align-items-center mb-3">
-            <span class="glass-icon"><i class="fas fa-calendar-check"></i></span>
-            <h4 class="text-white mb-0 ms-3">Easy Booking</h4>
-          </div>
-          <p class="text-white-50">Book your favorite property online with a simple, secure process.</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -72,11 +100,15 @@
   </div>
 </div>
 <style>
+  .sidebar {
+    min-height: 100%;
+    color: #fff;
+  }
   .glass-card {
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     background: rgba(255,255,255,0.18);
-    border-radius: 1.25rem;
+    border-radius: 1.5rem;
     border: 1.5px solid rgba(255,255,255,0.35);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
     transition: background 0.3s;
@@ -124,4 +156,62 @@
     color: #fff;
   }
 </style>
+<!-- Chart.js for demo chart rendering -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Example chart data for demo purposes
+const ctxMain = document.getElementById('mainAnalyticsChart')?.getContext('2d');
+if (ctxMain) {
+    new Chart(ctxMain, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                { label: 'Searches', data: [120, 190, 130, 150, 200, 230, 170, 210, 180, 220, 250, 270], borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.2)', fill: true },
+                { label: 'Predictions', data: [80, 110, 90, 120, 140, 160, 130, 150, 140, 170, 190, 210], borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.2)', fill: true },
+                { label: 'Bookings', data: [50, 70, 60, 80, 90, 100, 120, 140, 130, 150, 180, 210], borderColor: '#fb923c', backgroundColor: 'rgba(251,146,60,0.2)', fill: true }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } }
+        }
+    });
+}
+
+// Sidebar click handler for dynamic dashboard
+const dashboardCards = {
+  properties: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-search'></i></span><h4 class='text-white mb-2'>Available Properties</h4><p class='text-white-50'>2,500+ properties. Filter and explore by location, price, and amenities.</p></div></div>`,
+  prediction: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-chart-line'></i></span><h4 class='text-white mb-2'>Rent Prediction</h4><p class='text-white-50'>Get instant, AI-powered rent estimates for any property.</p></div></div>`,
+  profile: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-user-circle'></i></span><h4 class='text-white mb-2'>Profile</h4><p class='text-white-50'>Welcome, User! Manage your account and preferences here.</p></div></div>`,
+  bookings: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-calendar-check'></i></span><h4 class='text-white mb-2'>Bookings</h4><p class='text-white-50'>View and manage your property bookings easily.</p></div></div>`,
+  favorites: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-heart'></i></span><h4 class='text-white mb-2'>Favorites</h4><p class='text-white-50'>See your saved and favorite properties here.</p></div></div>`,
+  reviews: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-comments'></i></span><h4 class='text-white mb-2'>Reviews</h4><p class='text-white-50'>Read and write reviews for properties and experiences.</p></div></div>`,
+  settings: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-cog'></i></span><h4 class='text-white mb-2'>Settings</h4><p class='text-white-50'>Manage your account settings and preferences.</p></div></div>`
+};
+const topNavCards = {
+  customercare: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-headset'></i></span><h4 class='text-white mb-2'>Customer Care</h4><p class='text-white-50'>24/7 support for all your rental needs. Contact us for help, queries, or feedback.</p></div></div>`,
+  companyinfo: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-info-circle'></i></span><h4 class='text-white mb-2'>Company Info</h4><p class='text-white-50'>Learn more about our mission, values, and the team behind House Rental.</p></div></div>`,
+  contactus: `<div class='col-md-4'><div class='glass-card p-4 text-center'><span class='glass-icon mb-3'><i class='fas fa-envelope-open-text'></i></span><h4 class='text-white mb-2'>Contact Us</h4><p class='text-white-50'>Reach out for partnership, business inquiries, or media requests.</p></div></div>`
+};
+document.querySelectorAll('#sidebarOptions .nav-link').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('#sidebarOptions .nav-link').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+    const section = this.getAttribute('data-section');
+    document.getElementById('dashboardCards').innerHTML = dashboardCards[section] || '';
+  });
+});
+document.querySelectorAll('.d-flex.justify-content-end a').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.d-flex.justify-content-end a').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+    const section = this.textContent.trim().replace(/\s/g, '').toLowerCase();
+    document.getElementById('dashboardCards').innerHTML = topNavCards[section] || '';
+  });
+});
+</script>
 {% endblock %}

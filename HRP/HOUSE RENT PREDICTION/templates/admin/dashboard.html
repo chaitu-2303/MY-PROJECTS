@@ -3,27 +3,29 @@
 {% block content %}
 <div class="d-flex" style="min-height: 80vh;">
     <!-- Sidebar -->
-    <nav class="sidebar p-4" style="width: 250px; background: rgba(255,255,255,0.18); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(58,59,69,0.12); backdrop-filter: blur(12px);">
+    <nav class="sidebar p-4" style="width: 250px; background: linear-gradient(135deg, #2b2e4a 0%, #23243a 100%); border-radius: 2rem; box-shadow: 0 8px 32px rgba(44,62,80,0.18); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);">
         <div class="mb-4 text-center">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 60px; border-radius: 50%; box-shadow: 0 2px 8px rgba(58,59,69,0.10);">
-            <h4 class="mt-2 fw-bold" style="color: var(--primary-color);">Admin Panel</h4>
+            <h4 class="mt-2 fw-bold text-light">Admin Panel</h4>
         </div>
         <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-users me-2"></i>Users</a></li>
-            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-building me-2"></i>Properties</a></li>
-            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-book me-2"></i>Bookings</a></li>
-            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Analytics</a></li>
+            <li class="nav-item mb-2"><a class="nav-link active text-light" href="#"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+            <li class="nav-item mb-2"><a class="nav-link text-light" href="#"><i class="fas fa-users me-2"></i>Users</a></li>
+            <li class="nav-item mb-2"><a class="nav-link text-light" href="#"><i class="fas fa-building me-2"></i>Properties</a></li>
+            <li class="nav-item mb-2"><a class="nav-link text-light" href="#"><i class="fas fa-book me-2"></i>Bookings</a></li>
+            <li class="nav-item mb-2"><a class="nav-link text-light" href="#"><i class="fas fa-chart-line me-2"></i>Analytics</a></li>
+            <li class="nav-item mb-2"><a class="nav-link text-light" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+            <li class="nav-item mt-5"><a class="nav-link text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Log Out</a></li>
         </ul>
     </nav>
 
     <!-- Main Content -->
     <div class="flex-grow-1 p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold" style="color: var(--primary-color);">Dashboard Overview</h2>
+            <h2 class="fw-bold" style="color: #fff;">Dashboard Overview</h2>
             <!-- Profile Dropdown -->
             <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle me-2"></i> Admin
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -35,62 +37,74 @@
             </div>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Top Cards -->
         <div class="row mb-4">
             <div class="col-md-4">
-                <div class="card glass-card text-dark mb-3">
+                <div class="card glass-card text-light mb-3" style="background: linear-gradient(120deg, #23243a 80%, #2b2e4a 100%);">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-users fa-2x me-3" style="color: var(--primary-color);"></i>
+                            <i class="fas fa-users fa-2x me-3" style="color: #a78bfa;"></i>
                             <div>
                                 <h5 class="card-title mb-0">Users</h5>
                                 <span class="fs-4 fw-bold">{{ users|length }}</span>
+                                <span class="badge bg-success ms-2">+2.5%</span>
                             </div>
+                        </div>
+                        <div class="mt-2" style="height: 40px;">
+                            <canvas id="usersChart" height="40"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card glass-card text-dark mb-3">
+                <div class="card glass-card text-light mb-3" style="background: linear-gradient(120deg, #23243a 80%, #a78bfa 100%);">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-building fa-2x me-3" style="color: var(--secondary-color);"></i>
+                            <i class="fas fa-building fa-2x me-3" style="color: #f472b6;"></i>
                             <div>
                                 <h5 class="card-title mb-0">Properties</h5>
                                 <span class="fs-4 fw-bold">{{ properties|length }}</span>
+                                <span class="badge bg-info ms-2">+1.8%</span>
                             </div>
+                        </div>
+                        <div class="mt-2" style="height: 40px;">
+                            <canvas id="propertiesChart" height="40"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card glass-card text-dark mb-3">
+                <div class="card glass-card text-light mb-3" style="background: linear-gradient(120deg, #23243a 80%, #fb923c 100%);">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-book fa-2x me-3" style="color: var(--accent-color);"></i>
+                            <i class="fas fa-book fa-2x me-3" style="color: #fb923c;"></i>
                             <div>
                                 <h5 class="card-title mb-0">Bookings</h5>
                                 <span class="fs-4 fw-bold">{{ bookings|length }}</span>
+                                <span class="badge bg-warning text-dark ms-2">+0.9%</span>
                             </div>
+                        </div>
+                        <div class="mt-2" style="height: 40px;">
+                            <canvas id="bookingsChart" height="40"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Chart Placeholder -->
-        <div class="card glass-card mb-4 p-4" style="min-height: 280px;">
-            <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i> Analytics Overview</h5>
-            <div id="dashboardChart" style="height: 200px; background: rgba(255,255,255,0.25); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #888;">
-                <span>Chart will appear here</span>
+        <!-- Analytics Chart -->
+        <div class="card glass-card mb-4 p-4" style="min-height: 280px; background: linear-gradient(120deg, #23243a 80%, #a78bfa 100%);">
+            <h5 class="mb-3 text-light"><i class="fas fa-chart-bar me-2"></i> Analytics Overview</h5>
+            <div id="dashboardChart" style="height: 200px;">
+                <canvas id="mainAnalyticsChart" height="200"></canvas>
             </div>
         </div>
 
         <!-- Recent Bookings Table -->
-        <div class="card glass-card p-4">
-            <h5 class="mb-3"><i class="fas fa-history me-2"></i> Recent Bookings</h5>
+        <div class="card glass-card p-4" style="background: linear-gradient(120deg, #23243a 80%, #fb923c 100%);">
+            <h5 class="mb-3 text-light"><i class="fas fa-history me-2"></i> Recent Bookings</h5>
             <div class="table-responsive">
-                <table class="table table-striped align-middle">
+                <table class="table table-dark table-striped align-middle">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -107,7 +121,7 @@
                             <td>{{ booking.property.title }}</td>
                             <td>{{ booking.customer.name }}</td>
                             <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
-                            <td>{{ booking.status }}</td>
+                            <td><span class="badge {% if booking.status == 'Done' %}bg-success{% elif booking.status == 'Pending' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ booking.status }}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -120,14 +134,44 @@
 <style>
     .sidebar {
         min-height: 100%;
+        color: #fff;
     }
     .glass-card {
-        background: rgba(255,255,255,0.18);
-        border-radius: 1rem;
-        box-shadow: 0 8px 32px rgba(58,59,69,0.12);
+        background: rgba(255,255,255,0.10);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px rgba(44,62,80,0.18);
         -webkit-backdrop-filter: blur(8px);
         backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.22);
+        border: 1px solid rgba(255,255,255,0.12);
+    }
+    .table-dark {
+        background: rgba(44,62,80,0.85);
+        color: #fff;
     }
 </style>
+
+<!-- Chart.js for demo chart rendering -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Example chart data for demo purposes
+const ctxMain = document.getElementById('mainAnalyticsChart')?.getContext('2d');
+if (ctxMain) {
+    new Chart(ctxMain, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                { label: 'Users', data: [12, 19, 3, 5, 2, 3, 7, 11, 8, 10, 15, 20], borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.2)', fill: true },
+                { label: 'Properties', data: [8, 11, 7, 9, 10, 12, 14, 16, 13, 17, 19, 22], borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.2)', fill: true },
+                { label: 'Bookings', data: [5, 7, 6, 8, 9, 10, 12, 14, 13, 15, 18, 21], borderColor: '#fb923c', backgroundColor: 'rgba(251,146,60,0.2)', fill: true }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } }
+        }
+    });
+}
+</script>
 {% endblock %}
