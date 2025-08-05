@@ -1,42 +1,127 @@
 {% extends "base.html" %}
-{% block title %}Find Your Perfect Rental Home{% endblock %}
-
-{% block hero %}
-<section class="hero-section text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-4">Find Your Perfect Rental Home</h1>
-        <p class="lead mb-5">Discover thousands of properties across the country with our easy-to-use platform</p>
-        {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('register') }}" class="btn btn-vibrant btn-lg me-3">Sign Up</a>
-            <a href="{{ url_for('login') }}" class="btn btn-vibrant btn-lg">Login</a>
-        {% else %}
-            <a href="{{ url_for('dashboard') }}" class="btn btn-vibrant btn-lg">Go to Dashboard</a>
-        {% endif %}
-    </div>
-</section>
-{% endblock %}
+{% block title %}Glassmorphism UI{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="tabs">
-        <div class="tab-option active">Featured</div>
-        <div class="tab-option">Latest</div>
-        <div class="tab-option">Popular</div>
+<div class="min-vh-100 w-100" style="background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%); padding: 2rem 0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h1 class="display-3 fw-bold text-white mb-3">Glassmorphism UI</h1>
+      <p class="lead text-white-50 mb-4">Modern, elegant interface design with a frosted glass aesthetic.</p>
     </div>
-    <!-- Your property cards or other content go here -->
-    <div class="row">
-        {% for prop in featured_properties %}
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5><i class="fas fa-home text-primary"></i> {{ prop.title }}</h5>
-                    <p><i class="fas fa-map-marker-alt"></i> {{ prop.city }}</p>
-                    <p><i class="fas fa-rupee-sign"></i> ₹{{ prop.price }}</p>
-                    <a href="#" class="btn btn-vibrant">View Details</a>
-                </div>
-            </div>
+    <div class="row justify-content-center g-4 mb-5">
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-layer-group"></i></span>
+            <h4 class="text-white mb-0 ms-3">Transparent Beauty</h4>
+          </div>
+          <p class="text-white-50">The glass effect creates a sense of depth while maintaining visual lightness.</p>
         </div>
-        {% endfor %}
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-eye"></i></span>
+            <h4 class="text-white mb-0 ms-3">Subtle Blur</h4>
+          </div>
+          <p class="text-white-50">Background blur effects create the illusion of frosted glass for a modern look.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-square"></i></span>
+            <h4 class="text-white mb-0 ms-3">Light Borders</h4>
+          </div>
+          <p class="text-white-50">Thin white borders enhance the glass-like appearance of UI elements.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-sun"></i></span>
+            <h4 class="text-white mb-0 ms-3">Soft Shadows</h4>
+          </div>
+          <p class="text-white-50">Subtle shadows create depth and separation from the background.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-palette"></i></span>
+            <h4 class="text-white mb-0 ms-3">Color Harmony</h4>
+          </div>
+          <p class="text-white-50">Works beautifully with colorful gradients and background elements.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="glass-icon"><i class="fas fa-star"></i></span>
+            <h4 class="text-white mb-0 ms-3">Modern Design</h4>
+          </div>
+          <p class="text-white-50">A contemporary aesthetic perfect for dashboards and creative interfaces.</p>
+        </div>
+      </div>
     </div>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="#" class="btn glass-btn">Get Started</a>
+      <a href="#" class="btn glass-btn glass-btn-secondary">Learn More</a>
+      <a href="#" class="btn glass-btn glass-btn-outline">Documentation</a>
+    </div>
+  </div>
 </div>
+<style>
+  .glass-card {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.18);
+    border-radius: 1.25rem;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    transition: background 0.3s;
+  }
+  .glass-card:hover {
+    background: rgba(255,255,255,0.28);
+  }
+  .glass-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px rgba(31,38,135,0.10);
+  }
+  .glass-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    font-weight: 500;
+    color: #fff;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    box-shadow: 0 4px 16px rgba(31,38,135,0.10);
+    transition: background 0.3s, color 0.3s;
+  }
+  .glass-btn:hover {
+    background: rgba(255,255,255,0.28);
+    color: #fff;
+  }
+  .glass-btn-secondary {
+    background: rgba(168,139,250,0.25);
+    border-color: #a78bfa;
+  }
+  .glass-btn-outline {
+    background: transparent;
+    border-color: #fff;
+    color: #fff;
+  }
+</style>
 {% endblock %}
