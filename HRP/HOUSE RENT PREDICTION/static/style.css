@@ -1,38 +1,37 @@
 body {
-    background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
+    background: linear-gradient(135deg, #ff6e7f 0%, #ffc371 100%);
     font-family: 'Nunito', sans-serif;
     color: #222;
     margin: 0;
     padding: 0;
 }
 .card {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 3px rgba(0,0,0,0.10);
+    box-shadow: 0 8px 32px rgba(255,110,127,0.18), 0 1.5px 3px rgba(255,195,113,0.10);
     border-radius: 1rem;
     transition: transform 0.4s cubic-bezier(.25,.8,.25,1), box-shadow 0.4s;
-    background: #fff;
+    background: linear-gradient(120deg, #fff 80%, #ffe5ec 100%);
     perspective: 1000px;
-    opacity: 0;
 }
 .card.show {
     opacity: 1;
 }
 .card:hover {
     transform: scale(1.05) rotateY(6deg) translateY(-10px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.22), 0 3px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 16px 48px rgba(255,110,127,0.22), 0 3px 6px rgba(255,195,113,0.15);
 }
 .btn-vibrant {
-    background: linear-gradient(90deg, #ff6e7f 0%, #bfe9ff 100%);
+    background: linear-gradient(90deg, #ff6e7f 0%, #ffc371 100%);
     color: #fff;
     border: none;
     border-radius: 2rem;
     padding: 0.75rem 2rem;
     font-weight: bold;
     box-shadow: 0 4px 16px rgba(255,110,127,0.2);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 .btn-vibrant:hover {
-    background: linear-gradient(90deg, #bfe9ff 0%, #ff6e7f 100%);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    background: linear-gradient(90deg, #ffc371 0%, #ff6e7f 100%);
+    box-shadow: 0 8px 32px rgba(255,110,127,0.25);
     transform: scale(1.08);
 }
 .btn-vibrant:active {
@@ -43,13 +42,10 @@ body {
     background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%) !important;
 }
 .hero-section {
-    background: linear-gradient(120deg, #ff6e7f 0%, #bfe9ff 100%);
+    background: linear-gradient(120deg, #ff6e7f 0%, #ffc371 100%);
     color: #fff;
 }
 @media (max-width: 768px) {
-    .card {
-        margin-bottom: 1rem;
-    }
     .container, .card {
         width: 100%;
         padding: 0 0.5rem;

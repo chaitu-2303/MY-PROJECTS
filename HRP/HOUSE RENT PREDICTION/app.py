@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from config import Config
@@ -720,279 +719,124 @@ def google_login():
     flash("Logged in with Google!", "success")
     return redirect(url_for("dashboard"))
 
-# Load dataset and train model (do this once at startup)
-import pandas as pd
-import os
-import numpy as np
+# Load dataset and train model globally
+DATASET_PATH = 'HRP/HOUSE RENT PREDICTION/House_Rent_Dataset.csv'
+df = pd.read_csv(DATASET_PATH, engine='python', on_bad_lines='skip')
+df.columns = df.columns.str.strip()
+required_columns = ['Size', 'BHK', 'Bathroom', 'City', 'Furnishing Status', 'Tenant Preferred', 'Area Type', 'Rent']
+for col in required_columns:
+    if col not in df.columns:
+        df[col] = None
+numeric_features = ['Size', 'BHK', 'Bathroom']
+categorical_features = ['City', 'Furnishing Status', 'Tenant Preferred', 'Area Type']
+df = df.dropna(subset=numeric_features + categorical_features)
+X = df[numeric_features + categorical_features]
+y = df['Rent']
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import mean_squared_error, r2_score
 from xgboost import XGBRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+numeric_transformer = Pipeline(steps=[('scaler', StandardScaler())])
+categorical_transformer = Pipeline(steps=[('onehot', OneHotEncoder(handle_unknown='ignore'))])
+preprocessor = ColumnTransformer(transformers=[('num', numeric_transformer, numeric_features),('cat', categorical_transformer, categorical_features)])
+xgb_pipeline = Pipeline(steps=[('preprocessor', preprocessor),('regressor', XGBRegressor(n_estimators=100, learning_rate=0.1, random_state=42))])
+rf_pipeline = Pipeline(steps=[('preprocessor', preprocessor),('regressor', RandomForestRegressor(n_estimators=100, random_state=42))])
+lr_pipeline = Pipeline(steps=[('preprocessor', preprocessor),('regressor', LinearRegression())])
+xgb_pipeline.fit(X_train, y_train)
+rf_pipeline.fit(X_train, y_train)
+lr_pipeline.fit(X_train, y_train)
+models = {'XGBoost': xgb_pipeline,'Random Forest': rf_pipeline,'Linear Regression': lr_pipeline}
+best_model = None
+best_score = float('-inf')
+for name, model_ in models.items():
+    y_pred = model_.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    print(f'{name} - MSE: {mse:.2f}, R2: {r2:.2f}')
+    if r2 > best_score:
+        best_score = r2
+        best_model = model_
+model = best_model
 
-# Fix the dataset path to use the correct location
-DATASET_PATH = os.path.join(os.path.dirname(__file__), 'House_Rent_Dataset.csv')
-
-try:
-    # Load the dataset
-    df = pd.read_csv(DATASET_PATH, engine='python', on_bad_lines='skip')
-    
-    # Select features for the model
-    numeric_features = ['Size', 'BHK', 'Bathroom']
-    categorical_features = ['City', 'Furnishing Status', 'Tenant Preferred', 'Area Type']
-    
-    # Handle missing values
-    df = df.dropna(subset=numeric_features + categorical_features)
-    
-    # Prepare features and target
-    X = df[numeric_features + categorical_features]
-    y = df['Rent']
-    
-    # Split the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    # Create preprocessing for numeric and categorical features
-    numeric_transformer = Pipeline(steps=[
-        ('scaler', StandardScaler())
-    ])
-    
-    categorical_transformer = Pipeline(steps=[
-        ('onehot', OneHotEncoder(handle_unknown='ignore'))
-    ])
-    
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ('num', numeric_transformer, numeric_features),
-            ('cat', categorical_transformer, categorical_features)
-        ])
-    
-    # Create model pipelines
-    xgb_pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('regressor', XGBRegressor(n_estimators=100, learning_rate=0.1, random_state=42))
-    ])
-    
-    rf_pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('regressor', RandomForestRegressor(n_estimators=100, random_state=42))
-    ])
-    
-    lr_pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('regressor', LinearRegression())
-    ])
-    
-    # Train the models
-    xgb_pipeline.fit(X_train, y_train)
-    rf_pipeline.fit(X_train, y_train)
-    lr_pipeline.fit(X_train, y_train)
-    
-    # Evaluate models
-    models = {
-        'XGBoost': xgb_pipeline,
-        'Random Forest': rf_pipeline,
-        'Linear Regression': lr_pipeline
-    }
-    
-    best_model = None
-    best_score = float('-inf')
-    
-    for name, model in models.items():
-        y_pred = model.predict(X_test)
-        mse = mean_squared_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-        print(f'{name} - MSE: {mse:.2f}, R2: {r2:.2f}')
-        
-        if r2 > best_score:
-            best_score = r2
-            best_model = model
-    
-    # Use the best model for predictions
-    model = best_model
-    print(f'Using best model with R2 score: {best_score:.2f}')
-    
-    # Save feature names for prediction
-    model_features = numeric_features + categorical_features
-    
-except Exception as e:
-    print(f"Error loading dataset or training model: {e}")
-    # Fallback to simple model if there's an error
-    model = LinearRegression()
-    df = pd.DataFrame({'Size': [1000, 1500], 'BHK': [2, 3], 'Bathroom': [2, 3], 'Rent': [15000, 25000]})
-    model.fit(df[['Size', 'BHK', 'Bathroom']], df['Rent'])
-    model_features = ['Size', 'BHK', 'Bathroom']
+# Save feature names for prediction
+model_features = numeric_features + categorical_features
 
 @app.route('/predict_rent', methods=['GET', 'POST'])
 @login_required
 def predict_rent():
     predicted_rent = None
     matching_properties = []
-    prediction_accuracy = None
     model_name = None
-    error_message = None
-    
-    # Get cities, furnishing status, tenant preferences, and area types for the form
-    try:
-        cities = sorted(list(set(df['City'].dropna().unique())))
-        furnishing_statuses = sorted(list(set(df['Furnishing Status'].dropna().unique())))
-        tenant_preferences = sorted(list(set(df['Tenant Preferred'].dropna().unique())))
-        area_types = sorted(list(set(df['Area Type'].dropna().unique())))
-    except Exception as e:
-        app.logger.error(f"Error loading form data: {str(e)}")
-        flash('An error occurred while loading the form. Please try again later.', 'danger')
-        cities = []
-        furnishing_statuses = []
-        tenant_preferences = []
-        area_types = []
-    
-    # Create form with dynamic choices
+    prediction_accuracy = None
+
+    # Get dropdown options from dataset
+    cities = sorted(list(set(df['City'].dropna().unique())))
+    furnishing_statuses = sorted(list(set(df['Furnishing Status'].dropna().unique())))
+    tenant_preferences = sorted(list(set(df['Tenant Preferred'].dropna().unique())))
+    area_types = sorted(list(set(df['Area Type'].dropna().unique())))
+
     form = PredictRentForm()
     form.city.choices = [('Any', 'Any')] + [(city, city) for city in cities]
     form.furnishing_status.choices = [('Any', 'Any')] + [(status, status) for status in furnishing_statuses]
     form.tenant_preferred.choices = [('Any', 'Any')] + [(pref, pref) for pref in tenant_preferences]
     form.area_type.choices = [('Any', 'Any')] + [(type_, type_) for type_ in area_types]
-    
+
     if form.validate_on_submit():
         try:
-            # Get input features from form with validation
-            try:
-                size = float(form.size.data)
-                if size <= 0 or size > 10000:  # Reasonable size limits
-                    flash('Size must be between 0 and 10,000 square feet', 'danger')
-                    return render_template('predict_rent.html', form=form)
-                
-                bedroom = int(form.bedroom.data)
-                if bedroom < 0 or bedroom > 20:  # Reasonable bedroom limits
-                    flash('Number of bedrooms must be between 0 and 20', 'danger')
-                    return render_template('predict_rent.html', form=form)
-                
-                bathroom = int(form.bathroom.data)
-                if bathroom < 0 or bathroom > 20:  # Reasonable bathroom limits
-                    flash('Number of bathrooms must be between 0 and 20', 'danger')
-                    return render_template('predict_rent.html', form=form)
-            except (ValueError, TypeError):
-                flash('Please enter valid numeric values for size, bedrooms, and bathrooms', 'danger')
-                return render_template('predict_rent.html', form=form)
-            
-            # Get additional features from form with validation
+            size = float(form.size.data)
+            bedroom = int(form.bedroom.data)
+            bathroom = int(form.bathroom.data)
             city = form.city.data
             furnishing_status = form.furnishing_status.data
             tenant_preferred = form.tenant_preferred.data
             area_type = form.area_type.data
-            
-            # Validate dropdown selections
-            if city != 'Any' and city not in [choice[0] for choice in form.city.choices]:
-                flash('Invalid city selection', 'danger')
-                return render_template('predict_rent.html', form=form)
-                
-            if furnishing_status != 'Any' and furnishing_status not in [choice[0] for choice in form.furnishing_status.choices]:
-                flash('Invalid furnishing status selection', 'danger')
-                return render_template('predict_rent.html', form=form)
-                
-            if tenant_preferred != 'Any' and tenant_preferred not in [choice[0] for choice in form.tenant_preferred.choices]:
-                flash('Invalid tenant preference selection', 'danger')
-                return render_template('predict_rent.html', form=form)
-                
-            if area_type != 'Any' and area_type not in [choice[0] for choice in form.area_type.choices]:
-                flash('Invalid area type selection', 'danger')
-                return render_template('predict_rent.html', form=form)
-            
-            # Prepare input features based on available model features
-            if 'City' in model_features and 'Furnishing Status' in model_features and 'Tenant Preferred' in model_features and 'Area Type' in model_features:
-                # Full featured model
-                input_data = pd.DataFrame({
-                    'Size': [size],
-                    'BHK': [bedroom],
-                    'Bathroom': [bathroom],
-                    'City': [city],
-                    'Furnishing Status': [furnishing_status],
-                    'Tenant Preferred': [tenant_preferred],
-                    'Area Type': [area_type]
-                })
-            else:
-                # Fallback to basic model
-                input_data = pd.DataFrame({
-                    'Size': [size],
-                    'BHK': [bedroom],
-                    'Bathroom': [bathroom]
-                })
-            
-            # Make prediction with error handling
-            try:
-                predicted_rent = model.predict(input_data)[0]
-                # Validate prediction result
-                if not isinstance(predicted_rent, (int, float)) or predicted_rent < 0:
-                    raise ValueError("Invalid prediction result")
-            except Exception as e:
-                app.logger.error(f"Prediction error: {str(e)}")
-                flash('An error occurred during prediction. Please try again with different values.', 'danger')
-                return render_template('predict_rent.html', form=form, predicted_rent=None)
-            
-            # Get model type for display
-            if hasattr(model, 'named_steps'):
-                regressor = model.named_steps['regressor']
-                if isinstance(regressor, XGBRegressor):
-                    model_name = 'XGBoost'
-                    prediction_accuracy = 'High'
-                elif isinstance(regressor, RandomForestRegressor):
-                    model_name = 'Random Forest'
-                    prediction_accuracy = 'Medium-High'
-                else:
-                    model_name = 'Linear Regression'
-                    prediction_accuracy = 'Medium'
-            else:
-                model_name = 'Linear Regression'
-                prediction_accuracy = 'Basic'
-            
-            # Find properties in the predicted price range (+/- 10%)
-            try:
-                min_price = predicted_rent * 0.9
-                max_price = predicted_rent * 1.1
-                
-                # Validate price range
-                if min_price < 0 or max_price < 0 or min_price > max_price:
-                    raise ValueError("Invalid price range calculated")
-                
-                # Build query with additional filters if provided - using parameterized queries
-                query = Property.query.filter(
-                    Property.price >= min_price,
-                    Property.price <= max_price,
-                    Property.available == True
-                )
-                
-                # Add additional filters if values were provided - using parameterized queries
-                if bedroom > 0:
-                    query = query.filter(Property.bedrooms == bedroom)
-                if bathroom > 0:
-                    query = query.filter(Property.bathrooms == bathroom)
-                if city and city != 'Any' and hasattr(Property, 'city'):
-                    query = query.filter(Property.city == city)
-                if furnishing_status and furnishing_status != 'Any' and hasattr(Property, 'furnishing_status'):
-                    query = query.filter(Property.furnishing_status == furnishing_status)
-                
-                # Limit results for performance
-                matching_properties = query.limit(50).all()
-            except Exception as e:
-                app.logger.error(f"Property search error: {str(e)}")
-                flash('An error occurred while searching for matching properties.', 'warning')
-                matching_properties = []
-            
+
+            input_data = pd.DataFrame({
+                'Size': [size],
+                'BHK': [bedroom],
+                'Bathroom': [bathroom],
+                'City': [city],
+                'Furnishing Status': [furnishing_status],
+                'Tenant Preferred': [tenant_preferred],
+                'Area Type': [area_type]
+            })
+
+            predicted_rent = model.predict(input_data)[0]
+
+            min_price = predicted_rent * 0.9
+            max_price = predicted_rent * 1.1
+            query = Property.query.filter(
+                Property.price >= min_price,
+                Property.price <= max_price
+            )
+            if city != 'Any':
+                query = query.filter(Property.city == city)
+            if furnishing_status != 'Any':
+                query = query.filter(Property.furnishing_status == furnishing_status)
+            if tenant_preferred != 'Any':
+                query = query.filter(Property.tenant_preferred == tenant_preferred)
+            if area_type != 'Any':
+                query = query.filter(Property.area_type == area_type)
+            matching_properties = query.all()
         except Exception as e:
-            flash(f'Error making prediction: {str(e)}', 'danger')
-            print(f'Prediction error: {str(e)}')
-    
-    return render_template('predict_rent.html', 
-                           predicted_rent=predicted_rent, 
-                           properties=matching_properties,
-                           cities=cities,
-                           furnishing_statuses=furnishing_statuses,
-                           tenant_preferences=tenant_preferences,
-                           area_types=area_types,
-                           model_name=model_name,
-                           prediction_accuracy=prediction_accuracy)
+            flash(f'Prediction error: {str(e)}', 'danger')
+            predicted_rent = None
+            matching_properties = []
+    return render_template(
+        'predict_rent.html',
+        form=form,
+        predicted_rent=predicted_rent,
+        properties=matching_properties,
+        cities=cities,
+        furnishing_statuses=furnishing_statuses,
+        tenant_preferences=tenant_preferences,
+        area_types=area_types
+    )
 
 @app.route('/property/<int:property_id>')
 def property_detail(property_id):

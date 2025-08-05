@@ -18,63 +18,21 @@
 
 {% block content %}
 <div class="container">
-    <div class="text-center mb-5">
-        <h2>How It Works</h2>
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card border-0 bg-transparent">
-                    <div class="card-body">
-                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
-                        <h4>1. Find a Property</h4>
-                        <p>Browse through our extensive collection of rental properties.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 bg-transparent">
-                    <div class="card-body">
-                        <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
-                        <h4>2. Book a Visit</h4>
-                        <p>Schedule a visit to the properties you're interested in.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 bg-transparent">
-                    <div class="card-body">
-                        <i class="fas fa-key fa-3x text-primary mb-3"></i>
-                        <h4>3. Move In</h4>
-                        <p>Complete the paperwork and move into your new home!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="tabs">
+        <div class="tab-option active">Featured</div>
+        <div class="tab-option">Latest</div>
+        <div class="tab-option">Popular</div>
     </div>
-
-    <h2 class="text-center mb-4">Featured Properties</h2>
+    <!-- Your property cards or other content go here -->
     <div class="row">
-        {% for property in featured_properties %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="https://images.unsplash.com/photo-{{ property.image_id }}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                     class="card-img-top" alt="{{ property.title }}">
+        {% for prop in featured_properties %}
+        <div class="col-md-4">
+            <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">{{ property.title }}</h5>
-                    <p class="text-muted">{{ property.city }}</p>
-                    <div class="property-features">
-                        <span><i class="fas fa-bed feature-icon"></i> {{ property.bedrooms }} beds</span>
-                        <span><i class="fas fa-bath feature-icon"></i> {{ property.bathrooms }} baths</span>
-                        <span><i class="fas fa-dollar-sign feature-icon"></i> {{ property.price }}/mo</span>
-                    </div>
-                    <p class="card-text">{{ property.description[:100] }}...</p>
-                </div>
-                <div class="card-footer bg-transparent">
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('customer_property_detail', property_id=property.id) }}" 
-                           class="btn btn-primary btn-sm">View Details</a>
-                    {% else %}
-                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to View</a>
-                    {% endif %}
+                    <h5><i class="fas fa-home text-primary"></i> {{ prop.title }}</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ prop.city }}</p>
+                    <p><i class="fas fa-rupee-sign"></i> ₹{{ prop.price }}</p>
+                    <a href="#" class="btn btn-vibrant">View Details</a>
                 </div>
             </div>
         </div>
