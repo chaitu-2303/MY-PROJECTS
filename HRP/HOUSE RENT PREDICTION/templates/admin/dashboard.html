@@ -1,56 +1,133 @@
 {% extends "base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-<h1>Admin Dashboard</h1>
+<div class="d-flex" style="min-height: 80vh;">
+    <!-- Sidebar -->
+    <nav class="sidebar p-4" style="width: 250px; background: rgba(255,255,255,0.18); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(58,59,69,0.12); backdrop-filter: blur(12px);">
+        <div class="mb-4 text-center">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 60px; border-radius: 50%; box-shadow: 0 2px 8px rgba(58,59,69,0.10);">
+            <h4 class="mt-2 fw-bold" style="color: var(--primary-color);">Admin Panel</h4>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-users me-2"></i>Users</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-building me-2"></i>Properties</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-book me-2"></i>Bookings</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Analytics</a></li>
+        </ul>
+    </nav>
 
-<div class="row mt-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Users</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ users|length }} Users</h5>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" style="color: var(--primary-color);">Dashboard Overview</h2>
+            <!-- Profile Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle me-2"></i> Admin
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                </ul>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-header">Properties</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ properties|length }} Properties</h5>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-users fa-2x me-3" style="color: var(--primary-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Users</h5>
+                                <span class="fs-4 fw-bold">{{ users|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-building fa-2x me-3" style="color: var(--secondary-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Properties</h5>
+                                <span class="fs-4 fw-bold">{{ properties|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-book fa-2x me-3" style="color: var(--accent-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Bookings</h5>
+                                <span class="fs-4 fw-bold">{{ bookings|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-header">Bookings</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ bookings|length }} Bookings</h5>
+
+        <!-- Chart Placeholder -->
+        <div class="card glass-card mb-4 p-4" style="min-height: 280px;">
+            <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i> Analytics Overview</h5>
+            <div id="dashboardChart" style="height: 200px; background: rgba(255,255,255,0.25); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #888;">
+                <span>Chart will appear here</span>
+            </div>
+        </div>
+
+        <!-- Recent Bookings Table -->
+        <div class="card glass-card p-4">
+            <h5 class="mb-3"><i class="fas fa-history me-2"></i> Recent Bookings</h5>
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Property</th>
+                            <th>Customer</th>
+                            <th>Dates</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.property.title }}</td>
+                            <td>{{ booking.customer.name }}</td>
+                            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
+                            <td>{{ booking.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<h2 class="mt-4">Recent Bookings</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Property</th>
-            <th>Customer</th>
-            <th>Dates</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for booking in bookings %}
-        <tr>
-            <td>{{ booking.id }}</td>
-            <td>{{ booking.property.title }}</td>
-            <td>{{ booking.customer.name }}</td>
-            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
-            <td>{{ booking.status }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<style>
+    .sidebar {
+        min-height: 100%;
+    }
+    .glass-card {
+        background: rgba(255,255,255,0.18);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(58,59,69,0.12);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.22);
+    }
+</style>
 {% endblock %}

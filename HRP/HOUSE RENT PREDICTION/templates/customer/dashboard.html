@@ -2,42 +2,145 @@
 {% block title %}Find Properties{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Available Properties</h1>
-<form method="GET" class="row g-2 align-items-end bg-light p-3 rounded mb-4">
-    <div class="col-md-3">{{ form.location.label(class="form-label") }}{{ form.location(class="form-control", placeholder="City or Address") }}</div>
-    <div class="col-md-2">{{ form.min_price.label(class="form-label") }}{{ form.min_price(class="form-control", placeholder="Min") }}</div>
-    <div class="col-md-2">{{ form.max_price.label(class="form-label") }}{{ form.max_price(class="form-control", placeholder="Max") }}</div>
-    <div class="col-md-2">{{ form.bedrooms.label(class="form-label") }}{{ form.bedrooms(class="form-select") }}</div>
-    <div class="col-md-2">{{ form.bathrooms.label(class="form-label") }}{{ form.bathrooms(class="form-select") }}</div>
-    <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Search</button></div>
-</form>
+<div class="d-flex" style="min-height: 80vh;">
+    <!-- Sidebar -->
+    <nav class="sidebar p-4" style="width: 250px; background: rgba(255,255,255,0.18); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(58,59,69,0.12); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);">
+        <div class="mb-4 text-center">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 60px; border-radius: 50%; box-shadow: 0 2px 8px rgba(58,59,69,0.10);">
+            <h4 class="mt-2 fw-bold" style="color: var(--primary-color);">Customer Panel</h4>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-heart me-2"></i>Favorites</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-book me-2"></i>Bookings</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+        </ul>
+    </nav>
 
-{% if properties %}
-<div class="row">
-    {% for property in properties %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100">
-            {% if property.image_file %}
-            <img src="{{ url_for('static', filename='property_pics/' ~ property.image_file) }}" class="card-img-top" alt="Property Image">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ property.title }}</h5>
-                <p class="text-muted">{{ property.address }}, {{ property.city }}</p>
-                <div class="property-features">
-                    <span><i class="fas fa-bed feature-icon"></i> {{ property.bedrooms }} beds</span>
-                    <span><i class="fas fa-bath feature-icon"></i> {{ property.bathrooms }} baths</span>
-                    <span><i class="fas fa-rupee-sign feature-icon"></i> ₹{{ property.price }}/mo</span>
-                </div>
-                <p class="card-text mt-3">{{ property.description[:150] }}...</p>
-            </div>
-            <div class="card-footer bg-transparent">
-                <a href="{{ url_for('customer_property_detail', property_id=property.id) }}" class="btn btn-primary w-100">View Details</a>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" style="color: var(--primary-color);">Find Properties</h2>
+            <!-- Profile Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle me-2"></i> Customer
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                </ul>
             </div>
         </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-building fa-2x me-3" style="color: var(--primary-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Available Properties</h5>
+                                <span class="fs-4 fw-bold">{{ properties|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-heart fa-2x me-3" style="color: var(--secondary-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Favorites</h5>
+                                <span class="fs-4 fw-bold">{{ favorites|length if favorites else 0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card text-dark mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-book fa-2x me-3" style="color: var(--accent-color);"></i>
+                            <div>
+                                <h5 class="card-title mb-0">Bookings</h5>
+                                <span class="fs-4 fw-bold">{{ bookings|length if bookings else 0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Placeholder -->
+        <div class="card glass-card mb-4 p-4" style="min-height: 280px;">
+            <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i> Analytics Overview</h5>
+            <div id="customerDashboardChart" style="height: 200px; background: rgba(255,255,255,0.25); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #888;">
+                <span>Chart will appear here</span>
+            </div>
+        </div>
+
+        <!-- Property Search Form -->
+        <h5 class="fw-bold mb-3">Search Properties</h5>
+        <form method="GET" class="row g-2 align-items-end glass-card p-3 rounded mb-4">
+            <div class="col-md-3">{{ form.location.label(class="form-label") }}{{ form.location(class="form-control", placeholder="City or Address") }}</div>
+            <div class="col-md-2">{{ form.min_price.label(class="form-label") }}{{ form.min_price(class="form-control", placeholder="Min") }}</div>
+            <div class="col-md-2">{{ form.max_price.label(class="form-label") }}{{ form.max_price(class="form-control", placeholder="Max") }}</div>
+            <div class="col-md-2">{{ form.bedrooms.label(class="form-label") }}{{ form.bedrooms(class="form-select") }}</div>
+            <div class="col-md-2">{{ form.bathrooms.label(class="form-label") }}{{ form.bathrooms(class="form-select") }}</div>
+            <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Search</button></div>
+        </form>
+
+        <!-- Property Cards -->
+        <h5 class="fw-bold mb-3">Available Properties</h5>
+        {% if properties %}
+        <div class="row">
+            {% for property in properties %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card glass-card h-100">
+                    {% if property.image_file %}
+                    <img src="{{ url_for('static', filename='property_pics/' ~ property.image_file) }}" class="card-img-top" alt="Property Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ property.title }}</h5>
+                        <p class="text-muted">{{ property.address }}, {{ property.city }}</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed feature-icon"></i> {{ property.bedrooms }} beds</span>
+                            <span><i class="fas fa-bath feature-icon"></i> {{ property.bathrooms }} baths</span>
+                            <span><i class="fas fa-rupee-sign feature-icon"></i> ₹{{ property.price }}/mo</span>
+                        </div>
+                        <p class="card-text mt-3">{{ property.description[:150] }}...</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ url_for('customer_property_detail', property_id=property.id) }}" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">No properties found matching your criteria.</div>
+        {% endif %}
     </div>
-    {% endfor %}
 </div>
-{% else %}
-<div class="alert alert-info">No properties found matching your criteria.</div>
-{% endif %}
+
+<style>
+    .sidebar {
+        min-height: 100%;
+    }
+    .glass-card {
+        background: rgba(255,255,255,0.18);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(58,59,69,0.12);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.22);
+    }
+</style>
 {% endblock %}

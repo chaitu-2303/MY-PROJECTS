@@ -11,35 +11,35 @@
     
     <style>
         :root {
-            --primary-color: #4e73df;
-            --secondary-color: #f8f9fc;
-            --accent-color: #2e59d9;
+            --primary-color: #a78bfa;
+            --secondary-color: #f472b6;
+            --accent-color: #fb923c;
             --dark-color: #5a5c69;
         }
-        
+
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
-        
+
         .navbar {
-            background-color: var(--primary-color) !important;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            background: rgba(255,255,255,0.10) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.10);
         }
-        
+
         .navbar-brand {
             font-weight: 800;
             font-size: 1.5rem;
+            color: #fff !important;
         }
-        
+
         .hero-section {
-            background: linear-gradient(rgba(78, 115, 223, 0.8), rgba(78, 115, 223, 0.8)), 
-                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80');
-            background-size: cover;
-            background-position: center;
+            background: none;
             color: white;
             padding: 6rem 0;
             margin-bottom: 3rem;

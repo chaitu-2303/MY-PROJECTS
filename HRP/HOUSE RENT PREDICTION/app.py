@@ -626,12 +626,12 @@ def profile():
         'bio': current_user.bio,
         'email': current_user.email,
         'phone': current_user.phone,
-        'dob': current_user.dob,
+        'dob': str(current_user.dob) if current_user.dob else '',
         'location': current_user.location,
         'timezone': current_user.timezone,
         'verified': current_user.verified,
         'role': current_user.role,
-        'member_since': current_user.member_since,
+        'member_since': str(current_user.member_since) if current_user.member_since else '',
         'two_factor_enabled': getattr(current_user, 'two_factor_enabled', False)
     }
 
@@ -642,7 +642,7 @@ def profile():
     else:
         template = 'customer/profile.html'
 
-    return render_template(template, form=form, **profile_data)
+    return render_template(template, form=form, profile_data=profile_data)
 
     # Choose template based on user role
     if current_user.role == 'admin':

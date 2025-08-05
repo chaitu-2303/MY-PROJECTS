@@ -26,40 +26,40 @@
                             <div class="col-md-8">
                                 <div class="mb-3">
                                     <label for="name" class="form-label" aria-label="Full Name">{{ form.name.label }}</label>
-                                    {{ form.name(class="form-control", id="name", aria_required="true", aria-describedby="nameHelp") }}
+                                    {{ form.name(class="form-control", id="name") }}
                                     <small id="nameHelp" class="form-text text-muted">Your full name as it will appear to others.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="username" class="form-label" aria-label="Username">Username</label>
-                                    {{ form.username(class="form-control", id="username", aria_required="false", aria-describedby="usernameHelp") }}
+                                    {{ form.username(class="form-control", id="username") }}
                                     <small id="usernameHelp" class="form-text text-muted">Unique handle for your account.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="bio" class="form-label" aria-label="Bio">Bio</label>
-                                    {{ form.bio(class="form-control", id="bio", aria_required="false", aria-describedby="bioHelp") }}
+                                    {{ form.bio(class="form-control", id="bio") }}
                                     <small id="bioHelp" class="form-text text-muted">A short description about yourself.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label" aria-label="Email Address">{{ form.email.label }}</label>
-                                    {{ form.email(class="form-control", id="email", aria_required="true", aria-describedby="emailHelp") }}
+                                    {{ form.email(class="form-control", id="email") }}
                                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="phone" class="form-label" aria-label="Phone Number">{{ form.phone.label }}</label>
-                                    {{ form.phone(class="form-control", id="phone", aria_required="true", aria-describedby="phoneHelp") }}
+                                    {{ form.phone(class="form-control", id="phone") }}
                                     <small id="phoneHelp" class="form-text text-muted">Enter a valid phone number.</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="dob" class="form-label" aria-label="Date of Birth">{{ form.dob.label }}</label>
-                                    {{ form.dob(class="form-control", id="dob", aria_required="false") }}
+                                    {{ form.dob(class="form-control", id="dob") }}
                                 </div>
                                 <div class="mb-3">
                                     <label for="location" class="form-label" aria-label="Location">Location</label>
-                                    {{ form.location(class="form-control", id="location", aria_required="false") }}
+                                    {{ form.location(class="form-control", id="location") }}
                                 </div>
                                 <div class="mb-3">
                                     <label for="timezone" class="form-label" aria-label="Time Zone">Time Zone</label>
-                                    {{ form.timezone(class="form-control", id="timezone", aria_required="false") }}
+                                    {{ form.timezone(class="form-control", id="timezone") }}
                                 </div>
                                 <div class="mb-3 form-check">
                                     {{ form.verified(class="form-check-input", id="verified") }}
