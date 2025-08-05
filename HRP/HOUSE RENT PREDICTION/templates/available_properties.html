@@ -1,211 +1,27 @@
 {% extends "base.html" %}
-{% block title %}{{ property.title }}{% endblock %}
+{% block title %}Available Properties{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
+    <h2 class="mb-4">Available Properties</h2>
     <div class="row">
-        <div class="col-md-8">
-            <div class="card shadow-sm mb-4">
-                {% if property.image_file %}
-                    <img src="{{ url_for('static', filename='property_pics/' + property.image_file) }}" class="card-img-top" alt="{{ property.title }}" style="max-height: 400px; object-fit: cover;">
-                {% else %}
-                    <img src="{{ url_for('static', filename='property_pics/default_property.jpg') }}" class="card-img-top" alt="{{ property.title }}" style="max-height: 400px; object-fit: cover;">
-                {% endif %}
+        {% for property in properties %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ url_for('static', filename='property_pics/' ~ (property.image_file or 'default_property.jpg')) }}" class="card-img-top" alt="{{ property.title }}">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="card-title">{{ property.title }}</h2>
-                        <h3 class="text-primary">₹{{ property.price }}</h3>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <span class="badge bg-secondary me-1">{{ property.bedrooms }} BHK</span>
-                        <span class="badge bg-info me-1">{{ property.bathrooms }} Bath</span>
-                        {% if property.size %}
-                            <span class="badge bg-success me-1">{{ property.size }} sqft</span>
-                        {% endif %}
-                        {% if property.furnishing_status %}
-                            <span class="badge bg-warning me-1">{{ property.furnishing_status }}</span>
-                        {% endif %}
-                        {% if property.tenant_preferred %}
-                            <span class="badge bg-dark me-1">{{ property.tenant_preferred }}</span>
-                        {% endif %}
-                        {% if property.area_type %}
-                            <span class="badge bg-secondary me-1">{{ property.area_type }}</span>
-                        {% endif %}
-                    </div>
-                    
-                    <p class="card-text"><i class="fas fa-map-marker-alt"></i> {{ property.address }}, {{ property.city }}</p>
-                    
-                    <hr>
-                    <h5>Description</h5>
-                    <p class="card-text">{{ property.description }}</p>
-                    
-                    {% if current_user.is_authenticated and current_user.role == 'customer' %}
-                        <div class="d-flex mt-4">
-                            <a href="{{ url_for('book_property', property_id=property.id) }}" class="btn btn-primary me-2">Book Now</a>
-                            <form action="{{ url_for('toggle_favorite', property_id=property.id) }}" method="POST">
-                                {% if is_favorited %}
-                                    <button type="submit" class="btn btn-outline-danger"><i class="fas fa-heart"></i> Remove from Favorites</button>
-                                {% else %}
-                                    <button type="submit" class="btn btn-outline-primary"><i class="far fa-heart"></i> Add to Favorites</button>
-                                {% endif %}
-                            </form>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="card shadow-sm mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Reviews</h4>
-                    <div>
-                        <span class="badge bg-primary rounded-pill">{{ property.average_rating | round(1) }} <i class="fas fa-star"></i></span>
-                        <span class="text-muted">({{ reviews|length }} reviews)</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {% if current_user.is_authenticated and current_user.role == 'customer' %}
-                        <form method="POST" action="{{ url_for('add_review', property_id=property.id) }}" class="mb-4">
-                            {{ review_form.hidden_tag() }}
-                            <div class="mb-3">
-                                <label class="form-label">Your Rating</label>
-                                <div class="btn-group" role="group">
-                                    {% for subfield in review_form.rating %}
-                                        <div class="form-check form-check-inline">
-                                            {{ subfield(class="btn-check") }}
-                                            <label class="btn btn-outline-warning" for="{{ subfield.id }}">
-                                                {% for i in range(subfield.label.text[0]|int) %}
-                                                    <i class="fas fa-star"></i>
-                                                {% endfor %}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Your Review</label>
-                                {{ review_form.content(class="form-control", rows=3, placeholder="Write your review here...") }}
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                        </form>
-                    {% endif %}
-                    
-                    {% if reviews %}
-                        <div class="list-group">
-                            {% for review in reviews %}
-                                <div class="list-group-item list-group-item-action">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">{{ review.user.name }}</h5>
-                                        <small class="text-muted">{{ review.created_at.strftime('%Y-%m-%d') }}</small>
-                                    </div>
-                                    <div class="mb-1">
-                                        {% for i in range(review.rating) %}
-                                            <i class="fas fa-star text-warning"></i>
-                                        {% endfor %}
-                                        {% for i in range(5 - review.rating) %}
-                                            <i class="far fa-star text-warning"></i>
-                                        {% endfor %}
-                                    </div>
-                                    <p class="mb-1">{{ review.content }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No reviews yet. Be the first to review this property!</p>
-                    {% endif %}
+                    <h5 class="card-title">{{ property.title }}</h5>
+                    <p class="card-text">{{ property.city }} | ₹{{ property.price }}</p>
+                    <p class="card-text">{{ property.bedrooms }} BHK, {{ property.bathrooms }} Bath</p>
+                    <a href="{{ url_for('property_detail', property_id=property.id) }}" class="btn btn-outline-primary">View Details</a>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Property Owner</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="{{ url_for('static', filename='profile_pics/' + property.owner.profile_pic) }}" alt="{{ property.owner.name }}" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                        <div>
-                            <h5 class="mb-0">{{ property.owner.name }}</h5>
-                            {% if property.owner.verified %}
-                                <span class="badge bg-success"><i class="fas fa-check-circle"></i> Verified</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <p><i class="fas fa-envelope"></i> {{ property.owner.email }}</p>
-                    {% if property.owner.phone %}
-                        <p><i class="fas fa-phone"></i> {{ property.owner.phone }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Location</h5>
-                </div>
-                <div class="card-body p-0">
-                    {% if property.latitude and property.longitude %}
-                        <div id="map" style="height: 300px;"></div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                // Correctly assign Jinja2 values to JavaScript variables
-                                const lat = {{ property.latitude|tojson }};
-                                const lng = {{ property.longitude|tojson }};
-                                const title = "{{ property.title|e('js') }}";
-                                
-                                let map = L.map('map').setView([lat, lng], 15);
-                                
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo(map);
-                                
-                                let marker = L.marker([lat, lng]).addTo(map)
-                                    .bindPopup(title)
-                                    .openPopup();
-                            });
-                        </script>
-                    {% else %}
-                        <p class="p-3">Location information not available</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Similar Properties</h5>
-                </div>
-                <div class="card-body">
-                    {% set similar_properties = Property.query.filter_by(city=property.city).filter(Property.id != property.id).limit(3).all() %}
-                    {% if similar_properties %}
-                        <div class="list-group">
-                            {% for similar in similar_properties %}
-                                <a href="{{ url_for('property_detail', property_id=similar.id) }}" class="list-group-item list-group-item-action">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0">
-                                            {% if similar.image_file %}
-                                                <img src="{{ url_for('static', filename='property_pics/' + similar.image_file) }}" alt="{{ similar.title }}" style="width: 70px; height: 70px; object-fit: cover;">
-                                            {% else %}
-                                                <img src="{{ url_for('static', filename='property_pics/default_property.jpg') }}" alt="{{ similar.title }}" style="width: 70px; height: 70px; object-fit: cover;">
-                                            {% endif %}
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-0">{{ similar.title }}</h6>
-                                            <p class="mb-0 text-primary">₹{{ similar.price }}</p>
-                                            <small>{{ similar.bedrooms }} BHK, {{ similar.bathrooms }} Bath</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No similar properties found.</p>
-                    {% endif %}
-                </div>
-            </div>
+        {% else %}
+        <div class="col-12">
+            <p class="text-muted">No properties found.</p>
         </div>
+        {% endfor %}
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
 {% endblock %}

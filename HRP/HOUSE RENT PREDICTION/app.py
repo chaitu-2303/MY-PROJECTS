@@ -932,23 +932,14 @@ def customer_favorites():
 @app.route('/available_properties')
 @login_required
 def available_properties():
-    # Load House_Rent_Dataset.csv and pass filtered data to template
-    import pandas as pd
-    df = pd.read_csv('HRP/HOUSE RENT PREDICTION/House_Rent_Dataset.csv')
-    # TODO: Add search/filter logic here
-    return render_template('available_properties.html', properties=df.to_dict(orient='records'))
+    properties = Property.query.all()
+    return render_template('available_properties.html', properties=properties)
 
 @app.route('/rent_prediction', methods=['GET', 'POST'])
 @login_required
 def rent_prediction():
     # TODO: Implement prediction logic and form
     return render_template('rent_prediction.html')
-
-@app.route('/profile')
-@login_required
-def profile():
-    # TODO: Pass user profile data to template
-    return render_template('profile.html')
 
 @app.route('/bookings')
 @login_required

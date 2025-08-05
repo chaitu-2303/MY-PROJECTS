@@ -178,47 +178,54 @@
       <a href="#" class="text-white fw-bold" style="text-decoration:none;"><i class="fas fa-envelope-open-text me-2"></i>Contact Us</a>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}">House Rental</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Available Properties</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('predict_rent') }}">Rent Prediction</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customer_bookings') }}">Bookings</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customer_favorites') }}">Favorites</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a></li><li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>{% if current_user.is_authenticated %}<li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                {% if current_user.profile_pic %}
-                                    <img src="{{ url_for('static', filename='profile_pics/' ~ current_user.profile_pic) }}" class="rounded-circle me-2" width="32" height="32" alt="Profile">
-                                {% else %}
-                                    <i class="fas fa-user-circle me-2" style="font-size: 1.5rem;"></i>
-                                {% endif %}
-                                <span>{{ current_user.name }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+   <ul class="navbar-nav ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Available Properties</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('predict_rent') }}">Rent Prediction</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('customer_bookings') }}">Bookings</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('customer_favorites') }}">Favorites</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+  </li>
+  {% if current_user.is_authenticated %}
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+      {% if current_user.profile_pic %}
+        <img src="{{ url_for('static', filename='profile_pics/' ~ current_user.profile_pic) }}" class="rounded-circle me-2" width="32" height="32" alt="Profile">
+      {% else %}
+        <i class="fas fa-user-circle me-2" style="font-size: 1.5rem;"></i>
+      {% endif %}
+      <span>{{ current_user.name }}</span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+  </li>
+  {% else %}
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+  </li>
+  {% endif %}
+</ul> <!-- ✅ All <li> elements are now inside this <ul> -->
         </div>
     </nav>
 
