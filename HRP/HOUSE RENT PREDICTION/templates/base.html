@@ -3,297 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Rental - {% block title %}{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}House Rental Platform{% endblock %}</title>
     
+    <!-- Modern CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
     <style>
         :root {
-            --primary-color: #a78bfa;
-            --secondary-color: #f472b6;
-            --accent-color: #fb923c;
-            --dark-color: #5a5c69;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar {
-            background: rgba(255,255,255,0.10) !important;
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.10);
-        }
-
-        .navbar-brand {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: #fff !important;
-        }
-
-        .hero-section {
-            background: none;
-            color: white;
-            padding: 6rem 0;
-            margin-bottom: 3rem;
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
         }
         
-        .card {
-            border: none;
-            border-radius: 0.35rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-            transition: transform 0.3s ease;
-            margin-bottom: 1.5rem;
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 0.35rem;
-            border-top-right-radius: 0.35rem;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-        
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 2rem 0;
-            margin-top: auto;
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            margin-right: 1rem;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-        }
-        
-        .social-icons a {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-        }
-        
-        .property-features {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-icon {
-            margin-right: 0.5rem;
-        }
-
-        /* Top navigation bar styles */
-        .top-nav {
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 10;
-            padding: 1rem;
-            display: flex;
-            gap: 2rem;
-        }
-        
-
-        .top-nav a {
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .top-nav a:hover {
-            text-decoration: underline;
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 250px;
-            background-color: rgba(255, 255, 255, 0.9);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            padding: 2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
+        .hover-scale {
+            transition: transform 0.3s ease;
         }
         
-        .sidebar li {
-            margin-bottom: 1.5rem;
+        .hover-scale:hover {
+            transform: scale(1.05);
         }
         
-        .sidebar a {
-            color: var(--dark-color);
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
+        .property-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
         
-        .sidebar a:hover {
-            text-decoration: underline;
-        }
-        
-        .sidebar i {
-            margin-right: 0.5rem;
+        .property-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
         }
     </style>
 </head>
-<body>
-    <!-- Top navigation bar: Only Customer Care, Company Info, Contact Us -->
-    <div class="d-flex justify-content-end align-items-center gap-4 px-4 pt-3 top-nav">
-      <a href="#" class="text-white fw-bold" style="text-decoration:none;"><i class="fas fa-headset me-2"></i>Customer Care</a>
-      <a href="#" class="text-white fw-bold" style="text-decoration:none;"><i class="fas fa-info-circle me-2"></i>Company Info</a>
-      <a href="#" class="text-white fw-bold" style="text-decoration:none;"><i class="fas fa-envelope-open-text me-2"></i>Contact Us</a>
-    </div>
-
-   <ul class="navbar-nav ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Available Properties</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('predict_rent') }}">Rent Prediction</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('customer_bookings') }}">Bookings</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('customer_favorites') }}">Favorites</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-  </li>
-  {% if current_user.is_authenticated %}
-  <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-      {% if current_user.profile_pic %}
-        <img src="{{ url_for('static', filename='profile_pics/' ~ current_user.profile_pic) }}" class="rounded-circle me-2" width="32" height="32" alt="Profile">
-      {% else %}
-        <i class="fas fa-user-circle me-2" style="font-size: 1.5rem;"></i>
-      {% endif %}
-      <span>{{ current_user.name }}</span>
-    </a>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
-      <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
-    </ul>
-  </li>
-  {% else %}
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-  </li>
-  {% endif %}
-</ul> <!-- ✅ All <li> elements are now inside this <ul> -->
-        </div>
-    </nav>
-
-    {% block hero %}{% endblock %}
-
-    <div class="sidebar">
-      <a href="{{ url_for('home') }}">Home</a>
-      <a href="{{ url_for('customer_dashboard') }}">Search</a>
-      <a href="{{ url_for('predict_rent') }}">Prediction</a>
-      <a href="{{ url_for('customer_bookings') }}">Bookings</a>
-      <a href="{{ url_for('customer_favorites') }}">Favorites</a>
-      <a href="{{ url_for('reviews') }}">Reviews</a>
-      <a href="{{ url_for('settings') }}">Settings</a>
-      <a href="{{ url_for('logout') }}">Log Out</a>
-    </div>
-
-    <main class="container my-5">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>About RentEase</h5>
-                    <p>Find your perfect rental home with our easy-to-use platform. Connecting property owners with potential tenants.</p>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('home') }}" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                        RentEase
+                    </a>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <div class="footer-links">
-                        <a href="{{ url_for('home') }}">Home</a>
-                        <a href="#">Properties</a>
-                        <a href="#">How it Works</a>
-                        <a href="#">Contact Us</a>
-                    </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-purple-600 transition">Home</a>
+                    <a href="{{ url_for('available_properties') }}" class="text-gray-700 hover:text-purple-600 transition">Properties</a>
+                    <a href="{{ url_for('predict_rent') }}" class="text-gray-700 hover:text-purple-600 transition">Predict Rent</a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('profile') }}" class="text-gray-700 hover:text-purple-600 transition">Profile</a>
+                        <a href="{{ url_for('logout') }}" class="text-gray-700 hover:text-purple-600 transition">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-purple-600 transition">Login</a>
+                        <a href="{{ url_for('register') }}" class="text-gray-700 hover:text-purple-600 transition">Register</a>
+                    {% endif %}
                 </div>
-                <div class="col-md-4">
-                    <h5>Connect With Us</h5>
-                    <div class="social-icons">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                    <p class="mt-3"><i class="fas fa-envelope me-2"></i> info@rentease.com</p>
-                </div>
-            </div>
-            <hr class="bg-light">
-            <div class="text-center">
-                <p>&copy; 2025 RentEase. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    I have reviewed the two base template files: base.html and base_new.html. They are quite different in style and structure:
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
-    {% block scripts %}{% endblock %}
-</body>
-</html>
+- base.html uses Bootstrap 5 with custom CSS styles and has a sidebar navigation and a top navigation bar with customer care links.
+- base_new.html uses Tailwind CSS with a more modern, minimalistic design and a simpler navigation bar.
+
+To proceed with your task of using the old file (likely base.html) and not adding new files, I need to understand what specific changes or updates you want to make to the existing base.html or other files.
+

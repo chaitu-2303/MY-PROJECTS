@@ -169,23 +169,15 @@ def initialize_database():
             db.session.add(admin)
             db.session.commit()
 
-# Ensure root URL goes to home page
+# Serve landing page directly at root URL
 @app.route('/')
 def root():
-    return redirect(url_for('home'))
+    return render_template('landing.html')
 
 @app.route('/home')
 @login_required
 def home():
-    properties_count = Property.query.count()
-    growth_percent = 2.5  # Example, calculate as needed
-    sample_prediction = 18000  # Example, or use your model for a real value
-    return render_template(
-        'home.html',
-        properties_count=properties_count,
-        growth_percent=growth_percent,
-        sample_prediction=sample_prediction
-    )
+    return render_template('landing.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 @rate_limit(max_attempts=5, window_seconds=300)
@@ -200,8 +192,8 @@ def login():
             if request.remote_addr in login_attempts:
                 login_attempts[request.remote_addr] = []
             login_user(user)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+            # Always redirect to home after login
+            return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('auth/login.html', title='Login', form=form)
