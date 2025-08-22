@@ -1,109 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>House Rent Prediction - Find Your Perfect Home</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      margin: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    
-    .hero-section {
-      text-align: center;
-      padding: 4rem 0;
-      color: white;
-    }
-    
-    .hero-section h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin: 0 0 1rem 0;
-      background: linear-gradient(45deg, #fff, #f0f0f0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: white; /* fallback color for visibility */
-    }
-    
-    .hero-section p {
-      font-size: 1.25rem;
-      opacity: 0.9;
-      margin-bottom: 2rem;
-    }
-
-    .input-form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .input-form input, .input-form select {
-      margin: 0.5rem;
-      padding: 0.5rem;
-      width: 300px;
-    }
-
-    .input-form button {
-      padding: 0.5rem 1rem;
-      background-color: #fff;
-      border: none;
-      cursor: pointer;
-      color: #333;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Rent Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <div class="hero-section">
-      <h1>Predict Fair Rent Instantly</h1>
-      <p>Enter your property details below:</p>
-      <form class="input-form" action="/predict_rent" method="POST">
-        <input type="text" name="city" placeholder="City" required />
-        <input type="text" name="area_locality" placeholder="Area Locality" required />
-        <input type="number" name="bhk" placeholder="BHK" required />
-        <input type="number" name="size_sqft" placeholder="Size (sqft)" required />
-        <input type="number" name="bathroom" placeholder="Bathroom" required />
-        <input type="number" name="floor_number" placeholder="Floor Number" required />
-        <input type="number" name="total_floors" placeholder="Total Floors" required />
-        <select name="area_type" required>
-          <option value="">Select Area Type</option>
-          <option value="Carpet">Carpet</option>
-          <option value="Built-up">Built-up</option>
-          <option value="Super built-up">Super built-up</option>
-        </select>
-        <select name="furnishing_status" required>
-          <option value="">Select Furnishing Status</option>
-          <option value="Unfurnished">Unfurnished</option>
-          <option value="Semi-Furnished">Semi-Furnished</option>
-          <option value="Fully-Furnished">Fully-Furnished</option>
-        </select>
-        <select name="tenant_preferred" required>
-          <option value="">Select Tenant Preference</option>
-          <option value="Family">Family</option>
-          <option value="Bachelors">Bachelors</option>
-          <option value="Company">Company</option>
-        </select>
-        <button type="submit">Get Prediction</button>
-      </form>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="/">
+                    <h1>House Rent Prediction</h1>
+                </a>
+            </nav>
+        </header>
+        <main>
+            <section class="hero">
+                <h1>Find The Best Rental Properties and Predict The Rent.</h1>
+                <p>Predict the rent of your future home with our machine learning model.</p>
+            </section>
+            <section class="prediction-form-section">
+                <form class="prediction-form" action="/predict_rent" method="POST">
+                    <input type="text" name="city" placeholder="City" required />
+                    <input type="text" name="area_locality" placeholder="Area Locality" required />
+                    <input type="number" name="bhk" placeholder="BHK" required />
+                    <input type="number" name="size_sqft" placeholder="Size (sqft)" required />
+                    <input type="number" name="bathroom" placeholder="Bathroom" required />
+                    <input type="number" name="floor_number" placeholder="Floor Number" required />
+                    <input type="number" name="total_floors" placeholder="Total Floors" required />
+                    <select name="area_type" title="Area Type" required>
+                        <option value="">Select Area Type</option>
+                        <option value="Carpet">Carpet</option>
+                        <option value="Built-up">Built-up</option>
+                        <option value="Super built-up">Super built-up</option>
+                    </select>
+                    <select name="furnishing_status" title="Furnishing Status" required>
+                        <option value="">Select Furnishing Status</option>
+                        <option value="Unfurnished">Unfurnished</option>
+                        <option value="Semi-Furnished">Semi-Furnished</option>
+                        <option value="Fully-Furnished">Fully-Furnished</option>
+                    </select>
+                    <select name="tenant_preferred" title="Tenant Preference" required>
+                        <option value="">Select Tenant Preference</option>
+                        <option value="Family">Family</option>
+                        <option value="Bachelors">Bachelors</option>
+                        <option value="Company">Company</option>
+                    </select>
+                    <button type="submit">Get Prediction</button>
+                </form>
+            </section>
+            <section class="contact-us">
+                <h2>Contact Us</h2>
+                <form>
+                    <input type="text" name="name" placeholder="Name">
+                    <input type="email" name="email" placeholder="Email">
+                    <textarea name="message" placeholder="Message"></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </section>
+        </main>
+        <footer>
+            <div class="social-links">
+                <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                <a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.whatsapp.com"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.pinterest.com"><i class="fab fa-pinterest"></i></a>
+            </div>
+        </footer>
     </div>
-  </div>
 </body>
 </html>
