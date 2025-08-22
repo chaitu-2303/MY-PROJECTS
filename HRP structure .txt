@@ -1,0 +1,92 @@
+chaitanyapamarthi1999@gmail.com
+2303
+
+
+Remove-Item 'C:\Users\Asus\Documents\MY PROJECTS\instance\site.db' -Force
+
+House Rent
+Available Properties
+Rent Prediction
+Profile
+Bookings
+Favorites
+Reviews
+Settings
+
+side bar:-
+ 
+Available Properties
+Rent Prediction
+Profile
+Bookings
+Favorites
+Reviews
+Settings
+
+side bar only should contains the above options when i click on the options :--
+
+1) The Available Properties it has to redirect to another page where it shows the Available Properties with search , filters(filter :-   
+   City, rent(min-max), Furnishing Status, Tenant Preferred, etc.,)  it has to show the data from the House_Rent_Dataset.csv.
+
+2) Rent Prediction it has to redirect to another page where it shows the prediction system with City, rent(min-max), BHK, Size, Floors,    
+   Area, Area Type, Furnishing Status, Tenant Preferred, etc.,) and show the house with in the predicted amount it has to use the 
+   House_Rent_Dataset.csv. 
+
+3) The Profile it has to redirect to another page where it shows the user's profile where it has 
+   1) Personal Information:-
+        Profile Picture/Avatar.
+        Name.
+        Username/Handle.
+        Bio/Description.
+
+   2) Account Details:-
+        Email Address.
+        Date of Birth.
+        Location/Time Zone.
+        Member Since Date.
+ 
+   3) Account Management:
+        Change Password.
+        Update Email Address.
+        Two-Factor Authentication (2FA).
+        Account Deletion.
+
+   4) Profile Customization:
+        Edit Profile.
+        Privacy Settings.
+        Display Preferences(Themes).
+        Language.
+
+   5) Notifications:
+        Notification Preferences.
+        Frequency.
+
+   6) Activity and Content:
+        Your Content/Posts.
+        Activity Log .
+        Saved Items/Bookmarks.
+
+   7) Billing and Subscriptions :
+        Manage Subscription.
+        Payment Methods.
+        Billing History.
+
+3) Bookings it has to redirect to another page where it shows the BOOKINGS TO properties.
+
+4) Favorites it has to redirect to another page where it shows the properties that liked the user's.
+
+5) Reviews it has to redirect to another page where it shows the reviews of the properties that are given by the user's.
+
+6) Settings it has to redirect to another page where it shows the settings of the website that are useful to the user's
+
+
+rent_prediction.html
+profile.html
+bookings.html
+favorites.html
+reviews.html
+settings.html
+Each template should ex
+
+
+ 
