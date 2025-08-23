@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="utf-8">
-    <title>NewVilla - Real Estate HTML Template</title>
-    <meta name="description" content="Morden Bootstrap HTML5 Template">
+    <title>House Rental Platform</title>
+    <meta name="description" content="Modern House Rental Platform">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon.ico') }}">
     
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins/swiper-bundle.min.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
-    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css">
-    <link rel="stylesheet" href="assets/css/plugins/aos.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/vendor/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins/aos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
 
 </head>
 
@@ -34,8 +34,8 @@
                         </a>
                     </div>
                     <div class="main__logo">
-                        <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
-                            <img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img">
+                        <h1 class="main__logo--title"><a class="main__logo--link" href="{{ url_for('root') }}">
+                            <img class="main__logo--img" src="{{ url_for('static', filename='assets/img/logo/nav-log.png') }}" alt="logo-img">
                         </a></h1>
                     </div>
                     <div class="main__menu d-none d-lg-block">
@@ -133,8 +133,8 @@
     <div class="offcanvas__header">
         <div class="offcanvas__inner">
             <div class="offcanvas__logo">
-                <a class="offcanvas__logo_link" href="./index.html">
-                    <img src="assets/img/logo/nav-log.png" alt="Logo-img" width="158" height="36">
+                <a class="offcanvas__logo_link" href="{{ url_for('root') }}">
+                    <img src="{{ url_for('static', filename='assets/img/logo/nav-log.png') }}" alt="Logo-img" width="158" height="36">
                 </a>
                 <button class="offcanvas__close--btn" data-offcanvas>close</button>
             </div>
