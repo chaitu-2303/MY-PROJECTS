@@ -738,7 +738,7 @@ def google_login():
     return redirect(url_for("dashboard"))
 
 # Load dataset and train model globally
-DATASET_PATH = 'HRP/HOUSE RENT PREDICTION/House_Rent_Dataset.csv'
+DATASET_PATH = 'House_Rent_Dataset.csv'
 df = pd.read_csv(DATASET_PATH, engine='python', on_bad_lines='skip')
 df.columns = df.columns.str.strip()
 required_columns = ['Size', 'BHK', 'Bathroom', 'City', 'Furnishing Status', 'Tenant Preferred', 'Area Type', 'Rent']
