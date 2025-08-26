@@ -86,7 +86,7 @@ def add_security_headers(response):
 # Rate limiting for login attempts
 login_attempts = defaultdict(list)
 
-def rate_limit(max_attempts=5, window_seconds=300):
+def rate_limit(max_attempts=10, window_seconds=600):  # Increased attempts and window for testing
     def decorator(f):
         @functools.wraps(f)
         def wrapped_view(*args, **kwargs):
@@ -169,15 +169,15 @@ def initialize_database():
             db.session.add(admin)
             db.session.commit()
 
-# Serve landing page directly at root URL
+# Redirect root to login page
 @app.route('/')
 def root():
-    return render_template('landing.html')
+    return redirect(url_for('login'))
 
 @app.route('/home')
 @login_required
 def home():
-    return render_template('landing.html')
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 @rate_limit(max_attempts=5, window_seconds=300)
@@ -738,7 +738,7 @@ def google_login():
     return redirect(url_for("dashboard"))
 
 # Load dataset and train model globally
-DATASET_PATH = 'House_Rent_Dataset.csv'
+DATASET_PATH = os.path.join(os.path.dirname(__file__), 'House_Rent_Dataset.csv')
 df = pd.read_csv(DATASET_PATH, engine='python', on_bad_lines='skip')
 df.columns = df.columns.str.strip()
 required_columns = ['Size', 'BHK', 'Bathroom', 'City', 'Furnishing Status', 'Tenant Preferred', 'Area Type', 'Rent']
