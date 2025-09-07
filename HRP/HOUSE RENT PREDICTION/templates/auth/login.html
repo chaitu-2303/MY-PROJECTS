@@ -3,76 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>HRP - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../statics/style.css">
 </head>
 <body>
-    <section class="breadcrumb__section">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <nav class="breadcrumb__content">
-                        <ul class="breadcrumb__menu">
-                            <li>
-                                <a href="home.html" class="breadcrumb__menu--link">Home</a>
-                            </li>
-                            <li>
-                                <span class="breadcrumb__menu--text">Login Page</span>
-                            </li>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../home.html">HRP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../available_properties.html">Available Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../rent_prediction.html">Rent Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../contact_as.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item active" href="login.html">Login</a></li>
+                            <li><a class="dropdown-item" href="register.html">Register</a></li>
                         </ul>
-                    </nav>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="text-center mb-4">Login</h2>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password">
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="reset_token.html">Forgot Password?</a>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p>Don't have an account? <a href="register.html">Register</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Breadcrumb section . -->
-    <!-- Account Page section -->
-    <section class="account__page--section section--padding">
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
         <div class="container">
-            <div class="account__section--inner">
-                <div class="account__tab--btn">
-                    <ul class="account__tab--btn__wrapper d-flex justify-content-center">
-                        <li class="account__tab--btn__items">
-                            <a class="account__tab--btn__field" href="register.html">Sign Up</a>
-                        </li>
-                        <li class="account__tab--btn__items">
-                            <span class="account__tab--btn__field active">Login</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="account__form--wrapper">
-                    <div class="account__header text-center mb-30">
-                        <h2 class="account__title">Login Here Today!</h2>
-                        <p class="account__desc">Hey! Enter your details to make an account &amp; become our partner</p>
-                    </div>
-                    <div class="account__form">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="account__form--input mb-30">
-                                <label class="account__form--input__label mb-12" for="email">Email Address</label>
-                                <input class="account__form--input__field" id="email" name="email" placeholder="Enter Email Address" type="email">
-                            </div>
-                            <div class="account__form--input mb-30">
-                                <div class="account__form--input__top mb-12 d-flex align-items-center justify-content-between">
-                                    <label class="account__form--input__label">Your password</label>
-                                    <a class="account__form--forgot__password" href="#">Forgot Password?</a>
-                                </div>
-                                <input class="account__form--input__field" name="password" placeholder="Enter password" type="password">
-                            </div>
-                            <div class="account__sing-in__google mb-50 d-flex">
-                                <button type="submit" class="account__sing-in__google--link d-flex align-items-center">
-                                    <span class="account__sing-in__google--icon">
-                                        <!-- Replaced SVG with ICO image -->
-                                        <img src="/static/assets/img/Google.ico" alt="Google Icon" width="18" height="18">
-                                    </span>
-                                    <span class="account__sing-in__google--text">Sign In with Google</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <p>&copy; 2025 HRP. All Rights Reserved.</p>
         </div>
-</section>
-<!-- Account Page section .\ -->
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/script.js"></script>
 </body>
 </html>

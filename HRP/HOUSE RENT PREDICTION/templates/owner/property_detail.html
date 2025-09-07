@@ -1,34 +1,88 @@
-{% extends "base.html" %}
-{% block title %}{{ property.title }}{% endblock %}
-{% block content %}
-<h1>{{ property.title }}</h1>
-<p><strong>Address:</strong> {{ property.address }}, {{ property.city }}</p>
-<p><strong>Price:</strong> ${{ property.price }}/month</p>
-<p><strong>Bedrooms:</strong> {{ property.bedrooms }} | <strong>Bathrooms:</strong> {{ property.bathrooms }}</p>
-<p><strong>Description:</strong> {{ property.description }}</p>
-<p><strong>Coordinates:</strong> ({{ property.latitude }}, {{ property.longitude }})</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRP - Property Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../statics/style.css">
+</head>
+<body>
 
-<h2 class="mt-4">Bookings</h2>
-{% if bookings %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Customer</th>
-            <th>Dates</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for booking in bookings %}
-        <tr>
-            <td>{{ booking.customer.name }}</td>
-            <td>{{ booking.start_date }} to {{ booking.end_date }}</td>
-            <td>{{ booking.status }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No bookings yet.</p>
-{% endif %}
-{% endblock %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../home.html">HRP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Owner
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                            <li><a class="dropdown-item" href="add_property.html">Add Property</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../Auth/login.html">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Property Details Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <img src="https://via.placeholder.com/800x500" class="img-fluid rounded mb-4" alt="Property Image">
+                    <h2>Modern Apartment</h2>
+                    <p>A beautiful and modern apartment in the heart of the city.</p>
+                    <hr>
+                    <h4>Amenities</h4>
+                    <ul>
+                        <li>3 Bedrooms</li>
+                        <li>2 Bathrooms</li>
+                        <li>1200 Sq.Ft.</li>
+                        <li>Fully Furnished</li>
+                        <li>Swimming Pool</li>
+                        <li>Gym</li>
+                    </ul>
+                    <hr>
+                    <h4>Description</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Manage Property</h5>
+                            <div class="d-grid gap-2">
+                                <a href="#" class="btn btn-primary">Edit Property</a>
+                                <a href="#" class="btn btn-danger">Delete Property</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+</html>

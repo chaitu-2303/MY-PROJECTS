@@ -1,138 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rent Right - Premium Rental Platform</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRP - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../statics/style.css">
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1>Rent Right</h1>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home.html">HRP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="available_properties.html">Available Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rent_prediction.html">Rent Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact_as.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="Auth/login.html">Login</a></li>
+                            <li><a class="dropdown-item" href="Auth/register.html">Register</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-            <ul class="nav-menu">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="features.html">Features</a></li>
-                <li><a href="properties.html">Properties</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section text-center text-white">
+        <div class="container">
+            <h1 class="display-4">Find Your Next Home</h1>
+            <p class="lead">The best place to find your next rental property.</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter a location, property type, or keyword">
+                        <button class="btn btn-primary" type="button">Search</button>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </div>
     </header>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h2 class="hero-title">Find Your Perfect Home</h2>
-            <p class="hero-subtitle">Discover premium rental properties with our advanced platform</p>
-            <div class="hero-buttons">
-                <a href="properties.html" class="btn btn-primary">Browse Properties</a>
-                <a href="rent-prediction.html" class="btn btn-secondary">Rent Prediction</a>
+    <!-- Featured Properties -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Featured Properties</h2>
+            <div class="row">
+                <!-- Property Card 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
+                        <div class="card-body">
+                            <h5 class="card-title">Modern Apartment</h5>
+                            <p class="card-text">A beautiful and modern apartment in the heart of the city.</p>
+                            <p class="card-text"><small class="text-muted">3 Beds | 2 Baths | 1200 Sq.Ft.</small></p>
+                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Property Card 2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
+                        <div class="card-body">
+                            <h5 class="card-title">Cozy House</h5>
+                            <p class="card-text">A cozy house with a beautiful garden. Perfect for a family.</p>
+                            <p class="card-text"><small class="text-muted">4 Beds | 3 Baths | 2000 Sq.Ft.</small></p>
+                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Property Card 3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
+                        <div class="card-body">
+                            <h5 class="card-title">Luxury Villa</h5>
+                            <p class="card-text">A luxurious villa with a private pool and stunning views.</p>
+                            <p class="card-text"><small class="text-muted">5 Beds | 5 Baths | 4500 Sq.Ft.</small></p>
+                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="hero-image">
-            <div class="floating-elements">
-                <div class="element element-1"></div>
-                <div class="element element-2"></div>
-                <div class="element element-3"></div>
+            <div class="text-center mt-4">
+                <a href="available_properties.html" class="btn btn-secondary">View All Properties</a>
             </div>
         </div>
     </section>
 
-    <section id="features" class="features">
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
         <div class="container">
-            <h2 class="section-title">Why Choose Rent Right?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🏠</div>
-                    <h3>Verified Properties</h3>
-                    <p>All listings are thoroughly verified for quality and authenticity.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>Smart Pricing</h3>
-                    <p>Get fair market rates with our intelligent pricing algorithm.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Secure Transactions</h3>
-                    <p>Safe and secure payment processing for peace of mind.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Rent Prediction</h3>
-                    <p>Predict future rent prices with our advanced analytics.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="properties" class="properties">
-        <div class="container">
-            <h2 class="section-title">Featured Properties</h2>
-            <div class="properties-grid">
-                <div class="property-card">
-                    <div class="property-image"></div>
-                    <div class="property-info">
-                        <h3>Luxury Apartment</h3>
-                        <p class="property-location">Downtown, City</p>
-                        <p class="property-price">$2,500/month</p>
-                    </div>
-                </div>
-                <div class="property-card">
-                    <div class="property-image"></div>
-                    <div class="property-info">
-                        <h3>Modern House</h3>
-                        <p class="property-location">Suburb, City</p>
-                        <p class="property-price">$3,200/month</p>
-                    </div>
-                </div>
-                <div class="property-card">
-                    <div class="property-image"></div>
-                    <div class="property-info">
-                        <h3>Cozy Studio</h3>
-                        <p class="property-location">Midtown, City</p>
-                        <p class="property-price">$1,800/month</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Rent Right</h3>
-                    <p>Your trusted partner in finding the perfect rental.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="features.html">Features</a></li>
-                        <li><a href="properties.html">Properties</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Email: info@rentright.com</p>
-                    <p>Phone: (555) 123-4567</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Rent Right. All rights reserved.</p>
-            </div>
+            <p>&copy; 2025 HRP. All Rights Reserved.</p>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>

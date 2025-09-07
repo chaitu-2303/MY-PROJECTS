@@ -1,47 +1,113 @@
-{% extends "base.html" %}
-{% block title %}Rent Prediction{% endblock %}
-{% block content %}
-<div class="container mt-5">
-    <h2>Predict Rent</h2>
-    <form method="POST" class="row g-2 align-items-end bg-light p-3 rounded">
-        {{ form.hidden_tag() }}
-        <div class="col-md-2">{{ form.size.label(class="form-label") }}{{ form.size(class="form-control", placeholder="Size (sqft)") }}</div>
-        <div class="col-md-1">{{ form.bedroom.label(class="form-label") }}{{ form.bedroom(class="form-control", placeholder="BHK") }}</div>
-        <div class="col-md-1">{{ form.bathroom.label(class="form-label") }}{{ form.bathroom(class="form-control", placeholder="Bath") }}</div>
-        <div class="col-md-2">{{ form.city.label(class="form-label") }}{{ form.city(class="form-select") }}</div>
-        <div class="col-md-2">{{ form.furnishing_status.label(class="form-label") }}{{ form.furnishing_status(class="form-select") }}</div>
-        <div class="col-md-2">{{ form.tenant_preferred.label(class="form-label") }}{{ form.tenant_preferred(class="form-select") }}</div>
-        <div class="col-md-2">{{ form.area_type.label(class="form-label") }}{{ form.area_type(class="form-select") }}</div>
-        <div class="col-md-1"><button type="submit" class="btn btn-vibrant w-100">Predict</button></div>
-    </form>
-    {% if predicted_rent %}
-        <div class="d-flex justify-content-center mt-4 mb-2">
-            <div class="w-100" style="display: flex; align-items: center; justify-content: center;">
-                <span style="background: #17a2b8; color: #fff; border-radius: 30px; font-size: 1.3rem; padding: 0.75rem 2rem; width: 100%; text-align: center;">
-                    <strong>Predicted Rent:</strong> ₹{{ predicted_rent | round(2) }}
-                </span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRP - Rent Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../statics/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home.html">HRP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="available_properties.html">Available Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="rent_prediction.html">Rent Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact_as.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="Auth/login.html">Login</a></li>
+                            <li><a class="dropdown-item" href="Auth/register.html">Register</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="alert alert-secondary mt-2 text-center" style="border-radius: 20px;">
-            Showing properties in the price range ₹{{ (predicted_rent * 0.9) | round(2) }} - ₹{{ (predicted_rent * 1.1) | round(2) }}
-        </div>
-        <h4 class="mt-4">Matching Properties</h4>
-        <div class="row">
-            {% for prop in properties %}
-                <div class="col-md-4">
-                    <div class="card mb-3">
+    </nav>
+
+    <!-- Rent Prediction Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Rent Prediction</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
                         <div class="card-body">
-                            <h5><i class="fas fa-home text-primary"></i> {{ prop.title }}</h5>
-                            <p><i class="fas fa-map-marker-alt"></i> {{ prop.address }}, {{ prop.city }}</p>
-                            <p><i class="fas fa-rupee-sign"></i> ₹{{ prop.price }}</p>
-                            <a href="{{ url_for('property_detail', property_id=prop.id) }}" class="btn btn-vibrant">View Details</a>
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="location" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="location">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="property-type" class="form-label">Property Type</label>
+                                        <select class="form-select" id="property-type">
+                                            <option selected>Choose...</option>
+                                            <option value="1">Apartment</option>
+                                            <option value="2">House</option>
+                                            <option value="3">Villa</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="bedrooms" class="form-label">Bedrooms</label>
+                                        <input type="number" class="form-control" id="bedrooms">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="bathrooms" class="form-label">Bathrooms</label>
+                                        <input type="number" class="form-control" id="bathrooms">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sqft" class="form-label">Square Feet</label>
+                                        <input type="number" class="form-control" id="sqft">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="amenities" class="form-label">Amenities</label>
+                                        <input type="text" class="form-control" id="amenities" placeholder="e.g., Pool, Gym">
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Predict Rent</button>
+                                </div>
+                            </form>
+                            <div id="prediction-result" class="mt-4 text-center"></div>
                         </div>
                     </div>
                 </div>
-            {% else %}
-                <p>No properties found in this price range.</p>
-            {% endfor %}
+            </div>
         </div>
-    {% endif %}
-</div>
-{% endblock %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

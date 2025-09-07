@@ -1,47 +1,101 @@
-{% extends "base.html" %}
-{% block title %}My Favorites{% endblock %}
-{% block content %}
-<div class="container mt-5">
-    <h2>My Favorite Properties</h2>
-    
-    {% if favorites %}
-        <div class="row">
-            {% for favorite in favorites %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {% if favorite.property.image_file %}
-                            <img src="{{ url_for('static', filename='property_pics/' + favorite.property.image_file) }}" class="card-img-top" alt="{{ favorite.property.title }}" style="height: 200px; object-fit: cover;">
-                        {% else %}
-                            <img src="{{ url_for('static', filename='property_pics/default_property.jpg') }}" class="card-img-top" alt="{{ favorite.property.title }}" style="height: 200px; object-fit: cover;">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ favorite.property.title }}</h5>
-                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> {{ favorite.property.address }}, {{ favorite.property.city }}</p>
-                            <p class="card-text">
-                                <span class="badge bg-primary">₹{{ favorite.property.price }}</span>
-                                <span class="badge bg-secondary">{{ favorite.property.bedrooms }} BHK</span>
-                                <span class="badge bg-info">{{ favorite.property.bathrooms }} Bath</span>
-                                {% if favorite.property.size %}
-                                    <span class="badge bg-success">{{ favorite.property.size }} sqft</span>
-                                {% endif %}
-                            </p>
-                            <p class="card-text"><small class="text-muted">Added to favorites on {{ favorite.created_at.strftime('%Y-%m-%d') }}</small></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRP - My Favorites</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../statics/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../home.html">HRP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../available_properties.html">Available Properties</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Customer
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                            <li><a class="dropdown-item" href="bookings.html">My Bookings</a></li>
+                            <li><a class="dropdown-item active" href="favorites.html">My Favorites</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../Auth/login.html">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Favorites Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">My Favorites</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="list-group">
+                        <a href="dashboard.html" class="list-group-item list-group-item-action">Dashboard</a>
+                        <a href="profile.html" class="list-group-item list-group-item-action">Profile</a>
+                        <a href="bookings.html" class="list-group-item list-group-item-action">My Bookings</a>
+                        <a href="favorites.html" class="list-group-item list-group-item-action active" aria-current="true">My Favorites</a>
+                        <a href="../Auth/login.html" class="list-group-item list-group-item-action">Logout</a>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <!-- Favorite Property Card 1 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Modern Apartment</h5>
+                                    <p class="card-text">A beautiful and modern apartment in the heart of the city.</p>
+                                    <a href="property_detail.html" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger">Remove</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer bg-transparent d-flex justify-content-between">
-                            <a href="{{ url_for('property_detail', property_id=favorite.property.id) }}" class="btn btn-primary btn-sm">View Details</a>
-                            <form action="{{ url_for('toggle_favorite', property_id=favorite.property.id) }}" method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-heart-broken"></i> Remove</button>
-                            </form>
+                        <!-- Favorite Property Card 2 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Cozy House</h5>
+                                    <p class="card-text">A cozy house with a beautiful garden. Perfect for a family.</p>
+                                    <a href="property_detail.html" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger">Remove</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> You haven't added any properties to your favorites yet.
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p>&copy; 2025 HRP. All Rights Reserved.</p>
         </div>
-        <a href="{{ url_for('customer_dashboard') }}" class="btn btn-primary">Browse Properties</a>
-    {% endif %}
-</div>
-{% endblock %}
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+</html>
