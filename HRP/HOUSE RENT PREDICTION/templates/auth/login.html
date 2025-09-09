@@ -12,31 +12,31 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="../home.html">HRP</a>
+            <a class="navbar-brand" href="{{ url_for('home') }}">HRP</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../home.html">Home</a>
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../available_properties.html">Available Properties</a>
+                        <a class="nav-link" href="{{ url_for('available_properties') }}">Available Properties</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../rent_prediction.html">Rent Prediction</a>
+                        <a class="nav-link" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../contact_as.html">Contact Us</a>
+                        <a class="nav-link" href="#">Contact Us</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Account
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item active" href="login.html">Login</a></li>
-                            <li><a class="dropdown-item" href="register.html">Register</a></li>
+                            <li><a class="dropdown-item active" href="{{ url_for('login') }}">Login</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('register') }}">Register</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -52,24 +52,25 @@
                     <div class="card">
                         <div class="card-body">
                             <h2 class="text-center mb-4">Login</h2>
-                            <form>
+                            <form method="POST" action="{{ url_for('login') }}">
+                                {{ form.hidden_tag() }}
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="email">
+                                    {{ form.email(class="form-control", id="email") }}
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password">
+                                    {{ form.password(class="form-control", id="password") }}
                                 </div>
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">Login</button>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <a href="reset_token.html">Forgot Password?</a>
+                                    <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
                                 </div>
                                 <hr>
                                 <div class="text-center">
-                                    <p>Don't have an account? <a href="register.html">Register</a></p>
+                                    <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
                                 </div>
                             </form>
                         </div>

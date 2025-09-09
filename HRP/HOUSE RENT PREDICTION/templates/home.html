@@ -3,119 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRP - Home</title>
+    <title>HouseRent - Find Your Perfect Home</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="home.html">HRP</a>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <span class="logo-text">House<span class="text-primary">Rent</span></span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <i class="fas fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="home.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="available_properties.html">Available Properties</a>
+                        <a class="nav-link" href="{{ url_for('available_properties') }}">Properties</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="rent_prediction.html">Rent Prediction</a>
+                        <a class="nav-link" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact_as.html">Contact Us</a>
+                        <a class="nav-link" href="{{ url_for('contact_us') }}">Contact Us</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Account
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="Auth/login.html">Login</a></li>
-                            <li><a class="dropdown-item" href="Auth/register.html">Register</a></li>
-                        </ul>
-                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> {{ current_user.name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {% if current_user.role == 'admin' %}
+                                    <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                {% elif current_user.role == 'owner' %}
+                                    <li><a class="dropdown-item" href="{{ url_for('owner.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('owner.add_property') }}"><i class="fas fa-plus-circle me-2"></i>Add Property</a></li>
+                                {% elif current_user.role == 'customer' %}
+                                    <li><a class="dropdown-item" href="{{ url_for('customer.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('customer.favorites') }}"><i class="fas fa-heart me-2"></i>Favorites</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('customer.bookings') }}"><i class="fas fa-calendar-check me-2"></i>Bookings</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-primary btn-sm ms-2" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary btn-sm ms-2" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-section text-center text-white">
+    <header class="hero-section">
         <div class="container">
-            <h1 class="display-4">Find Your Next Home</h1>
-            <p class="lead">The best place to find your next rental property.</p>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Enter a location, property type, or keyword">
-                        <button class="btn btn-primary" type="button">Search</button>
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <h1 class="display-4 fw-bold">Find Your <span class="text-primary">Dream Home</span></h1>
+                    <p class="lead mb-4">Discover the perfect rental property that fits your lifestyle and budget. We make finding your next home simple and stress-free.</p>
+                    <div class="search-box p-3 bg-white rounded shadow-sm">
+                        <form action="{{ url_for('available_properties') }}" method="get">
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="location" name="location" placeholder="Location">
+                                        <label for="location"><i class="fas fa-map-marker-alt me-2"></i>Location</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="property-type" name="property_type">
+                                            <option value="">Any</option>
+                                            <option value="1">1 BHK</option>
+                                            <option value="2">2 BHK</option>
+                                            <option value="3">3 BHK</option>
+                                            <option value="4">4+ BHK</option>
+                                        </select>
+                                        <label for="property-type"><i class="fas fa-home me-2"></i>Property Type</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary h-100 w-100"><i class="fas fa-search me-2"></i>Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left" data-aos-duration="1000">
+                    <img src="{{ url_for('static', filename='images/hero-image.jpg') }}" alt="House illustration" class="img-fluid rounded hero-image">
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2>Why Choose Us</h2>
+                <p class="text-muted">We provide the best rental experience</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h4>Easy Search</h4>
+                        <p class="text-muted">Find properties that match your criteria with our powerful search tools.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Rent Prediction</h4>
+                        <p class="text-muted">Get accurate rent predictions based on location, size, and amenities.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h4>Secure Booking</h4>
+                        <p class="text-muted">Book properties securely with our trusted booking system.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
+    </section>
 
     <!-- Featured Properties -->
-    <section class="py-5">
+    <section class="featured-properties py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-4">Featured Properties</h2>
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2>Featured Properties</h2>
+                <p class="text-muted">Explore our top rental listings</p>
+            </div>
+            <div class="row g-4">
+                {% for property in featured_properties %}
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="property-card">
+                        <div class="property-thumb">
+                            <img src="{{ url_for('static', filename='uploads/' + property.image_file) }}" alt="{{ property.title }}" class="img-fluid">
+                            <div class="property-tag">{{ property.furnishing_status }}</div>
+                            <div class="property-wishlist">
+                                <a href="#" class="add-to-wishlist" data-property-id="{{ property.id }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="property-content p-4">
+                            <div class="property-price mb-2">₹{{ property.price|int }}/month</div>
+                            <h5 class="property-title"><a href="{{ url_for('property_detail', property_id=property.id) }}">{{ property.title }}</a></h5>
+                            <p class="property-address mb-3"><i class="fas fa-map-marker-alt me-2"></i>{{ property.address }}, {{ property.city }}</p>
+                            <div class="property-specs d-flex justify-content-between">
+                                <span><i class="fas fa-bed me-2"></i>{{ property.bedrooms }} Beds</span>
+                                <span><i class="fas fa-bath me-2"></i>{{ property.bathrooms }} Baths</span>
+                                <span><i class="fas fa-ruler-combined me-2"></i>{{ property.size }} sq.ft</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12 text-center">
+                    <p>No featured properties available at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{{ url_for('available_properties') }}" class="btn btn-outline-primary">View All Properties <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rent Prediction Banner -->
+    <section class="prediction-banner py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <img src="{{ url_for('static', filename='images/prediction.jpg') }}" alt="Rent Prediction" class="img-fluid rounded">
+                </div>
+                <div class="col-lg-6 ps-lg-5" data-aos="fade-left">
+                    <div class="banner-content py-4">
+                        <h2 class="mb-3">Predict Your Rental Price</h2>
+                        <p class="mb-4">Our advanced machine learning algorithm can predict the rental price based on location, size, amenities, and market trends. Get an accurate estimate before listing your property.</p>
+                        <a href="{{ url_for('rent_prediction') }}" class="btn btn-primary">Try Rent Prediction <i class="fas fa-calculator ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials py-5 bg-light">
+        <div class="container">
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2>What Our Clients Say</h2>
+                <p class="text-muted">Testimonials from satisfied customers</p>
+            </div>
             <div class="row">
-                <!-- Property Card 1 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
-                        <div class="card-body">
-                            <h5 class="card-title">Modern Apartment</h5>
-                            <p class="card-text">A beautiful and modern apartment in the heart of the city.</p>
-                            <p class="card-text"><small class="text-muted">3 Beds | 2 Baths | 1200 Sq.Ft.</small></p>
-                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                <div class="col-12" data-aos="fade-up">
+                    <div class="testimonial-slider">
+                        <div class="testimonial-item p-4">
+                            <div class="testimonial-content">
+                                <p class="mb-4">"I found my dream apartment within a week of using this platform. The rent prediction feature helped me understand the market rates in my preferred area."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="testimonial-avatar me-3">
+                                        <img src="{{ url_for('static', filename='images/avatar-1.jpg') }}" alt="Avatar" class="rounded-circle">
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">John Doe</h5>
+                                        <small class="text-muted">Tenant</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Property Card 2 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
-                        <div class="card-body">
-                            <h5 class="card-title">Cozy House</h5>
-                            <p class="card-text">A cozy house with a beautiful garden. Perfect for a family.</p>
-                            <p class="card-text"><small class="text-muted">4 Beds | 3 Baths | 2000 Sq.Ft.</small></p>
-                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                        <div class="testimonial-item p-4">
+                            <div class="testimonial-content">
+                                <p class="mb-4">"As a property owner, this platform has made it incredibly easy to list and manage my properties. I've found reliable tenants quickly."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="testimonial-avatar me-3">
+                                        <img src="{{ url_for('static', filename='images/avatar-2.jpg') }}" alt="Avatar" class="rounded-circle">
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">Jane Smith</h5>
+                                        <small class="text-muted">Property Owner</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Property Card 3 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
-                        <div class="card-body">
-                            <h5 class="card-title">Luxury Villa</h5>
-                            <p class="card-text">A luxurious villa with a private pool and stunning views.</p>
-                            <p class="card-text"><small class="text-muted">5 Beds | 5 Baths | 4500 Sq.Ft.</small></p>
-                            <a href="property_details.html" class="btn btn-primary">View Details</a>
+                        <div class="testimonial-item p-4">
+                            <div class="testimonial-content">
+                                <p class="mb-4">"The user interface is intuitive and the search filters are comprehensive. I was able to narrow down properties that fit my exact requirements."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="testimonial-avatar me-3">
+                                        <img src="{{ url_for('static', filename='images/avatar-3.jpg') }}" alt="Avatar" class="rounded-circle">
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">Michael Johnson</h5>
+                                        <small class="text-muted">Tenant</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-4">
-                <a href="available_properties.html" class="btn btn-secondary">View All Properties</a>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="cta-content text-center p-5 rounded" data-aos="zoom-in">
+                        <h2 class="mb-3">Ready to Find Your Perfect Home?</h2>
+                        <p class="mb-4">Join thousands of satisfied users who found their ideal rental properties through our platform.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ url_for('register') }}" class="btn btn-primary">Sign Up Now</a>
+                            <a href="{{ url_for('available_properties') }}" class="btn btn-outline-light">Browse Properties</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3">
+    <footer class="footer py-5">
         <div class="container">
-            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="footer-about">
+                        <h5 class="footer-title">About HouseRent</h5>
+                        <p>We are dedicated to connecting property owners with potential tenants, making the rental process simple, transparent, and efficient.</p>
+                        <div class="social-links mt-3">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <div class="footer-links">
+                        <h5 class="footer-title">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('home') }}">Home</a></li>
+                            <li><a href="{{ url_for('available_properties') }}">Properties</a></li>
+                            <li><a href="{{ url_for('rent_prediction') }}">Rent Prediction</a></li>
+                            <li><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <div class="footer-links">
+                        <h5 class="footer-title">For Users</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('login') }}">Login</a></li>
+                            <li><a href="{{ url_for('register') }}">Register</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="footer-contact">
+                        <h5 class="footer-title">Contact Us</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Main Street, City, Country</li>
+                            <li><i class="fas fa-phone-alt me-2"></i> +1 234 567 890</li>
+                            <li><i class="fas fa-envelope me-2"></i> info@houserent.com</li>
+                        </ul>
+                        <div class="newsletter mt-3">
+                            <h6>Subscribe to our newsletter</h6>
+                            <form class="d-flex mt-2">
+                                <input type="email" class="form-control me-2" placeholder="Your email">
+                                <button type="submit" class="btn btn-primary">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; {{ current_year }} HouseRent. All rights reserved.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
