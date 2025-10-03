@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from config import Config
 from database import db
@@ -68,7 +68,7 @@ def add_security_headers(response):
     # Prevent clickjacking
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     # Content Security Policy to prevent XSS attacks
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://unpkg.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' localhost:* 127.0.0.1:*; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
     # HTTP Strict Transport Security
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     # Referrer Policy
@@ -82,6 +82,12 @@ def add_security_headers(response):
     # Feature Policy
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
     return response
+
+# Handle Vite client requests to prevent 404 errors
+@app.route('/@vite/client', methods=['GET'])
+def handle_vite_client():
+    # Return an empty JavaScript file with appropriate headers
+    return Response('', mimetype='application/javascript')
 
 # Rate limiting for login attempts
 login_attempts = defaultdict(list)

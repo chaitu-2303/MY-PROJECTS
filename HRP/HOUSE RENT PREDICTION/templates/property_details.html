@@ -1,105 +1,695 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRP - Property Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="home.html">HRP</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="home.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="available_properties.html">Available Properties</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="rent_prediction.html">Rent Prediction</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact_as.html">Contact Us</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Account
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="Auth/login.html">Login</a></li>
-                            <li><a class="dropdown-item" href="Auth/register.html">Register</a></li>
-                        </ul>
-                    </li>
-                </ul>
+{% block title %}Property Details - House Rent Prediction{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<section class="page-header bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-4">Property Details</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('properties') }}" class="text-white">Properties</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Property Details</li>
+                    </ol>
+                </nav>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <!-- Property Details Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <img src="https://via.placeholder.com/800x500" class="img-fluid rounded mb-4" alt="Property Image">
-                    <h2>Modern Apartment</h2>
-                    <p>A beautiful and modern apartment in the heart of the city.</p>
-                    <hr>
-                    <h4>Amenities</h4>
-                    <ul>
-                        <li>3 Bedrooms</li>
-                        <li>2 Bathrooms</li>
-                        <li>1200 Sq.Ft.</li>
-                        <li>Fully Furnished</li>
-                        <li>Swimming Pool</li>
-                        <li>Gym</li>
-                    </ul>
-                    <hr>
-                    <h4>Description</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.</p>
+<!-- Property Header -->
+<section class="property-header py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="mb-1">{{ property.title }}</h2>
+                <p class="mb-2"><i class="fas fa-map-marker-alt me-2 text-primary"></i>{{ property.location }}</p>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-4">
+                        <span class="h3 text-primary mb-0">₹{{ property.rent }}</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+                    <div class="me-4">
+                        <span class="badge bg-info">{{ property.bhk }} BHK</span>
+                    </div>
+                    <div class="me-4">
+                        <span class="badge bg-secondary">{{ property.size }} sq.ft</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="rating me-2">
+                            {% for i in range(5) %}
+                                {% if i < property.rating|int %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span>{{ property.rating }} ({{ property.reviews|length }} reviews)</span>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Contact Owner</h5>
-                            <form>
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name">
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex justify-content-lg-end">
+                    {% if current_user.is_authenticated and current_user.role == 'customer' %}
+                        <button id="addToFavorites" class="btn btn-outline-primary me-2" data-property-id="{{ property.id }}">
+                            {% if is_favorite %}
+                                <i class="fas fa-heart me-2"></i> Remove from Favorites
+                            {% else %}
+                                <i class="far fa-heart me-2"></i> Add to Favorites
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <i class="fas fa-share-alt me-2"></i> Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Property Gallery -->
+<section class="property-gallery py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        {% for image in property.images %}
+                            <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ loop.index }}"></button>
+                        {% endfor %}
+                    </div>
+                    <div class="carousel-inner rounded shadow-sm">
+                        {% for image in property.images %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <img src="{{ url_for('static', filename='img/properties/' + image) }}" class="d-block w-100" alt="Property Image {{ loop.index }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                
+                <div class="property-thumbnails mt-3 d-flex overflow-auto">
+                    {% for image in property.images %}
+                        <div class="thumbnail me-2" data-bs-target="#propertyCarousel" data-bs-slide-to="{{ loop.index0 }}">
+                            <img src="{{ url_for('static', filename='img/properties/' + image) }}" class="img-thumbnail" alt="Thumbnail {{ loop.index }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="booking-card p-4 bg-white rounded shadow-sm sticky-top" style="top: 100px;">
+                    <h3 class="mb-4">Book This Property</h3>
+                    
+                    {% if current_user.is_authenticated and current_user.role == 'customer' %}
+                        <form method="post" action="{{ url_for('book_property', property_id=property.id) }}">
+                            {{ booking_form.hidden_tag() }}
+                            
+                            <div class="form-group mb-3">
+                                <label for="check_in" class="form-label">Check-in Date</label>
+                                <input type="date" class="form-control" id="check_in" name="check_in" min="{{ today }}" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="check_out" class="form-label">Check-out Date</label>
+                                <input type="date" class="form-control" id="check_out" name="check_out" min="{{ tomorrow }}" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="guests" class="form-label">Number of Guests</label>
+                                <select class="form-select" id="guests" name="guests" required>
+                                    {% for i in range(1, property.max_guests + 1) %}
+                                        <option value="{{ i }}">{{ i }} {% if i == 1 %}Guest{% else %}Guests{% endif %}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="price-calculation mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>₹{{ property.rent }} x <span id="nights">0</span> nights</span>
+                                    <span id="total">₹0</span>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email">
+                                <div class="d-flex justify-content-between">
+                                    <span>Service fee</span>
+                                    <span id="service_fee">₹0</span>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="message" class="form-label">Message</label>
-                                    <textarea class="form-control" id="message" rows="3"></textarea>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span id="grand_total">₹0</span>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Send Message</button>
-                            </form>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                        </form>
+                        
+                        <div class="mt-3 text-center">
+                            <button class="btn btn-outline-primary w-100" id="addToFavorites" data-property-id="{{ property.id }}">
+                                {% if is_favorite %}
+                                    <i class="fas fa-heart me-2"></i> Remove from Favorites
+                                {% else %}
+                                    <i class="far fa-heart me-2"></i> Add to Favorites
+                                {% endif %}
+                            </button>
+                        </div>
+                    {% elif current_user.is_authenticated and current_user.role == 'owner' %}
+                        <div class="alert alert-info">
+                            <p>As a property owner, you cannot book properties. Switch to a customer account to make bookings.</p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> as a customer to book this property.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="owner-info mt-4">
+                        <h4>Property Owner</h4>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='img/users/' + property.owner.profile_pic) if property.owner.profile_pic else url_for('static', filename='img/default_profile.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Owner Profile">
+                            <div>
+                                <h5 class="mb-0">{{ property.owner.name }}</h5>
+                                <p class="text-muted mb-0">Member since {{ property.owner.created_at.strftime('%b %Y') }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ url_for('message_owner', owner_id=property.owner.id) }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-comment-alt me-2"></i> Contact Owner
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3">
-        <div class="container">
-            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+<!-- Property Details -->
+<section class="property-details py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Property Description -->
+                <div class="property-description bg-white p-4 rounded shadow-sm mb-4">
+                    <h3 class="mb-4">About This Property</h3>
+                    <p>{{ property.description }}</p>
+                    
+                    <div class="property-features mt-4">
+                        <h4>Property Features</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-bed me-2 text-primary"></i> {{ property.bhk }} BHK</li>
+                                    <li class="mb-2"><i class="fas fa-bath me-2 text-primary"></i> {{ property.bathrooms }} Bathrooms</li>
+                                    <li class="mb-2"><i class="fas fa-ruler-combined me-2 text-primary"></i> {{ property.size }} sq.ft</li>
+                                    <li class="mb-2"><i class="fas fa-car me-2 text-primary"></i> {{ property.parking }} Parking Spaces</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-building me-2 text-primary"></i> {{ property.floor_no }} Floor</li>
+                                    <li class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i> Built in {{ property.built_year }}</li>
+                                    <li class="mb-2"><i class="fas fa-couch me-2 text-primary"></i> {{ 'Furnished' if property.furnished else 'Unfurnished' }}</li>
+                                    <li class="mb-2"><i class="fas fa-paw me-2 text-primary"></i> {{ 'Pet Friendly' if property.pet_friendly else 'No Pets Allowed' }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-amenities mt-4">
+                        <h4>Amenities</h4>
+                        <div class="row mt-3">
+                            {% for amenity in property.amenities %}
+                                <div class="col-md-4 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span>{{ amenity }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Location -->
+                <div class="property-location bg-white p-4 rounded shadow-sm mb-4">
+                    <h3 class="mb-4">Location</h3>
+                    <div id="propertyMap" style="height: 400px;" class="rounded"></div>
+                    
+                    <div class="location-details mt-4">
+                        <h4>Neighborhood</h4>
+                        <p>{{ property.neighborhood_description }}</p>
+                        
+                        <div class="nearby-places mt-3">
+                            <h5>Nearby Places</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        {% for place in property.nearby_places[:3] %}
+                                            <li class="mb-2">
+                                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                                <span>{{ place.name }} ({{ place.distance }})</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        {% for place in property.nearby_places[3:6] %}
+                                            <li class="mb-2">
+                                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                                <span>{{ place.name }} ({{ place.distance }})</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="property-reviews bg-white p-4 rounded shadow-sm mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">Reviews</h3>
+                        <div class="overall-rating">
+                            <div class="d-flex align-items-center">
+                                <div class="rating me-2">
+                                    {% for i in range(5) %}
+                                        {% if i < property.rating|int %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span>{{ property.rating }} ({{ property.reviews|length }} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if current_user.is_authenticated and current_user.role == 'customer' and has_booked and not has_reviewed %}
+                        <div class="write-review mb-4">
+                            <h4>Write a Review</h4>
+                            <form method="post" action="{{ url_for('add_review', property_id=property.id) }}">
+                                {{ review_form.hidden_tag() }}
+                                
+                                <div class="form-group mb-3">
+                                    <label for="rating" class="form-label">Rating</label>
+                                    <div class="rating-input">
+                                        {% for i in range(1, 6) %}
+                                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+                                            <label for="star{{ i }}"><i class="far fa-star"></i></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="comment" class="form-label">Your Review</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="reviews-list">
+                        {% if property.reviews %}
+                            {% for review in property.reviews %}
+                                <div class="review-item mb-4 pb-4 border-bottom">
+                                    <div class="d-flex">
+                                        <img src="{{ url_for('static', filename='img/users/' + review.user.profile_pic) if review.user.profile_pic else url_for('static', filename='img/default_profile.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Reviewer Profile">
+                                        <div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <h5 class="mb-0 me-3">{{ review.user.name }}</h5>
+                                                <div class="rating">
+                                                    {% for i in range(5) %}
+                                                        {% if i < review.rating %}
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star text-warning"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <p class="text-muted mb-2">{{ review.created_at.strftime('%B %d, %Y') }}</p>
+                                            <p class="mb-0">{{ review.comment }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">No reviews yet. Be the first to review this property!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Similar Properties -->
+                <div class="similar-properties bg-white p-4 rounded shadow-sm mb-4">
+                    <h3 class="mb-4">Similar Properties</h3>
+                    
+                    {% if similar_properties %}
+                        {% for similar in similar_properties %}
+                            <div class="property-card mb-3">
+                                <div class="row g-0">
+                                    <div class="col-4">
+                                        <img src="{{ url_for('static', filename='img/properties/' + similar.images[0]) }}" class="img-fluid rounded" alt="{{ similar.title }}">
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="card-body p-2">
+                                            <h5 class="card-title mb-1"><a href="{{ url_for('property_detail', property_id=similar.id) }}" class="text-decoration-none">{{ similar.title }}</a></h5>
+                                            <p class="card-text mb-1"><small><i class="fas fa-map-marker-alt me-1"></i>{{ similar.location }}</small></p>
+                                            <p class="card-text mb-0"><strong>₹{{ similar.rent }}/month</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('properties') }}" class="btn btn-outline-primary">View More Properties</a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p class="mb-0">No similar properties found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Property Insights -->
+                <div class="property-insights bg-white p-4 rounded shadow-sm">
+                    <h3 class="mb-4">Property Insights</h3>
+                    
+                    <div class="insight-item mb-3">
+                        <h5>Rent Trend</h5>
+                        <div class="trend-chart" id="rentTrendChart" style="height: 200px;"></div>
+                    </div>
+                    
+                    <div class="insight-item mb-3">
+                        <h5>Demand Analysis</h5>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ property.demand_score }}%;" aria-valuenow="{{ property.demand_score }}" aria-valuemin="0" aria-valuemax="100">{{ property.demand_score }}%</div>
+                        </div>
+                        <p class="text-muted">Based on search frequency and booking rate</p>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <h5>Price Comparison</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>This Property</span>
+                            <span>₹{{ property.rent }}/month</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Area Average</span>
+                            <span>₹{{ property.area_avg_rent }}/month</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Price Difference</span>
+                            <span class="{% if property.rent > property.area_avg_rent %}text-danger{% else %}text-success{% endif %}">
+                                {{ ((property.rent - property.area_avg_rent) / property.area_avg_rent * 100)|round|int }}%
+                                {% if property.rent > property.area_avg_rent %}higher{% else %}lower{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+</section>
+<!-- Share Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Share This Property</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Share this property with your friends and family:</p>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text=Check out this property: {{ property.title }}" target="_blank" class="btn btn-outline-info"><i class="fab fa-twitter"></i></a>
+                    <a href="https://wa.me/?text=Check out this property: {{ property.title }} {{ request.url }}" target="_blank" class="btn btn-outline-success"><i class="fab fa-whatsapp"></i></a>
+                    <a href="mailto:?subject=Check out this property: {{ property.title }}&body=I found this property and thought you might be interested: {{ request.url }}" class="btn btn-outline-secondary"><i class="fas fa-envelope"></i></a>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="shareLink" value="{{ request.url }}" readonly>
+                    <button class="btn btn-primary" type="button" id="copyShareLink">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
-</html>
+<!-- Contact Owner Modal -->
+<div class="modal fade" id="contactOwnerModal" tabindex="-1" aria-labelledby="contactOwnerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactOwnerModalLabel">Contact Property Owner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if current_user.is_authenticated %}
+                    <form method="post" action="{{ url_for('contact_owner', property_id=property.id) }}" id="contactOwnerForm">
+                        {{ contact_form.hidden_tag() }}
+                        
+                        <div class="form-group mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="shareContact" name="share_contact">
+                            <label class="form-check-label" for="shareContact">
+                                Share my contact information with the owner
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">Please <a href="{{ url_for('login') }}">login</a> to contact the property owner.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+
+<script>
+    // Initialize Map
+    function initMap() {
+        const propertyLocation = { lat: {{ property.latitude }}, lng: {{ property.longitude }} };
+        const map = new google.maps.Map(document.getElementById("propertyMap"), {
+            zoom: 15,
+            center: propertyLocation,
+        });
+        
+        const marker = new google.maps.Marker({
+            position: propertyLocation,
+            map: map,
+            title: "{{ property.title }}"
+        });
+    }
+    
+    // Share functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const copyShareLinkBtn = document.getElementById('copyShareLink');
+        if (copyShareLinkBtn) {
+            copyShareLinkBtn.addEventListener('click', function() {
+                const shareLinkInput = document.getElementById('shareLink');
+                shareLinkInput.select();
+                document.execCommand('copy');
+                
+                // Change button text temporarily
+                const originalText = copyShareLinkBtn.textContent;
+                copyShareLinkBtn.textContent = 'Copied!';
+                copyShareLinkBtn.classList.remove('btn-primary');
+                copyShareLinkBtn.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    copyShareLinkBtn.textContent = originalText;
+                    copyShareLinkBtn.classList.remove('btn-success');
+                    copyShareLinkBtn.classList.add('btn-primary');
+                }, 2000);
+            });
+        }
+    });
+    
+    // Initialize Rent Trend Chart
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('rentTrendChart').getContext('2d');
+        const rentTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Rent Price (₹)',
+                    data: {{ property.rent_trend|tojson }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+        
+        // Booking date calculation
+        const checkInInput = document.getElementById('check_in');
+        const checkOutInput = document.getElementById('check_out');
+        const nightsElement = document.getElementById('nights');
+        const totalElement = document.getElementById('total');
+        const serviceFeeElement = document.getElementById('service_fee');
+        const grandTotalElement = document.getElementById('grand_total');
+        
+        function calculateBookingDetails() {
+            if (checkInInput && checkOutInput && checkInInput.value && checkOutInput.value) {
+                const checkIn = new Date(checkInInput.value);
+                const checkOut = new Date(checkOutInput.value);
+                
+                // Calculate nights
+                const timeDiff = checkOut.getTime() - checkIn.getTime();
+                const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                if (nights > 0) {
+                    // Calculate costs
+                    const rentPerNight = {{ property.rent }};
+                    const total = rentPerNight * nights;
+                    const serviceFee = Math.round(total * 0.1); // 10% service fee
+                    const grandTotal = total + serviceFee;
+                    
+                    // Update display
+                    nightsElement.textContent = nights;
+                    totalElement.textContent = '₹' + total;
+                    serviceFeeElement.textContent = '₹' + serviceFee;
+                    grandTotalElement.textContent = '₹' + grandTotal;
+                } else {
+                    resetCalculation();
+                }
+            } else {
+                resetCalculation();
+            }
+        }
+        
+        function resetCalculation() {
+            nightsElement.textContent = '0';
+            totalElement.textContent = '₹0';
+            serviceFeeElement.textContent = '₹0';
+            grandTotalElement.textContent = '₹0';
+        }
+        
+        // Add event listeners
+        if (checkInInput && checkOutInput) {
+            checkInInput.addEventListener('change', function() {
+                // Update minimum date for checkout
+                if (checkInInput.value) {
+                    const nextDay = new Date(checkInInput.value);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    checkOutInput.min = nextDay.toISOString().split('T')[0];
+                    
+                    // If checkout date is before check-in date, reset it
+                    if (checkOutInput.value && new Date(checkOutInput.value) <= new Date(checkInInput.value)) {
+                        checkOutInput.value = '';
+                    }
+                }
+                calculateBookingDetails();
+            });
+            
+            checkOutInput.addEventListener('change', calculateBookingDetails);
+        }
+        
+        // Favorite button functionality
+        const favoriteBtn = document.getElementById('addToFavorites');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', function() {
+                const propertyId = this.getAttribute('data-property-id');
+                
+                fetch('/toggle_favorite/' + propertyId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        if (data.is_favorite) {
+                            favoriteBtn.innerHTML = '<i class="fas fa-heart me-2"></i> Remove from Favorites';
+                        } else {
+                            favoriteBtn.innerHTML = '<i class="far fa-heart me-2"></i> Add to Favorites';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+        
+        // Initialize rating stars
+        const ratingInputs = document.querySelectorAll('.rating-input input');
+        const ratingLabels = document.querySelectorAll('.rating-input label');
+        
+        ratingInputs.forEach((input, index) => {
+            input.addEventListener('change', function() {
+                // Reset all stars
+                ratingLabels.forEach(label => {
+                    label.innerHTML = '<i class="far fa-star"></i>';
+                });
+                
+                // Fill stars up to selected rating
+                for (let i = 0; i <= index; i++) {
+                    ratingLabels[i].innerHTML = '<i class="fas fa-star"></i>';
+                }
+            });
+        });
+        
+        // Thumbnail click functionality
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const slideIndex = this.getAttribute('data-bs-slide-to');
+                const carousel = document.getElementById('propertyCarousel');
+                const bsCarousel = new bootstrap.Carousel(carousel);
+                bsCarousel.to(parseInt(slideIndex));
+            });
+        });
+    });
+</script>
+{% endblock %}
