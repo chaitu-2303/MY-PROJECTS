@@ -1,97 +1,747 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRP - Owner Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../statics/style.css">
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../home.html">HRP</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../home.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Owner
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item active" href="dashboard.html">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                            <li><a class="dropdown-item" href="add_property.html">Add Property</a></li>
+{% block title %}Owner Dashboard - House Rent Prediction{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .dashboard-stats .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    .dashboard-stats .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .dashboard-stats .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        font-size: 24px;
+    }
+    .dashboard-stats .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .dashboard-stats .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    .property-list-item {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .property-list-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .property-img {
+        height: 200px;
+        object-fit: cover;
+    }
+    .property-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .status-active {
+        background-color: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+    .status-pending {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+    .status-inactive {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    .property-actions .btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    .dashboard-tabs .nav-link {
+        border-radius: 10px;
+        padding: 15px 20px;
+        margin-right: 10px;
+        color: #6c757d;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+    .dashboard-tabs .nav-link i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    .dashboard-tabs .nav-link.active {
+        background-color: var(--bs-primary);
+        color: white;
+    }
+    .booking-item {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .booking-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .booking-status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .chart-container {
+        height: 300px;
+    }
+    .message-item {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+    }
+    .message-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .message-item .unread-badge {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--bs-primary);
+        display: inline-block;
+        margin-right: 5px;
+    }
+    .review-item {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+    }
+    .review-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .rating-stars {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title d-flex justify-content-between align-items-center">
+                <div data-aos="fade-right">
+                    <h1 class="h3 mb-0">Owner Dashboard</h1>
+                    <nav aria-label="breadcrumb" data-aos="fade-right" data-aos-delay="100">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex" data-aos="fade-left">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dateRangeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-calendar-alt me-2"></i> Last 30 Days
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dateRangeDropdown">
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">Last 7 Days</a></li>
+                            <li><a class="dropdown-item active" href="#">Last 30 Days</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="../Auth/login.html">Logout</a></li>
+                            <li><a class="dropdown-item" href="#" id="customDateRange">Custom Range</a></li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                    <a href="{{ url_for('add_property') }}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Property
+                    </a>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</div>
 
-    <!-- Owner Dashboard Section -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Owner Dashboard</h2>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="list-group">
-                        <a href="dashboard.html" class="list-group-item list-group-item-action active" aria-current="true">Dashboard</a>
-                        <a href="profile.html" class="list-group-item list-group-item-action">Profile</a>
-                        <a href="add_property.html" class="list-group-item list-group-item-action">Add Property</a>
-                        <a href="../Auth/login.html" class="list-group-item list-group-item-action">Logout</a>
+<section class="dashboard-content py-5">
+    <div class="container-fluid">
+        <div class="dashboard-stats mb-5" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card bg-white shadow-sm">
+                        <div class="stat-icon bg-primary-soft text-primary">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="stat-value">{{ properties|length if properties else 0 }}</div>
+                        <div class="stat-label">Total Properties</div>
+                        <div class="progress mt-3" style="height: 4px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ (properties|length if properties else 0)/10 * 100 }}%;" aria-valuenow="0" data-value="{{ properties|length if properties else 0 }}" aria-valuemin="0" aria-valuemax="10" aria-label="Properties progress"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-9">
-                    <h3>Welcome, Owner!</h3>
-                    <p>This is your dashboard. You can manage your properties and profile from here.</p>
-                    <h4>My Properties</h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Property</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Bookings</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Modern Apartment</td>
-                                <td><span class="badge bg-success">Rented</span></td>
-                                <td>5</td>
-                                <td><a href="property_detail.html" class="btn btn-sm btn-primary">View</a></td>
-                            </tr>
-                            <tr>
-                                <td>Cozy House</td>
-                                <td><span class="badge bg-warning text-dark">Available</span></td>
-                                <td>0</td>
-                                <td><a href="property_detail.html" class="btn btn-sm btn-primary">View</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card bg-white shadow-sm">
+                        <div class="stat-icon bg-success-soft text-success">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-value">{{ bookings|length if bookings else 0 }}</div>
+                        <div class="stat-label">Total Bookings</div>
+                        <div class="progress mt-3" style="height: 4px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (bookings|length if bookings else 0)/20 * 100 }}%;" aria-valuenow="0" data-value="{{ bookings|length if bookings else 0 }}" aria-valuemin="0" aria-valuemax="20" aria-label="Bookings progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card bg-white shadow-sm">
+                        <div class="stat-icon bg-info-soft text-info">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Average Rating</div>
+                        <div class="rating-stars mt-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                        </div>
+                        <div class="progress mt-3" style="height: 4px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 96%;" aria-valuenow="4.8" aria-valuemin="0" aria-valuemax="5" aria-label="Average rating progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card bg-white shadow-sm">
+                        <div class="stat-icon bg-warning-soft text-warning">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-value">₹{{ total_earnings if total_earnings else 0 }}</div>
+                        <div class="stat-label">Total Earnings</div>
+                        <div class="progress mt-3" style="height: 4px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (total_earnings if total_earnings else 0)/50000 * 100 }}%;" aria-valuenow="0" data-value="{{ total_earnings if total_earnings else 0 }}" aria-valuemin="0" aria-valuemax="50000" aria-label="Earnings progress"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3">
-        <div class="container">
-            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+        <div class="dashboard-tabs mb-4" data-aos="fade-up">
+            <ul class="nav nav-pills mb-4" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="properties-tab" data-bs-toggle="pill" data-bs-target="#properties" type="button" role="tab" aria-controls="properties" aria-selected="true">
+                        <i class="fas fa-home"></i> Properties
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bookings-tab" data-bs-toggle="pill" data-bs-target="#bookings" type="button" role="tab" aria-controls="bookings" aria-selected="false">
+                        <i class="fas fa-calendar-check"></i> Bookings
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="analytics-tab" data-bs-toggle="pill" data-bs-target="#analytics" type="button" role="tab" aria-controls="analytics" aria-selected="false">
+                        <i class="fas fa-chart-line"></i> Analytics
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="messages-tab" data-bs-toggle="pill" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">
+                        <i class="fas fa-envelope"></i> Messages
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="pill" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">
+                        <i class="fas fa-star"></i> Reviews
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="dashboardTabsContent">
+                <div class="tab-pane fade show active" id="properties" role="tabpanel" aria-labelledby="properties-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Your Properties</h4>
+                        <div class="d-flex">
+                            <div class="input-group me-3" style="width: 250px;">
+                                <input type="text" class="form-control" placeholder="Search properties...">
+                                <button class="btn btn-outline-secondary" type="button" aria-label="Search properties">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="propertyFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter me-2"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="propertyFilterDropdown">
+                                    <li><a class="dropdown-item active" href="#">All Properties</a></li>
+                                    <li><a class="dropdown-item" href="#">Active</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Inactive</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        {% if properties %}
+                            {% for property in properties %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="property-list-item card shadow-sm">
+                                    <div class="position-relative">
+                                        <img src="{{ property.images[0] if property.images else url_for('static', filename='img/property-placeholder.jpg') }}" class="card-img-top property-img" alt="{{ property.title }}">
+                                        <div class="property-status status-{{ property.status|lower }}">{{ property.status }}</div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ property.title }}</h5>
+                                        <p class="card-text text-muted"><i class="fas fa-map-marker-alt me-2"></i>{{ property.location }}</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div><strong>₹{{ property.price }}</strong> / month</div>
+                                            <div>
+                                                <i class="fas fa-star text-warning"></i>
+                                                <span>{{ property.average_rating|default('New', true) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="property-actions d-flex justify-content-between">
+                                            <a href="{{ url_for('owner_property_detail', property_id=property.id) }}" class="btn btn-outline-primary"><i class="fas fa-eye me-2"></i>View</a>
+                                            <a href="{{ url_for('edit_property', property_id=property.id) }}" class="btn btn-outline-secondary"><i class="fas fa-edit me-2"></i>Edit</a>
+                                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePropertyModal{{ property.id }}"><i class="fas fa-trash-alt me-2"></i>Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12">
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i> You don't have any properties yet. <a href="{{ url_for('add_property') }}" class="alert-link">Add your first property</a>.
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="bookings" role="tabpanel" aria-labelledby="bookings-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Your Bookings</h4>
+                        <div class="d-flex">
+                            <div class="input-group me-3" style="width: 250px;">
+                                <input type="text" class="form-control" placeholder="Search bookings...">
+                                <button class="btn btn-outline-secondary" type="button" aria-label="Search bookings">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="bookingFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter me-2"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="bookingFilterDropdown">
+                                    <li><a class="dropdown-item active" href="#">All Bookings</a></li>
+                                    <li><a class="dropdown-item" href="#">Confirmed</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Cancelled</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Tenant</th>
+                                    <th>Dates</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if bookings %}
+                                    {% for booking in bookings %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ booking.property.images[0] if booking.property.images else url_for('static', filename='img/property-placeholder.jpg') }}" class="rounded me-3" width="50" height="50" style="object-fit: cover;" alt="{{ booking.property.title }}">
+                                                <div>
+                                                    <div class="fw-bold">{{ booking.property.title }}</div>
+                                                    <small class="text-muted">{{ booking.property.location }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">{{ booking.user.name }}</div>
+                                            <small class="text-muted">{{ booking.user.email }}</small>
+                                        </td>
+                                        <td>
+                                            <div>{{ booking.start_date.strftime('%d %b, %Y') }}</div>
+                                            <small class="text-muted">to {{ booking.end_date.strftime('%d %b, %Y') }}</small>
+                                        </td>
+                                        <td>₹{{ booking.total_amount }}</td>
+                                        <td>
+                                            <span class="booking-status {% if booking.status == 'Confirmed' %}bg-success-soft text-success{% elif booking.status == 'Pending' %}bg-warning-soft text-warning{% elif booking.status == 'Cancelled' %}bg-danger-soft text-danger{% elif booking.status == 'Completed' %}bg-info-soft text-info{% endif %}">
+                                                {{ booking.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="bookingActionDropdown{{ booking.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="bookingActionDropdown{{ booking.id }}">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View Details</a></li>
+                                                    {%- if booking.status == 'Pending' -%}
+                                                    <li><a class="dropdown-item text-success" href="#"><i class="fas fa-check-circle me-2"></i>Confirm</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-times-circle me-2"></i>Reject</a></li>
+                                                    {%- endif -%}
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Message Tenant</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <div class="alert alert-info mb-0" role="alert">
+                                                <i class="fas fa-info-circle me-2"></i> You don't have any bookings yet.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="analytics" role="tabpanel" aria-labelledby="analytics-tab">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">Booking Statistics</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" id="bookingChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">Revenue</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" id="revenueChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">Property Views</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" id="viewsChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">Ratings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" id="ratingsChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Messages</h4>
+                        <div class="d-flex">
+                            <div class="input-group me-3" style="width: 250px;">
+                                <input type="text" class="form-control" placeholder="Search messages...">
+                                <button class="btn btn-outline-secondary" type="button" aria-label="Search messages">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="messageFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter me-2"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="messageFilterDropdown">
+                                    <li><a class="dropdown-item active" href="#">All Messages</a></li>
+                                    <li><a class="dropdown-item" href="#">Unread</a></li>
+                                    <li><a class="dropdown-item" href="#">Read</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action message-item p-3">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="unread-badge"></span>
+                                    <img src="{{ url_for('static', filename='img/user-1.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Rahul Sharma</h6>
+                                        <p class="mb-1 text-truncate" style="max-width: 500px;">I'm interested in your 2BHK apartment in Kolkata. Is it still available for rent?</p>
+                                        <small class="text-muted">Regarding: Luxury 2BHK Apartment</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">3 hours ago</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action message-item p-3">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='img/user-2.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Priya Patel</h6>
+                                        <p class="mb-1 text-truncate" style="max-width: 500px;">Thank you for confirming my booking. I'll be arriving on the 15th as planned.</p>
+                                        <small class="text-muted">Regarding: Modern Studio Apartment</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Yesterday</small>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action message-item p-3">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='img/user-3.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Amit Kumar</h6>
+                                        <p class="mb-1 text-truncate" style="max-width: 500px;">Is the property pet-friendly? I have a small dog and would like to know if pets are allowed.</p>
+                                        <small class="text-muted">Regarding: Family Home in Salt Lake</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Property Reviews</h4>
+                        <div class="d-flex">
+                            <div class="input-group me-3" style="width: 250px;">
+                                <input type="text" class="form-control" placeholder="Search reviews...">
+                                <button class="btn btn-outline-secondary" type="button" aria-label="Search reviews">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="reviewFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter me-2"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="reviewFilterDropdown">
+                                    <li><a class="dropdown-item active" href="#">All Reviews</a></li>
+                                    <li><a class="dropdown-item" href="#">5 Star</a></li>
+                                    <li><a class="dropdown-item" href="#">4 Star</a></li>
+                                    <li><a class="dropdown-item" href="#">3 Star</a></li>
+                                    <li><a class="dropdown-item" href="#">2 Star</a></li>
+                                    <li><a class="dropdown-item" href="#">1 Star</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-group">
+                        <div class="list-group-item review-item p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='img/user-4.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Neha Gupta</h6>
+                                        <div class="rating-stars mb-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <small class="text-muted">For: Luxury 2BHK Apartment</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">1 week ago</small>
+                            </div>
+                            <p class="mb-0">The apartment was exactly as described. Very clean, modern, and in a great location. The host was very responsive and helpful throughout my stay. Would definitely recommend!</p>
+                        </div>
+                        <div class="list-group-item review-item p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='img/user-5.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Rajesh Singh</h6>
+                                        <div class="rating-stars mb-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                        <small class="text-muted">For: Modern Studio Apartment</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">2 weeks ago</small>
+                            </div>
+                            <p class="mb-0">Great location and comfortable space. The only issue was with the water pressure in the shower, but otherwise everything was perfect. The host was very accommodating with my check-in time.</p>
+                        </div>
+                        <div class="list-group-item review-item p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='img/user-6.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-1">Ananya Das</h6>
+                                        <div class="rating-stars mb-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <small class="text-muted">For: Family Home in Salt Lake</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">1 month ago</small>
+                            </div>
+                            <p class="mb-0">We had a wonderful stay at this property. The house was spacious, clean, and had all the amenities we needed. The neighborhood is quiet and safe, perfect for families. The host was very friendly and provided great recommendations for local restaurants and activities.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+</section>
+{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/script.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize date picker for custom range
+        document.getElementById('customDateRange').addEventListener('click', function(e) {
+            e.preventDefault();
+            flatpickr.calendar({
+                mode: 'range',
+                dateFormat: 'Y-m-d',
+                onClose: function(selectedDates, dateStr) {
+                    // Handle date range selection
+                    console.log(selectedDates, dateStr);
+                }
+            }).open();
+        });
+        
+        // Initialize charts if analytics tab is shown
+        document.getElementById('analytics-tab').addEventListener('shown.bs.tab', function() {
+            // Booking Chart
+            const bookingCtx = document.getElementById('bookingChart').getContext('2d');
+            const bookingChart = new Chart(bookingCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Bookings',
+                        data: [5, 8, 12, 10, 15, 20, 18, 22, 25, 23, 20, 18],
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: [25000, 30000, 35000, 32000, 40000, 45000, 42000, 48000, 50000, 47000, 45000, 43000],
+                        backgroundColor: '#198754'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Views Chart
+            const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+            const viewsChart = new Chart(viewsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Property Views',
+                        data: [120, 150, 180, 210],
+                        borderColor: '#6f42c1',
+                        backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Ratings Chart
+            const ratingsCtx = document.getElementById('ratingsChart').getContext('2d');
+            const ratingsChart = new Chart(ratingsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['5 Star', '4 Star', '3 Star', '2 Star', '1 Star'],
+                    datasets: [{
+                        data: [65, 20, 10, 3, 2],
+                        backgroundColor: ['#198754', '#20c997', '#0dcaf0', '#ffc107', '#dc3545']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+    });
+
+    // Update aria-valuenow attributes with actual values from data-value attributes
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-bar[data-value]');
+        progressBars.forEach(function(bar) {
+            const value = bar.getAttribute('data-value');
+            bar.setAttribute('aria-valuenow', value);
+        });
+    });
+</script>
+{% endblock %}

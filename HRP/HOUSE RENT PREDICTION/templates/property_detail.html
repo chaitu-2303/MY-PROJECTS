@@ -1,0 +1,603 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ property.title }} - House Rent Prediction{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+<style>
+    .swiper {
+        width: 100%;
+        height: 500px;
+        border-radius: 10px;
+    }
+    .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .property-amenities .amenity-item {
+        margin-bottom: 15px;
+    }
+    .property-amenities .amenity-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        color: var(--bs-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+    .property-map {
+        height: 400px;
+        border-radius: 10px;
+    }
+    .review-item {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    .review-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+    .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .reviewer-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+    .rating-stars {
+        color: #ffc107;
+    }
+    .similar-properties .property-card {
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Property Detail Section -->
+<section class="property-detail-section pt-5 mt-5">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('properties') }}">Properties</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ property.title }}</li>
+            </ol>
+        </nav>
+        
+        <!-- Property Header -->
+        <div class="property-header mb-4">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="property-title mb-2">{{ property.title }}</h1>
+                    <p class="property-location mb-0"><i class="fas fa-map-marker-alt text-primary me-2"></i>{{ property.location }}</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <div class="property-price mb-2">₹{{ property.rent }}<span>/month</span></div>
+                    <div class="property-rating">
+                        <span class="rating-stars">
+                            {% for i in range(1, 6) %}
+                                {% if i <= property.average_rating|int %}
+                                    <i class="fas fa-star"></i>
+                                {% elif i - 0.5 <= property.average_rating %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        <span class="rating-count">({{ property.reviews|length }} reviews)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Property Gallery -->
+        <div class="property-gallery mb-5" data-aos="fade-up">
+            <div class="swiper property-swiper">
+                <div class="swiper-wrapper">
+                    {% for image in property.images %}
+                    <div class="swiper-slide">
+                        <img src="{{ image.url }}" alt="{{ property.title }} - Image {{ loop.index }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Property Details -->
+            <div class="col-lg-8">
+                <!-- Property Features -->
+                <div class="property-features mb-5" data-aos="fade-up">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="row text-center">
+                                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                                    <div class="feature-icon mb-2">
+                                        <i class="fas fa-bed fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="feature-title">{{ property.bhk }} BHK</h5>
+                                    <p class="text-muted mb-0">Bedrooms</p>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                                    <div class="feature-icon mb-2">
+                                        <i class="fas fa-bath fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="feature-title">{{ property.bathrooms }}</h5>
+                                    <p class="text-muted mb-0">Bathrooms</p>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="feature-icon mb-2">
+                                        <i class="fas fa-vector-square fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="feature-title">{{ property.size }}</h5>
+                                    <p class="text-muted mb-0">Square Feet</p>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="feature-icon mb-2">
+                                        <i class="fas fa-couch fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="feature-title">{{ property.furnishing }}</h5>
+                                    <p class="text-muted mb-0">Furnishing</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Description -->
+                <div class="property-description mb-5" data-aos="fade-up">
+                    <h3 class="section-title mb-4">Description</h3>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <p>{{ property.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Amenities -->
+                <div class="property-amenities mb-5" data-aos="fade-up">
+                    <h3 class="section-title mb-4">Amenities</h3>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="row">
+                                {% for amenity in property.amenities %}
+                                <div class="col-md-6">
+                                    <div class="amenity-item d-flex align-items-center">
+                                        <div class="amenity-icon">
+                                            <i class="{{ amenity.icon }}"></i>
+                                        </div>
+                                        <span>{{ amenity.name }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Location -->
+                <div class="property-location-section mb-5" data-aos="fade-up">
+                    <h3 class="section-title mb-4">Location</h3>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="property-map mb-4" id="propertyMap"></div>
+                            <h4 class="mb-3">Nearby Places</h4>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="amenity-icon">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">Education</h5>
+                                            <p class="mb-0 text-muted">Schools within 2 km</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="amenity-icon">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">Shopping</h5>
+                                            <p class="mb-0 text-muted">Mall within 3 km</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="amenity-icon">
+                                            <i class="fas fa-hospital"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">Healthcare</h5>
+                                            <p class="mb-0 text-muted">Hospital within 5 km</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="amenity-icon">
+                                            <i class="fas fa-bus"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">Transportation</h5>
+                                            <p class="mb-0 text-muted">Bus stop within 0.5 km</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="property-reviews mb-5" data-aos="fade-up">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="section-title mb-0">Reviews</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">Write a Review</button>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            {% if property.reviews %}
+                                {% for review in property.reviews %}
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <img src="{{ review.user.profile_pic }}" alt="{{ review.user.name }}" class="reviewer-img">
+                                        <div>
+                                            <h5 class="mb-0">{{ review.user.name }}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <div class="rating-stars me-2">
+                                                    {% for i in range(1, 6) %}
+                                                        {% if i <= review.rating %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <span class="text-muted">{{ review.created_at.strftime('%B %d, %Y') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-content mt-3">
+                                        <p>{{ review.comment }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="far fa-comment-dots fa-3x text-muted mb-3"></i>
+                                    <h5>No Reviews Yet</h5>
+                                    <p class="text-muted">Be the first to review this property</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Owner Info -->
+                <div class="owner-info-card mb-4" data-aos="fade-up">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Contact Owner</h4>
+                            <div class="d-flex align-items-center mb-4">
+                                <img src="{{ property.owner.profile_pic }}" alt="{{ property.owner.name }}" class="owner-img me-3">
+                                <div>
+                                    <h5 class="mb-0">{{ property.owner.name }}</h5>
+                                    <p class="text-muted mb-0">Property Owner</p>
+                                </div>
+                            </div>
+                            <form class="contact-owner-form">
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Message</label>
+                                    <textarea class="form-control" id="message" rows="4" placeholder="I'm interested in this property..."></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </div>
+                            </form>
+                            <div class="mt-4">
+                                <div class="d-grid gap-2">
+                                    <a href="tel:{{ property.owner.phone }}" class="btn btn-outline-primary"><i class="fas fa-phone me-2"></i>Call Owner</a>
+                                    <a href="https://wa.me/{{ property.owner.phone }}" class="btn btn-outline-success"><i class="fab fa-whatsapp me-2"></i>WhatsApp</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Card -->
+                <div class="booking-card mb-4" data-aos="fade-up">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Schedule a Visit</h4>
+                            <form class="booking-form">
+                                <div class="mb-3">
+                                    <label for="visit-date" class="form-label">Preferred Date</label>
+                                    <input type="date" class="form-control" id="visit-date" min="{{ now.strftime('%Y-%m-%d') }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="visit-time" class="form-label">Preferred Time</label>
+                                    <select class="form-select" id="visit-time">
+                                        <option value="" selected disabled>Select Time</option>
+                                        <option value="10:00 AM">10:00 AM</option>
+                                        <option value="11:00 AM">11:00 AM</option>
+                                        <option value="12:00 PM">12:00 PM</option>
+                                        <option value="1:00 PM">1:00 PM</option>
+                                        <option value="2:00 PM">2:00 PM</option>
+                                        <option value="3:00 PM">3:00 PM</option>
+                                        <option value="4:00 PM">4:00 PM</option>
+                                        <option value="5:00 PM">5:00 PM</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Schedule Visit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Details Card -->
+                <div class="property-details-card mb-4" data-aos="fade-up">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Property Details</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Property ID</span>
+                                    <span class="fw-bold">{{ property.id }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Property Type</span>
+                                    <span class="fw-bold">{{ property.property_type }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Posted On</span>
+                                    <span class="fw-bold">{{ property.created_at.strftime('%d %b, %Y') }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Available From</span>
+                                    <span class="fw-bold">{{ property.available_from.strftime('%d %b, %Y') }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Tenant Preferred</span>
+                                    <span class="fw-bold">{{ property.tenant_preferred }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Security Deposit</span>
+                                    <span class="fw-bold">₹{{ property.security_deposit }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span>Maintenance</span>
+                                    <span class="fw-bold">₹{{ property.maintenance }}/month</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Share and Save -->
+                <div class="share-save-card mb-4" data-aos="fade-up">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <button class="btn btn-outline-primary w-100 me-2" id="shareProperty">
+                                    <i class="fas fa-share-alt me-2"></i>Share
+                                </button>
+                                <button class="btn btn-outline-danger w-100 ms-2" id="saveProperty">
+                                    <i class="far fa-heart me-2"></i>Save
+                                </button>
+                            </div>
+                            <div class="social-share-buttons d-none" id="socialShareButtons">
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a href="#" class="btn btn-outline-primary btn-sm"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#" class="btn btn-outline-info btn-sm"><i class="fab fa-twitter"></i></a>
+                                    <a href="#" class="btn btn-outline-success btn-sm"><i class="fab fa-whatsapp"></i></a>
+                                    <a href="#" class="btn btn-outline-danger btn-sm"><i class="fab fa-pinterest"></i></a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fas fa-envelope"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Similar Properties -->
+        <div class="similar-properties mt-5" data-aos="fade-up">
+            <h3 class="section-title mb-4">Similar Properties</h3>
+            <div class="row">
+                {% for property in similar_properties %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="property-card">
+                        <div class="property-card-header">
+                            <img src="{{ property.image_url }}" alt="{{ property.title }}" class="img-fluid property-img">
+                            <span class="property-badge">{{ property.property_type }}</span>
+                            <button class="favorite-btn" aria-label="Add to favorites">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="property-card-body">
+                            <div class="property-price">₹{{ property.rent }}<span>/month</span></div>
+                            <h3 class="property-title"><a href="{{ url_for('property_detail', id=property.id) }}">{{ property.title }}</a></h3>
+                            <p class="property-location"><i class="fas fa-map-marker-alt"></i> {{ property.location }}</p>
+                            <div class="property-features">
+                                <span><i class="fas fa-bed"></i> {{ property.bhk }} BHK</span>
+                                <span><i class="fas fa-bath"></i> {{ property.bathrooms }} Baths</span>
+                                <span><i class="fas fa-vector-square"></i> {{ property.size }} sq.ft</span>
+                            </div>
+                        </div>
+                        <div class="property-card-footer">
+                            <div class="owner-info">
+                                <img src="{{ property.owner.profile_pic }}" alt="Owner" class="owner-img">
+                                <span>{{ property.owner.name }}</span>
+                            </div>
+                            <div class="property-rating">
+                                <i class="fas fa-star"></i>
+                                <span>{{ property.average_rating|default('New', true) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating-input">
+                            <div class="rating-stars">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Your Review</label>
+                        <textarea class="form-control" id="reviewComment" rows="4" placeholder="Share your experience with this property..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitReview">Submit Review</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+<script>
+    // Initialize Swiper
+    document.addEventListener('DOMContentLoaded', function() {
+        const swiper = new Swiper('.property-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+        
+        // Share button functionality
+        const shareButton = document.getElementById('shareProperty');
+        const socialButtons = document.getElementById('socialShareButtons');
+        
+        shareButton.addEventListener('click', function() {
+            socialButtons.classList.toggle('d-none');
+        });
+        
+        // Save property functionality
+        const saveButton = document.getElementById('saveProperty');
+        saveButton.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                this.innerHTML = '<i class="fas fa-heart me-2"></i>Saved';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                this.innerHTML = '<i class="far fa-heart me-2"></i>Save';
+            }
+        });
+        
+        // Rating functionality
+        const ratingStars = document.querySelectorAll('.rating-input .rating-stars i');
+        const ratingInput = document.getElementById('ratingInput');
+        
+        ratingStars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const rating = this.getAttribute('data-rating');
+                highlightStars(rating);
+            });
+            
+            star.addEventListener('mouseout', function() {
+                const currentRating = ratingInput.value;
+                highlightStars(currentRating);
+            });
+            
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-rating');
+                ratingInput.value = rating;
+                highlightStars(rating);
+            });
+        });
+        
+        function highlightStars(rating) {
+            ratingStars.forEach(star => {
+                const starRating = star.getAttribute('data-rating');
+                if (starRating <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+    });
+    
+    // Initialize Google Map
+    function initMap() {
+        let propertyLocation = { lat: {{ property.latitude|default(22.5726) }}, lng: {{ property.longitude|default(88.3639) }} };
+        const map = new google.maps.Map(document.getElementById('propertyMap'), {
+            zoom: 15,
+            center: propertyLocation,
+        });
+        const marker = new google.maps.Marker({
+            position: propertyLocation,
+            map: map,
+            title: '{{ property.title }}'
+        });
+    }); // Close document ready function
+</script>
+{% endblock %}

@@ -1,101 +1,397 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRP - My Favorites</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../statics/style.css">
-</head>
-<body>
+{% extends "base.html" %}
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../home.html">HRP</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../home.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../available_properties.html">Available Properties</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Customer
+{% block title %}My Favorites{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Favorites Page Styles */
+    .favorite-card {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .favorite-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .favorite-card .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .favorite-card .property-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .favorite-card .property-location {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+    
+    .favorite-card .property-price {
+        font-weight: 700;
+        color: var(--bs-primary);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .favorite-card .property-features {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .favorite-card .card-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .favorite-card .btn-favorite {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #dc3545;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s;
+    }
+    
+    .favorite-card .btn-favorite:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .filter-bar {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+    
+    .favorites-empty-state {
+        text-align: center;
+        padding: 3rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .favorites-empty-state img {
+        max-width: 150px;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+        <div>
+            <h1 class="page-title">My Favorites</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('customer_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Favorites</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="page-actions">
+            <a href="{{ url_for('available_properties') }}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i> Find Properties
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <select class="form-select" id="propertyTypeFilter" aria-label="Filter by property type">
+                    <option value="all">All Property Types</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="house">House</option>
+                    <option value="condo">Condo</option>
+                    <option value="villa">Villa</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="priceRangeFilter" aria-label="Filter by price range">
+                    <option value="all">All Price Ranges</option>
+                    <option value="budget">Budget ($0-$100)</option>
+                    <option value="mid">Mid-Range ($100-$200)</option>
+                    <option value="luxury">Luxury ($200+)</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="searchFavorites" class="visually-hidden">Search properties</label>
+                <input type="text" class="form-control" placeholder="Search properties..." id="searchFavorites" aria-label="Search properties">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100" id="resetFilters" aria-label="Reset all filters">
+                    <i class="fas fa-redo me-2"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites List -->
+    <div class="row" id="favoritesList" data-aos="fade-up" data-aos-delay="200">
+        <!-- Favorite Card 1 -->
+        <div class="col-md-6 col-lg-4 favorite-item" data-type="apartment" data-price="mid">
+            <div class="favorite-card card">
+                <div class="position-relative">
+                    <img src="{{ url_for('static', filename='img/properties/apartment1.jpg') }}" class="card-img-top" alt="Modern Apartment">
+                    <button class="btn-favorite" data-property-id="1" aria-label="Remove from favorites">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <h5 class="property-title">Modern Apartment</h5>
+                    <p class="property-location"><i class="fas fa-map-marker-alt me-2"></i>Downtown, City</p>
+                    <p class="property-price">$120/night</p>
+                    
+                    <div class="property-features">
+                        <span><i class="fas fa-bed me-1"></i> 2 Beds</span>
+                        <span><i class="fas fa-bath me-1"></i> 1 Bath</span>
+                        <span><i class="fas fa-ruler-combined me-1"></i> 850 sq ft</span>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <a href="{{ url_for('property_detail', property_id=1) }}" class="btn btn-primary w-100">
+                            View Details
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                            <li><a class="dropdown-item" href="bookings.html">My Bookings</a></li>
-                            <li><a class="dropdown-item active" href="favorites.html">My Favorites</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="../Auth/login.html">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Favorites Section -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">My Favorites</h2>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="list-group">
-                        <a href="dashboard.html" class="list-group-item list-group-item-action">Dashboard</a>
-                        <a href="profile.html" class="list-group-item list-group-item-action">Profile</a>
-                        <a href="bookings.html" class="list-group-item list-group-item-action">My Bookings</a>
-                        <a href="favorites.html" class="list-group-item list-group-item-action active" aria-current="true">My Favorites</a>
-                        <a href="../Auth/login.html" class="list-group-item list-group-item-action">Logout</a>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="row">
-                        <!-- Favorite Property Card 1 -->
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
-                                <div class="card-body">
-                                    <h5 class="card-title">Modern Apartment</h5>
-                                    <p class="card-text">A beautiful and modern apartment in the heart of the city.</p>
-                                    <a href="property_detail.html" class="btn btn-primary">View Details</a>
-                                    <button class="btn btn-danger">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Favorite Property Card 2 -->
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Property Image">
-                                <div class="card-body">
-                                    <h5 class="card-title">Cozy House</h5>
-                                    <p class="card-text">A cozy house with a beautiful garden. Perfect for a family.</p>
-                                    <a href="property_detail.html" class="btn btn-primary">View Details</a>
-                                    <button class="btn btn-danger">Remove</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3">
-        <div class="container">
-            <p>&copy; 2025 HRP. All Rights Reserved.</p>
+        
+        <!-- Favorite Card 2 -->
+        <div class="col-md-6 col-lg-4 favorite-item" data-type="house" data-price="budget">
+            <div class="favorite-card card">
+                <div class="position-relative">
+                    <img src="{{ url_for('static', filename='img/properties/house1.jpg') }}" class="card-img-top" alt="Cozy House">
+                    <button class="btn-favorite" data-property-id="2" aria-label="Remove from favorites">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <h5 class="property-title">Cozy House</h5>
+                    <p class="property-location"><i class="fas fa-map-marker-alt me-2"></i>Suburb Area, City</p>
+                    <p class="property-price">$95/night</p>
+                    
+                    <div class="property-features">
+                        <span><i class="fas fa-bed me-1"></i> 3 Beds</span>
+                        <span><i class="fas fa-bath me-1"></i> 2 Bath</span>
+                        <span><i class="fas fa-ruler-combined me-1"></i> 1200 sq ft</span>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <a href="{{ url_for('property_detail', property_id=2) }}" class="btn btn-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+        
+        <!-- Favorite Card 3 -->
+        <div class="col-md-6 col-lg-4 favorite-item" data-type="condo" data-price="luxury">
+            <div class="favorite-card card">
+                <div class="position-relative">
+                    <img src="{{ url_for('static', filename='img/properties/condo1.jpg') }}" class="card-img-top" alt="Luxury Condo">
+                    <button class="btn-favorite" data-property-id="3" aria-label="Remove from favorites">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <h5 class="property-title">Luxury Condo</h5>
+                    <p class="property-location"><i class="fas fa-map-marker-alt me-2"></i>Beachfront, City</p>
+                    <p class="property-price">$250/night</p>
+                    
+                    <div class="property-features">
+                        <span><i class="fas fa-bed me-1"></i> 2 Beds</span>
+                        <span><i class="fas fa-bath me-1"></i> 2 Bath</span>
+                        <span><i class="fas fa-ruler-combined me-1"></i> 1100 sq ft</span>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <a href="{{ url_for('property_detail', property_id=3) }}" class="btn btn-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div class="col-12 d-none" id="emptyFavorites">
+            <div class="favorites-empty-state">
+                <img src="{{ url_for('static', filename='img/illustrations/empty-favorites.svg') }}" alt="No favorites">
+                <h4>No favorites found</h4>
+                <p class="text-muted">You don't have any favorite properties matching your filters.</p>
+                <a href="{{ url_for('available_properties') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-search me-2"></i> Find Properties
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/script.js"></script>
+{% block extra_js %}
+<script>
+    // Initialize AOS animations
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter functionality
+        const propertyTypeFilter = document.getElementById('propertyTypeFilter');
+        const priceRangeFilter = document.getElementById('priceRangeFilter');
+        const searchInput = document.getElementById('searchFavorites');
+        const resetButton = document.getElementById('resetFilters');
+        const favoriteItems = document.querySelectorAll('.favorite-item');
+        const emptyState = document.getElementById('emptyFavorites');
+        
+        // Filter function
+        function filterFavorites() {
+            const propertyType = propertyTypeFilter.value;
+            const priceRange = priceRangeFilter.value;
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            let visibleCount = 0;
+            
+            favoriteItems.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                const itemPrice = item.getAttribute('data-price');
+                const title = item.querySelector('.property-title').textContent.toLowerCase();
+                const location = item.querySelector('.property-location').textContent.toLowerCase();
+                
+                const typeMatch = propertyType === 'all' || itemType === propertyType;
+                const priceMatch = priceRange === 'all' || itemPrice === priceRange;
+                const searchMatch = title.includes(searchTerm) || location.includes(searchTerm) || searchTerm === '';
+                
+                if (typeMatch && priceMatch && searchMatch) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                emptyState.classList.remove('d-none');
+            } else {
+                emptyState.classList.add('d-none');
+            }
+        }
+        
+        // Event listeners
+        propertyTypeFilter.addEventListener('change', filterFavorites);
+        priceRangeFilter.addEventListener('change', filterFavorites);
+        searchInput.addEventListener('input', filterFavorites);
+        
+        // Reset filters
+        resetButton.addEventListener('click', function() {
+            propertyTypeFilter.value = 'all';
+            priceRangeFilter.value = 'all';
+            searchInput.value = '';
+            filterFavorites();
+        });
+        
+        // Favorite button functionality
+        const favoriteButtons = document.querySelectorAll('.btn-favorite');
+        favoriteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const propertyId = this.getAttribute('data-property-id');
+                
+                // Send request to remove from favorites
+                // This is a placeholder - in a real app, you would make an AJAX call to your backend
+                fetch(`/api/favorites/remove/${propertyId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // For Django CSRF protection
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the card from the UI
+                        const card = this.closest('.favorite-item');
+                        card.classList.add('fade-out');
+                        setTimeout(() => {
+                            card.remove();
+                            // Check if we need to show empty state
+                            const remainingItems = document.querySelectorAll('.favorite-item');
+                            if (remainingItems.length === 0) {
+                                emptyState.classList.remove('d-none');
+                            }
+                        }, 300);
+                    } else {
+                        alert('Failed to remove from favorites. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+                
+                // For demo purposes, simulate successful removal
+                const card = this.closest('.favorite-item');
+                card.classList.add('fade-out');
+                setTimeout(() => {
+                    card.remove();
+                    // Check if we need to show empty state
+                    const remainingItems = document.querySelectorAll('.favorite-item:not([style*="display: none"])');
+                    if (remainingItems.length === 0) {
+                        emptyState.classList.remove('d-none');
+                    }
+                }, 300);
+            });
+        });
+        
+        // Helper function to get CSRF token from cookies (for Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock %}
 </body>
 </html>
