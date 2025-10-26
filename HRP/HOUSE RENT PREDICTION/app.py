@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, send_from_directory
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from config import Config
 from database import db
@@ -23,7 +23,10 @@ from flask_mail import Mail, Message
 # Define constants
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
 
-app = Flask(__name__)
+# Initialize Flask app with custom template and static folders
+app = Flask(__name__, 
+            template_folder='Frontend',  # Set Frontend folder as template directory
+            static_folder='Frontend/assets')  # Set Frontend/assets as static files directory
 app.config.from_object(Config)
 db.init_app(app)
 login_manager = LoginManager(app)
@@ -115,28 +118,81 @@ def rate_limit(max_attempts=10, window_seconds=600):  # Increased attempts and w
         return wrapped_view
     return decorator
 
+# Frontend routes with dataset integration
+@app.route('/')
+def index():
+    # Load dataset for featured properties
+    df = pd.read_csv('House_Rent_Dataset.csv', on_bad_lines='skip')
+    # Get 6 random properties for featured section
+    featured_properties = df.sample(min(6, len(df))).to_dict('records')
+    return render_template('index.html', featured_properties=featured_properties)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/login')
+def frontend_login():
+    return render_template('login.html')
+
+@app.route('/sign-up')
+def signup():
+    return render_template('sign-up.html')
+
+@app.route('/listing')
+def listing():
+    # Load dataset for property listings
+    df = pd.read_csv('House_Rent_Dataset.csv', on_bad_lines='skip')
+    # Clean column names by removing extra spaces
+    df.columns = [col.strip() for col in df.columns]
+    # Convert to list of dictionaries for template
+    properties = df.to_dict('records')
+    return render_template('listing.html', properties=properties)
+
+@app.route('/rent-prediction')
+def rent_prediction_page():
+    # Load dataset for rent prediction page
+    df = pd.read_csv('House_Rent_Dataset.csv', on_bad_lines='skip')
+    # Get statistics for the prediction page
+    stats = {
+        'total_properties': len(df),
+        'avg_rent': int(df[' Rent   '].str.strip().astype(float).mean()),
+        'cities': df[' City     '].str.strip().unique().tolist(),
+        'bhk_types': df[' BHK'].unique().tolist()
+    }
+    return render_template('rent-prediction.html', stats=stats)
+
+# Serve static files from subdirectories
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory('Frontend/assets', filename)
+
 # Error handlers
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    return render_template('errors/csrf_error.html'), 400
+    return render_template('error.html'), 400
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('errors/error.html', 
+    return render_template('error.html', 
                            error_code=404, 
                            error_title='Page Not Found',
                            error_message='The page you are looking for does not exist.'), 404
 
 @app.errorhandler(403)
 def forbidden(e):
-    return render_template('errors/error.html', 
+    return render_template('error.html', 
                            error_code=403, 
                            error_title='Forbidden',
                            error_message='You do not have permission to access this resource.'), 403
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('errors/error.html', 
+    return render_template('error.html', 
                            error_code=500, 
                            error_title='Internal Server Error',
                            error_message='Something went wrong on our end. Please try again later.'), 500

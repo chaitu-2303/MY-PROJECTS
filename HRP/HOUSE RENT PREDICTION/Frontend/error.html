@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Error Page - House Rent Prediction</title>
+    <meta name="description" content="Error page">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!-- ======= All CSS Plugins here ======== -->
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .error-code {
+            font-size: 72px;
+            margin-bottom: 10px;
+            color: #ff6d34;
+        }
+        .error-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader start -->
+    <div id="preloader">
+        <div class="loader--border"></div>
+    </div>
+    <!-- Preloader end -->
+    
+    <!-- Start header area -->
+    <header class="header__section">
+        <div class="header__sticky">
+            <a class="humberger__menu" data-bs-toggle="offcanvas" href="#offcanvasExample">
+                <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.03846C0 0.46523 0.465715 0 1.03954 0H19.0583C19.6321 0 20.0978 0.46523 20.0978 1.03846C20.0978 1.61169 19.6321 2.07692 19.0583 2.07692H1.03954C0.465715 2.07692 0 1.61169 0 1.03846ZM25.9885 9.6923H1.03954C0.465715 9.6923 0 10.1575 0 10.7308C0 11.304 0.465715 11.7692 1.03954 11.7692H25.9885C26.5624 11.7692 27.0281 11.304 27.0281 10.7308C27.0281 10.1575 26.5624 9.6923 25.9885 9.6923ZM13.514 19.3846H1.03954C0.465715 19.3846 0 19.8498 0 20.4231C0 20.9963 0.465715 21.4615 1.03954 21.4615H13.514C14.0879 21.4615 14.5536 20.9963 14.5536 20.4231C14.5536 19.8498 14.0879 19.3846 13.514 19.3846Z" fill="currentColor"/>
+                </svg>
+            </a>
+            <div class="container-fluid padding-lr-120">
+                <div class="main__header d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                            <span class="visually-hidden">Offcanvas Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
+                            <img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img">
+                        </a></h1>
+                    </div>
+                    <div class="header__menu d-none d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="index.html">Home</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="listing.html">Properties</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="rent-prediction.html">Rent Prediction</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="about.html">About</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account">
+                        <a class="header__account--btn primary__btn" href="login.html">Login / Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End header area -->
+        </div>
+    </header>
+    <!-- End header area -->
+
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Not Found</h2>
+        <p class="error-message">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+        <a href="index.html" class="primary__btn">Return to Home</a>
+    </div>
+
+    <!-- Start footer section -->
+    <footer class="footer__section footer__bg">
+        <!-- Footer content would go here -->
+    </footer>
+    <!-- End footer section -->
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+    <!-- All JS Plugins here -->
+    <script src="assets/js/vendor/popper.js" defer="defer"></script>
+    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
+    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
+    <script src="assets/js/plugins/glightbox.min.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
+
+
+
+

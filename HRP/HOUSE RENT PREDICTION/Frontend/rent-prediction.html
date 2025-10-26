@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rent Prediction - House Rent Prediction</title>
+    <meta name="description" content="Get accurate rent estimates based on property details and location">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!-- ======= All CSS Plugins here ======== -->
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Plugin css -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/aos.css">
+
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Preloader start -->
+    <div id="preloader">
+        <div class="loader--border"></div>
+    </div>
+    <!-- Preloader end -->
+    
+    <!-- Start header area -->
+    <header class="header__section">
+        <div class="header__sticky">
+            <a class="humberger__menu" data-bs-toggle="offcanvas" href="#offcanvasExample">
+                <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.03846C0 0.46523 0.465715 0 1.03954 0H19.0583C19.6321 0 20.0978 0.46523 20.0978 1.03846C20.0978 1.61169 19.6321 2.07692 19.0583 2.07692H1.03954C0.465715 2.07692 0 1.61169 0 1.03846ZM25.9885 9.6923H1.03954C0.465715 9.6923 0 10.1575 0 10.7308C0 11.304 0.465715 11.7692 1.03954 11.7692H25.9885C26.5624 11.7692 27.0281 11.304 27.0281 10.7308C27.0281 10.1575 26.5624 9.6923 25.9885 9.6923ZM13.514 19.3846H1.03954C0.465715 19.3846 0 19.8498 0 20.4231C0 20.9963 0.465715 21.4615 1.03954 21.4615H13.514C14.0879 21.4615 14.5536 20.9963 14.5536 20.4231C14.5536 19.8498 14.0879 19.3846 13.514 19.3846Z" fill="currentColor"/>
+                </svg>
+            </a>
+            <div class="container-fluid padding-lr-120">
+                <div class="main__header d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                            <span class="visually-hidden">Offcanvas Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
+                            <img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img">
+                        </a></h1>
+                    </div>
+                    <div class="header__menu d-none d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="index.html">Home</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="listing.html">Properties</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link active" href="rent-prediction.html">Rent Prediction</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="about.html">About</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="dashboard.html">Dashboard</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account">
+                        <a class="header__account--btn primary__btn" href="login.html">Login / Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End header area -->
+    <!-- Preloader end -->
+    
+    <!-- Start header area -->
+    <header class="header__section">
+        <div class="header__sticky">
+            <a class="humberger__menu" data-bs-toggle="offcanvas" href="#offcanvasExample">
+                <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.03846C0 0.46523 0.465715 0 1.03954 0H19.0583C19.6321 0 20.0978 0.46523 20.0978 1.03846C20.0978 1.61169 19.6321 2.07692 19.0583 2.07692H1.03954C0.465715 2.07692 0 1.61169 0 1.03846ZM25.9885 9.6923H1.03954C0.465715 9.6923 0 10.1575 0 10.7308C0 11.304 0.465715 11.7692 1.03954 11.7692H25.9885C26.5624 11.7692 27.0281 11.304 27.0281 10.7308C27.0281 10.1575 26.5624 9.6923 25.9885 9.6923ZM13.514 19.3846H1.03954C0.465715 19.3846 0 19.8498 0 20.4231C0 20.9963 0.465715 21.4615 1.03954 21.4615H13.514C14.0879 21.4615 14.5536 20.9963 14.5536 20.4231C14.5536 19.8498 14.0879 19.3846 13.514 19.3846Z" fill="currentColor"/>
+                </svg>
+            </a>
+            <!-- Include your header content here -->
+        </div>
+    </header>
+    <!-- End header area -->
+
+    <!-- Page Header -->
+    <div class="breadcrumb__section breadcrumb__bg">
+        <div class="container">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="breadcrumb__content text-center">
+                        <h1 class="breadcrumb__content--title">Rent Prediction</h1>
+                        <ul class="breadcrumb__content--menu d-flex justify-content-center">
+                            <li class="breadcrumb__content--menu__items"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb__content--menu__items"><span>Rent Prediction</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Form Section -->
+    <section class="contact__section section--padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="contact__form" data-aos="fade-up">
+                        <h2 class="text-center mb-4">Predict Your Property's Rental Value</h2>
+                        <p class="text-center mb-4">Fill in the details below to get an accurate prediction of your property's rental value based on our advanced machine learning model.</p>
+                        
+                        <form class="prediction-form" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="bhk" class="contact__form--label">BHK (Bedrooms)</label>
+                                        <select class="contact__form--input" id="bhk" name="bhk" required>
+                                            <option value="" selected disabled>Select BHK</option>
+                                            <option value="1">1 BHK</option>
+                                            <option value="2">2 BHK</option>
+                                            <option value="3">3 BHK</option>
+                                            <option value="4">4 BHK</option>
+                                            <option value="5">5 BHK</option>
+                                            <option value="6">6+ BHK</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="size" class="contact__form--label">Size (sq.ft)</label>
+                                        <input type="number" class="contact__form--input" id="size" name="size" placeholder="e.g. 1200" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="floor" class="contact__form--label">Floor</label>
+                                        <input type="text" class="contact__form--input" id="floor" name="floor" placeholder="e.g. 3 out of 5" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="bathroom" class="contact__form--label">Bathrooms</label>
+                                        <select class="contact__form--input" id="bathroom" name="bathroom" required>
+                                            <option value="" selected disabled>Select Bathrooms</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4+</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="area_type" class="contact__form--label">Area Type</label>
+                                        <select class="contact__form--input" id="area_type" name="area_type" required>
+                                            <option value="" selected disabled>Select Area Type</option>
+                                            <option value="Super Area">Super Area</option>
+                                            <option value="Carpet Area">Carpet Area</option>
+                                            <option value="Built Area">Built Area</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="city" class="contact__form--label">City</label>
+                                        <select class="contact__form--input" id="city" name="city" required>
+                                            <option value="" selected disabled>Select City</option>
+                                            <option value="Kolkata">Kolkata</option>
+                                            <option value="Mumbai">Mumbai</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Bangalore">Bangalore</option>
+                                            <option value="Chennai">Chennai</option>
+                                            <option value="Hyderabad">Hyderabad</option>
+                                            <option value="Pune">Pune</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="furnishing" class="contact__form--label">Furnishing Status</label>
+                                        <select class="contact__form--input" id="furnishing" name="furnishing" required>
+                                            <option value="" selected disabled>Select Furnishing Status</option>
+                                            <option value="Unfurnished">Unfurnished</option>
+                                            <option value="Semi-Furnished">Semi-Furnished</option>
+                                            <option value="Fully Furnished">Fully Furnished</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label for="tenant" class="contact__form--label">Tenant Preferred</label>
+                                        <select class="contact__form--input" id="tenant" name="tenant" required>
+                                            <option value="" selected disabled>Select Tenant Preference</option>
+                                            <option value="Bachelors/Family">Bachelors/Family</option>
+                                            <option value="Bachelors">Bachelors</option>
+                                            <option value="Family">Family</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact__form--list mb-20">
+                                <label for="area_locality" class="contact__form--label">Area Locality</label>
+                                <input type="text" class="contact__form--input" id="area_locality" name="area_locality" placeholder="e.g. Salt Lake, Sector 5" required>
+                            </div>
+                            
+                            <div class="contact__form--list mb-20">
+                                <label for="point_of_contact" class="contact__form--label">Point of Contact</label>
+                                <select class="contact__form--input" id="point_of_contact" name="point_of_contact" required>
+                                    <option value="" selected disabled>Select Point of Contact</option>
+                                    <option value="Contact Owner">Contact Owner</option>
+                                    <option value="Contact Agent">Contact Agent</option>
+                                    <option value="Contact Builder">Contact Builder</option>
+                                </select>
+                            </div>
+                            
+                            <button class="contact__form--btn primary__btn" type="submit">Predict Rent</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Prediction Result (Will be shown after form submission) -->
+                    <div class="prediction-result mt-5" data-aos="fade-up" style="display: none;">
+                        <div class="card border-0 shadow">
+                            <div class="card-body p-4 text-center">
+                                <h3 class="mb-4">Predicted Monthly Rent</h3>
+                                <div class="prediction-amount mb-3">
+                                    <span class="display-4 fw-bold text-primary">₹25,000</span>
+                                    <span class="text-muted">/month</span>
+                                </div>
+                                <p class="mb-4">This prediction is based on current market trends and similar properties in the selected area.</p>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8">
+                                        <div class="prediction-accuracy p-3 bg-light rounded">
+                                            <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i> Our prediction model has an accuracy of approximately 85-90% for the selected area.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dataset Statistics Section -->
+            {% if stats %}
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Rental Market Statistics</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stats-card mb-4">
+                                        <h4>Rent Statistics</h4>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Average Rent
+                                                <span class="badge bg-primary rounded-pill">₹{{ stats.avg_rent|int }}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Minimum Rent
+                                                <span class="badge bg-success rounded-pill">₹{{ stats.min_rent|int }}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Maximum Rent
+                                                <span class="badge bg-danger rounded-pill">₹{{ stats.max_rent|int }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stats-card mb-4">
+                                        <h4>Property Size Statistics</h4>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Average Size
+                                                <span class="badge bg-primary rounded-pill">{{ stats.avg_size|int }} sq.ft</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Minimum Size
+                                                <span class="badge bg-success rounded-pill">{{ stats.min_size|int }} sq.ft</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Maximum Size
+                                                <span class="badge bg-danger rounded-pill">{{ stats.max_size|int }} sq.ft</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="stats-card mb-4">
+                                        <h4>Most Popular Cities</h4>
+                                        <ul class="list-group list-group-flush">
+                                            {% for city, count in stats.top_cities %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ city }}
+                                                <span class="badge bg-info rounded-pill">{{ count }} listings</span>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stats-card">
+                                        <h4>BHK Distribution</h4>
+                                        <ul class="list-group list-group-flush">
+                                            {% for bhk, count in stats.bhk_counts %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ bhk }} BHK
+                                                <span class="badge bg-info rounded-pill">{{ count }} properties</span>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="about__section section--padding pt-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="section__heading">How Our Prediction Model Works</h2>
+                    <p class="section__description">Our advanced machine learning algorithm analyzes multiple factors to provide accurate rent predictions</p>
+                </div>
+            </div>
+            
+            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-2 row-cols-1 mb--n30">
+                <div class="col mb-30" data-aos="fade-up">
+                    <div class="about__card text-center">
+                        <div class="about__card--icon mb-20">
+                            <i class="fas fa-database fa-3x"></i>
+                        </div>
+                        <div class="about__card--content">
+                            <h3 class="about__card--title mb-10">Data Collection</h3>
+                            <p class="about__card--desc">We collect and analyze thousands of rental listings across different cities to build our prediction model.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col mb-30" data-aos="fade-up" data-aos-delay="100">
+                    <div class="about__card text-center">
+                        <div class="about__card--icon mb-20">
+                            <i class="fas fa-brain fa-3x"></i>
+                        </div>
+                        <div class="about__card--content">
+                            <h3 class="about__card--title mb-10">Machine Learning</h3>
+                            <p class="about__card--desc">Our algorithm processes multiple factors including location, size, amenities, and market trends.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col mb-30" data-aos="fade-up" data-aos-delay="200">
+                    <div class="about__card text-center">
+                        <div class="about__card--icon mb-20">
+                            <i class="fas fa-chart-line fa-3x"></i>
+                        </div>
+                        <div class="about__card--content">
+                            <h3 class="about__card--title mb-10">Accurate Prediction</h3>
+                            <p class="about__card--desc">The model provides a highly accurate rent prediction based on current market conditions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Factors Section -->
+    <section class="service__section section--padding pt-0">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                    <h2 class="section__heading mb-4">Factors That Affect Rental Prices</h2>
+                    <p class="mb-4">Our prediction model takes into account various factors that influence rental prices in the market:</p>
+                    
+                    <div class="factors-list">
+                        <div class="factor-item d-flex align-items-center mb-3">
+                            <div class="factor-icon me-3 bg-primary text-white rounded-circle p-2">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="factor-text">
+                                <h5 class="mb-0">Location</h5>
+                                <p class="mb-0 text-muted">Prime locations command higher rents</p>
+                            </div>
+                        </div>
+                        
+                        <div class="factor-item d-flex align-items-center mb-3">
+                            <div class="factor-icon me-3 bg-primary text-white rounded-circle p-2">
+                                <i class="fas fa-ruler-combined"></i>
+                            </div>
+                            <div class="factor-text">
+                                <h5 class="mb-0">Property Size</h5>
+                                <p class="mb-0 text-muted">Larger properties typically cost more</p>
+                            </div>
+                        </div>
+                        
+                        <div class="factor-item d-flex align-items-center mb-3">
+                            <div class="factor-icon me-3 bg-primary text-white rounded-circle p-2">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="factor-text">
+                                <h5 class="mb-0">BHK & Bathrooms</h5>
+                                <p class="mb-0 text-muted">More rooms increase the rental value</p>
+                            </div>
+                        </div>
+                        
+                        <div class="factor-item d-flex align-items-center mb-3">
+                            <div class="factor-icon me-3 bg-primary text-white rounded-circle p-2">
+                                <i class="fas fa-couch"></i>
+                            </div>
+                            <div class="factor-text">
+                                <h5 class="mb-0">Furnishing Status</h5>
+                                <p class="mb-0 text-muted">Furnished properties command premium rents</p>
+                            </div>
+                        </div>
+                        
+                        <div class="factor-item d-flex align-items-center">
+                            <div class="factor-icon me-3 bg-primary text-white rounded-circle p-2">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="factor-text">
+                                <h5 class="mb-0">Building Age & Amenities</h5>
+                                <p class="mb-0 text-muted">Newer buildings with more amenities cost more</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left">
+                    <img src="assets/img/property/rent-factors.jpg" alt="Rental Factors" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="newsletter__section newsletter__bg">
+        <div class="container">
+            <div class="row row-cols-md-2 row-cols-1 align-items-center">
+                <div class="col">
+                    <div class="newsletter__content">
+                        <h2 class="newsletter__content--title">Are You a Property Owner?</h2>
+                        <p class="newsletter__content--desc">List your property on our platform and get access to our rent prediction tool to set the optimal rent for maximum returns.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="newsletter__subscribe">
+                        <div class="d-flex justify-content-center flex-wrap gap-3">
+                            <a href="sign-up.html" class="newsletter__subscribe--button primary__btn">Register Now</a>
+                            <a href="login.html" class="newsletter__subscribe--button primary__btn-2">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Start footer section -->
+    <footer class="footer__section footer__bg">
+        <!-- Include your footer content here -->
+    </footer>
+    <!-- End footer section -->
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+    <!-- All JS Plugins here -->
+    <script src="assets/js/vendor/popper.js" defer="defer"></script>
+    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
+    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
+    <script src="assets/js/plugins/glightbox.min.js"></script>
+    <script src="assets/js/plugins/aos.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
+
+
+
+

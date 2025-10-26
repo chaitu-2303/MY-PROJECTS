@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>My Favorites - House Rent Prediction</title>
+    <meta name="description" content="View your favorite properties">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!-- ======= All CSS Plugins here ======== -->
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <!-- Preloader start -->
+    <div id="preloader">
+        <div class="loader--border"></div>
+    </div>
+    <!-- Preloader end -->
+    
+    <!-- Start header area -->
+    <header class="header__section">
+        <div class="header__sticky">
+            <a class="humberger__menu" data-bs-toggle="offcanvas" href="#offcanvasExample">
+                <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.03846C0 0.46523 0.465715 0 1.03954 0H19.0583C19.6321 0 20.0978 0.46523 20.0978 1.03846C20.0978 1.61169 19.6321 2.07692 19.0583 2.07692H1.03954C0.465715 2.07692 0 1.61169 0 1.03846ZM25.9885 9.6923H1.03954C0.465715 9.6923 0 10.1575 0 10.7308C0 11.304 0.465715 11.7692 1.03954 11.7692H25.9885C26.5624 11.7692 27.0281 11.304 27.0281 10.7308C27.0281 10.1575 26.5624 9.6923 25.9885 9.6923ZM13.514 19.3846H1.03954C0.465715 19.3846 0 19.8498 0 20.4231C0 20.9963 0.465715 21.4615 1.03954 21.4615H13.514C14.0879 21.4615 14.5536 20.9963 14.5536 20.4231C14.5536 19.8498 14.0879 19.3846 13.514 19.3846Z" fill="currentColor"/>
+                </svg>
+            </a>
+            <div class="container-fluid padding-lr-120">
+                <div class="main__header d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                            <span class="visually-hidden">Offcanvas Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
+                            <img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img">
+                        </a></h1>
+                    </div>
+                    <div class="header__menu d-none d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="index.html">Home</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="listing.html">Properties</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="rent-prediction.html">Rent Prediction</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="about.html">About</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="dashboard.html">Dashboard</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account">
+                        <a class="header__account--btn primary__btn" href="login.html">Login / Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End header area -->
+
+    <!-- Breadcrumb section -->
+    <div class="breadcrumb__section breadcrumb__bg">
+        <div class="container">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="breadcrumb__content text-center">
+                        <h1 class="breadcrumb__content--title">My Favorites</h1>
+                        <ul class="breadcrumb__content--menu d-flex justify-content-center">
+                            <li class="breadcrumb__content--menu__items"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb__content--menu__items"><a href="dashboard.html">Dashboard</a></li>
+                            <li class="breadcrumb__content--menu__items"><span>My Favorites</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard section -->
+    <section class="dashboard__section section--padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <!-- Dashboard sidebar -->
+                    <div class="dashboard__sidebar">
+                        <div class="dashboard__user">
+                            <div class="dashboard__user--thumb">
+                                <img src="assets/img/other/user.jpg" alt="user">
+                            </div>
+                            <div class="dashboard__user--content">
+                                <h2 class="dashboard__user--name">John Doe</h2>
+                                <span class="dashboard__user--email">john.doe@example.com</span>
+                            </div>
+                        </div>
+                        <ul class="dashboard__menu">
+                            <li class="dashboard__menu--list"><a href="dashboard.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span> Dashboard</a></li>
+                            <li class="dashboard__menu--list"><a href="bookings.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> My Bookings</a></li>
+                            <li class="dashboard__menu--list active"><a href="favorites.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></span> Favorites</a></li>
+                            <li class="dashboard__menu--list"><a href="profile.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> My Profile</a></li>
+                            <li class="dashboard__menu--list"><a href="login.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="dashboard__content">
+                        <div class="dashboard__content--header d-flex align-items-center justify-content-between mb-30">
+                            <h2 class="dashboard__content--header__title">My Favorites</h2>
+                            <a class="dashboard__content--header__btn primary__btn" href="listing.html">Browse Properties</a>
+                        </div>
+                        <div class="dashboard__content--body">
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mb--n30">
+                                <!-- Favorite Item 1 -->
+                                <div class="col mb-30">
+                                    <div class="property__card">
+                                        <div class="property__card--thumbnail">
+                                            <a href="listing-details.html">
+                                                <img class="property__card--thumbnail__img" src="assets/img/property/property1.jpg" alt="property">
+                                            </a>
+                                            <span class="property__card--badge">For Rent</span>
+                                            <button class="property__card--wishlist">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17,1c-2.1,0-3.9,1.1-5,2.7C10.9,2.1,9.1,1,7,1C3.7,1,1,3.7,1,7c0,6,11,15,11,15s11-9,11-15C23,3.7,20.3,1,17,1z"></path></svg>
+                                            </button>
+                                        </div>
+                                        <div class="property__card--content">
+                                            <span class="property__card--content__subtitle">Apartment</span>
+                                            <h3 class="property__card--content__title"><a href="listing-details.html">Luxury Apartment in City Center</a></h3>
+                                            <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 123 Main St, New York</p>
+                                            <div class="property__card--content__list">
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> 3 Bed</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> 2 Bath</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> 1200 Sq Ft</span>
+                                            </div>
+                                            <div class="property__card--content__footer d-flex justify-content-between align-items-center">
+                                                <span class="property__card--content__price">$1,200<span>/month</span></span>
+                                                <a class="property__card--content__btn primary__btn" href="listing-details.html">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Favorite Item 2 -->
+                                <div class="col mb-30">
+                                    <div class="property__card">
+                                        <div class="property__card--thumbnail">
+                                            <a href="listing-details.html">
+                                                <img class="property__card--thumbnail__img" src="assets/img/property/property2.jpg" alt="property">
+                                            </a>
+                                            <span class="property__card--badge">For Rent</span>
+                                            <button class="property__card--wishlist">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17,1c-2.1,0-3.9,1.1-5,2.7C10.9,2.1,9.1,1,7,1C3.7,1,1,3.7,1,7c0,6,11,15,11,15s11-9,11-15C23,3.7,20.3,1,17,1z"></path></svg>
+                                            </button>
+                                        </div>
+                                        <div class="property__card--content">
+                                            <span class="property__card--content__subtitle">Villa</span>
+                                            <h3 class="property__card--content__title"><a href="listing-details.html">Modern Villa with Pool</a></h3>
+                                            <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 456 Park Ave, Los Angeles</p>
+                                            <div class="property__card--content__list">
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> 4 Bed</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> 3 Bath</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> 2500 Sq Ft</span>
+                                            </div>
+                                            <div class="property__card--content__footer d-flex justify-content-between align-items-center">
+                                                <span class="property__card--content__price">$2,500<span>/month</span></span>
+                                                <a class="property__card--content__btn primary__btn" href="listing-details.html">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Favorite Item 3 -->
+                                <div class="col mb-30">
+                                    <div class="property__card">
+                                        <div class="property__card--thumbnail">
+                                            <a href="listing-details.html">
+                                                <img class="property__card--thumbnail__img" src="assets/img/property/property3.jpg" alt="property">
+                                            </a>
+                                            <span class="property__card--badge">For Rent</span>
+                                            <button class="property__card--wishlist">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17,1c-2.1,0-3.9,1.1-5,2.7C10.9,2.1,9.1,1,7,1C3.7,1,1,3.7,1,7c0,6,11,15,11,15s11-9,11-15C23,3.7,20.3,1,17,1z"></path></svg>
+                                            </button>
+                                        </div>
+                                        <div class="property__card--content">
+                                            <span class="property__card--content__subtitle">Studio</span>
+                                            <h3 class="property__card--content__title"><a href="listing-details.html">Cozy Studio Apartment</a></h3>
+                                            <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 789 Oak St, Chicago</p>
+                                            <div class="property__card--content__list">
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> 1 Bed</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> 1 Bath</span>
+                                                <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> 850 Sq Ft</span>
+                                            </div>
+                                            <div class="property__card--content__footer d-flex justify-content-between align-items-center">
+                                                <span class="property__card--content__price">$850<span>/month</span></span>
+                                                <a class="property__card--content__btn primary__btn" href="listing-details.html">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Start footer section -->
+    <footer class="footer__section footer__bg">
+        <!-- Footer content would go here -->
+    </footer>
+    <!-- End footer section -->
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+    <!-- All JS Plugins here -->
+    <script src="assets/js/vendor/popper.js" defer="defer"></script>
+    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
+    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
+    <script src="assets/js/plugins/glightbox.min.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
+
+
+
+
