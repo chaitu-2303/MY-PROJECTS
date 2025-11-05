@@ -599,6 +599,7 @@ def customer_property_detail(property_id):
     form = BookingForm()
     if form.validate_on_submit():
         overlapping_booking = Booking.query.filter(
+            Booking.property_id == property.id,
             or_(
                 (Booking.start_date <= form.start_date.data) & (Booking.end_date >= form.start_date.data),
                 (Booking.start_date <= form.end_date.data) & (Booking.end_date >= form.end_date.data),

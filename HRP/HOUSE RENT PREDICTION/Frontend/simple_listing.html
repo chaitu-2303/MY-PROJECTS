@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listing Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .property-card:hover {
+            transform: translateY(-5px);
+        }
+        .property-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        .property-details {
+            padding: 15px;
+        }
+        .property-city {
+            font-weight: bold;
+            color: #ff6d34;
+            font-size: 18px;
+        }
+        .property-size {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .property-rent {
+            font-weight: bold;
+            font-size: 20px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #666;
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #ff6d34;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-button">Back to Home</a>
+        <h1>Property Listings</h1>
+        
+        <div class="property-grid">
+            {% if properties %}
+                {% for property in properties %}
+                    <div class="property-card">
+                        {% set image_index = loop.index0 % 6 + 1 %}
+                        <img src="{{ url_for('static', filename='img/property/featured' + image_index|string + '.jpg') }}" class="property-image" alt="Property Image">
+                        <div class="property-details">
+                            <div class="property-city">{{ property.get('City', 'N/A') }}</div>
+                            <div class="property-size">{{ property.get('Size', 'N/A') }} sq.ft</div>
+                            <div class="property-rent">₹{{ property.get('Rent', 'N/A') }}</div>
+                            <div class="property-features">
+                                <span>{{ property.get('BHK', 'N/A') }} BHK</span>
+                                <span>{{ property.get('Furnishing_Status', 'N/A') }}</span>
+                                <span>{{ property.get('Tenant_Preferred', 'N/A') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No properties found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
