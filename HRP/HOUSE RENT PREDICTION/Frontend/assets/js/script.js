@@ -4,15 +4,21 @@
   Author URL: https://themeforest.net/user/hooktheme
   Version: 1.0.0
 */
-AOS.init({
-  once: true,
-  disable: function () {
-    var maxWidth = 767;
-    return window.innerWidth < maxWidth;
-  },
-});
 
 ("use strict");
+
+// Initialize AOS when DOM is fully loaded and AOS library is available
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      once: true,
+      disable: function () {
+        var maxWidth = 767;
+        return window.innerWidth < maxWidth;
+      },
+    });
+  }
+});
 
 const preLoader = function () {
   let preloaderWrapper = document.getElementById("preloader");

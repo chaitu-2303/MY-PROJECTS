@@ -180,6 +180,18 @@ def listing():
     # Use simplified template for testing
     return render_template('simple_listing.html', properties=properties)
 
+@app.route('/simple_listing')
+def simple_listing():
+    # Load dataset for property listings
+    import os
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'House_Rent_Dataset.csv')
+    df = pd.read_csv(file_path, on_bad_lines='skip')
+    # Clean column names by removing extra spaces
+    df.columns = [col.strip() for col in df.columns]
+    # Convert to list of dictionaries for template
+    properties = df.to_dict('records')
+    return render_template('simple_listing.html', properties=properties)
+
 @app.route('/rent_prediction', methods=['GET', 'POST'])
 def rent_prediction():
     form = PredictRentForm()
@@ -214,6 +226,12 @@ def rent_prediction():
             flash('An error occurred during prediction. Please check your inputs.', 'danger')
 
     return render_template('rent-prediction.html', form=form, prediction_result=prediction_result)
+
+# Route to serve rent prediction page at the correct URL
+@app.route('/rent-prediction.html')
+def rent_prediction_page():
+    form = PredictRentForm()
+    return render_template('rent-prediction.html', form=form, prediction_result=None)
 
 @app.route('/my_properties')
 @login_required
