@@ -14,11 +14,32 @@ from werkzeug.utils import secure_filename
 from flask_dance.contrib.google import make_google_blueprint, google
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 import numpy as np
 from flask_wtf.csrf import CSRFProtect, CSRFError
 import functools
 from collections import defaultdict
 from flask_mail import Mail, Message
+
+# Load and preprocess data for rent prediction
+try:
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'House_Rent_Dataset.csv')
+    df = pd.read_csv(file_path, on_bad_lines='skip')
+    df.columns = [col.strip() for col in df.columns]
+    df['Rent'] = df['Rent'].astype(str).str.replace(',', '').astype(float)
+    features = ['BHK', 'Size', 'Area Type', 'City', 'Furnishing Status', 'Tenant Preferred', 'Bathroom']
+    target = 'Rent'
+    df_model = df[features + [target]].copy()
+    df_model.dropna(inplace=True)
+    X = pd.get_dummies(df_model[features], columns=['Area Type', 'City', 'Furnishing Status', 'Tenant Preferred'])
+    y = df_model[target]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+except Exception as e:
+    app.logger.error(f"Error loading or training model: {e}")
+    model = None
+    X_train = pd.DataFrame()
 
 # Define constants
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB limit
@@ -159,20 +180,50 @@ def listing():
     # Use simplified template for testing
     return render_template('simple_listing.html', properties=properties)
 
-@app.route('/rent-prediction')
-def rent_prediction_page():
-    # Load dataset for rent prediction page
-    import os
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'House_Rent_Dataset.csv')
-    df = pd.read_csv(file_path, on_bad_lines='skip')
-    # Get statistics for the prediction page
-    stats = {
-        'total_properties': len(df),
-        'avg_rent': int(df[' Rent   '].str.strip().astype(float).mean()),
-        'cities': df[' City     '].str.strip().unique().tolist(),
-        'bhk_types': df[' BHK'].unique().tolist()
-    }
-    return render_template('rent-prediction.html', stats=stats)
+@app.route('/rent_prediction', methods=['GET', 'POST'])
+def rent_prediction():
+    form = PredictRentForm()
+    prediction_result = None
+
+    if form.validate_on_submit():
+        try:
+            # Create a DataFrame from form data
+            data = {
+                'BHK': [form.bhk.data],
+                'Size': [form.size.data],
+                'Area Type': [form.area_type.data],
+                'City': [form.city.data],
+                'Furnishing Status': [form.furnishing_status.data],
+                'Tenant Preferred': [form.tenant_preferred.data],
+                'Bathroom': [form.bathroom.data]
+            }
+            input_df = pd.DataFrame(data)
+
+            # One-hot encode categorical features
+            input_df_encoded = pd.get_dummies(input_df, columns=['Area Type', 'City', 'Furnishing Status', 'Tenant Preferred'])
+
+            # Align columns with the training data
+            input_df_aligned = input_df_encoded.reindex(columns=X_train.columns, fill_value=0)
+
+            # Predict rent
+            prediction = model.predict(input_df_aligned)
+            prediction_result = f'${prediction[0]:.2f}'
+
+        except Exception as e:
+            app.logger.error(f"Prediction error: {e}")
+            flash('An error occurred during prediction. Please check your inputs.', 'danger')
+
+    return render_template('rent-prediction.html', form=form, prediction_result=prediction_result)
+
+@app.route('/my_properties')
+@login_required
+def my_properties():
+    if current_user.role not in ['owner', 'admin']:
+        flash('You are not authorized to view this page.', 'danger')
+        return redirect(url_for('index'))
+    
+    properties = Property.query.filter_by(owner_id=current_user.id).all()
+    return render_template('my-properties.html', properties=properties)
 
 # Serve static files from subdirectories
 @app.route('/assets/<path:filename>')
@@ -1002,11 +1053,7 @@ def available_properties():
     properties = Property.query.all()
     return render_template('available_properties.html', properties=properties)
 
-@app.route('/rent_prediction', methods=['GET', 'POST'])
-@login_required
-def rent_prediction():
-    # TODO: Implement prediction logic and form
-    return render_template('rent_prediction.html')
+
 
 @app.route('/bookings')
 @login_required
