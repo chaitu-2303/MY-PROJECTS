@@ -983,10 +983,12 @@ def predict_rent():
             predicted_rent = None
             matching_properties = []
     return render_template(
-        'predict_rent.html',
+        'rent-prediction.html',
         form=form,
         predicted_rent=predicted_rent,
-        properties=matching_properties,
+        matching_properties=matching_properties,
+        model_name=model_name,
+        prediction_accuracy=prediction_accuracy,
         cities=cities,
         furnishing_statuses=furnishing_statuses,
         tenant_preferences=tenant_preferences,
@@ -1101,3 +1103,25 @@ if __name__ == '__main__':
     with app.app_context():
         initialize_database()
     app.run(debug=True)
+
+# Custom Jinja filter for formatting currency in Indian Rupees
+def format_inr(value):
+    """Formats a number in Indian currency format (e.g., 1,00,000)."""
+    if not isinstance(value, (int, float)):
+        return value
+    
+    s = str(int(value))
+    s = s[::-1]
+    groups = []
+    i = 0
+    while i < len(s):
+        if i == 0:
+            groups.append(s[i:i+3])
+        else:
+            groups.append(s[i:i+2])
+        i += 2 if i > 0 else 3
+    
+    return '₹' + ','.join(groups)[::-1].strip(',')
+
+# Register the custom filter with Jinja2
+app.jinja_env.filters['inr'] = format_inr

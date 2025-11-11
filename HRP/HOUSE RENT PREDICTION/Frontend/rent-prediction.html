@@ -6,21 +6,620 @@
     <title>RentRight - Rent Prediction</title>
     <meta name="description" content="Get accurate rent estimates based on property details and location">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
 
     <!-- ======= All CSS Plugins here ======== -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Plugin css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/glightbox.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/aos.css') }}">
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/aos.css">
 
     <!-- Custom Style CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Enhanced Rent Prediction Styles -->
+    <style>
+        /* Modern Prediction Form Styles */
+        .prediction-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .prediction-header {
+            margin-bottom: 3rem;
+        }
+        
+        .prediction-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .prediction-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+        
+        .prediction-form-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .prediction-form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .card-header-custom h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .prediction-form {
+            padding: 2.5rem;
+        }
+        
+        /* Form Group Box Design - Enhanced Grid Layout */
+        .form-group-box {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
+            border-radius: 24px;
+            padding: 2.2rem;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .form-group-box:hover {
+            border-color: #667eea;
+            background: #ffffff;
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
+            transform: translateY(-6px) scale(1.02);
+        }
+        
+        .form-group-box:hover::before {
+            opacity: 0.15;
+        }
+        
+        .form-group-box:focus-within {
+            border-color: #667eea;
+            background: #ffffff;
+            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.25);
+            transform: translateY(-4px) scale(1.01);
+        }
+        
+        .form-group-box:focus-within::before {
+            opacity: 0.25;
+        }
+        
+        .form-group-box.success {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #ffffff, #f8fff9);
+        }
+        
+        .form-group-box.error {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #ffffff, #fff8f8);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .form-icon {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            font-size: 1.8rem;
+            color: #667eea;
+            opacity: 0.2;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 1;
+        }
+        
+        .form-group-box:hover .form-icon {
+            opacity: 0.8;
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .form-group-box:focus-within .form-icon {
+            opacity: 1;
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .form-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-label-custom {
+            display: block;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-input-custom,
+        .form-select-custom {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            font-family: inherit;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-input-custom:focus,
+        .form-select-custom:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 
+                0 0 0 4px rgba(102, 126, 234, 0.15),
+                0 4px 12px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+        
+        .form-input-custom::placeholder {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .form-help {
+            display: block;
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 0.6rem;
+            font-style: italic;
+            line-height: 1.4;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .form-group-box:hover .form-help {
+            opacity: 1;
+        }
+        
+        .form-group-box:focus-within .form-help {
+            color: #667eea;
+            opacity: 1;
+        }
+        
+        /* Enhanced Submit Button */
+        .predict-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .predict-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .predict-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .predict-btn:hover .btn-ripple {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Enhanced Result Card */
+        .prediction-result {
+            margin-top: 3rem;
+        }
+        
+        .prediction-result .card {
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modern Grid Layout for Form */
+        .prediction-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 30px;
+            margin: 2rem 0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Advanced Grid Layout - Responsive */
+        @media (min-width: 1200px) {
+            .prediction-form {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+                padding: 4rem;
+            }
+            
+
+        }
+        
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .prediction-form {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+                padding: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .prediction-form {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+        }
+        
+        .prediction-amount {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 1rem;
+            border-radius: 15px;
+            background-color: #f8f9fa;
+        }
+        
+        .prediction-accuracy {
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        /* Stats Cards Enhancement */
+        .stats-card {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-badge {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .prediction-form {
+                padding: 1.5rem;
+            }
+            
+            .prediction-title {
+                font-size: 2rem;
+            }
+            
+            .form-group-box {
+                padding: 1rem;
+            }
+            
+            .predict-btn {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Animation Enhancements */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .prediction-form-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .prediction-form-card {
+                background: #2d3748;
+                color: #e2e8f0;
+            }
+            
+            .form-group-box {
+                background: #4a5568;
+            }
+            
+            .form-group-box:hover {
+                background: #2d3748;
+            }
+            
+            .form-input-custom,
+            .form-select-custom {
+                background: #2d3748;
+                border-color: #4a5568;
+                color: #e2e8f0;
+            }
+        }
+        
+        .stats-container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 3rem;
+        }
+
+        /* Enhanced Result Card Styles */
+        .result-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .result-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .result-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .result-body {
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .price-display {
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+        }
+        
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-period {
+            font-size: 1.2rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .confidence-indicator {
+            margin-bottom: 2rem;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+        
+        .confidence-text {
+            font-weight: 600;
+            color: #28a745;
+            margin: 0;
+        }
+        
+        .result-details {
+            margin-bottom: 2.5rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .detail-icon {
+            color: #667eea;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .detail-text {
+            color: #495057;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-save-result,
+        .btn-get-more {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .btn-save-result {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-save-result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .btn-get-more {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+        
+        .btn-get-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .result-header {
+                padding: 2rem;
+            }
+            
+            .result-body {
+                padding: 2rem;
+            }
+            
+            .price-amount {
+                font-size: 2.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-save-result,
+            .btn-get-more {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -48,10 +647,50 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
                             <span class="visually-hidden">Offcanvas Menu Open</span>
                         </a>
+                        {% if matching_properties %}
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Properties in Predicted Range</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>BHK</th>
+                                        <th>Bathroom</th>
+                                        <th>City</th>
+                                        <th>Furnishing Status</th>
+                                        <th>Tenant Preferred</th>
+                                        <th>Area Type</th>
+                                        <th>Rent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for property in matching_properties %}
+                                    <tr>
+                                        <td>{{ property.bhk }}</td>
+                                        <td>{{ property.bathroom }}</td>
+                                        <td>{{ property.city }}</td>
+                                        <td>{{ property.furnishing_status }}</td>
+                                        <td>{{ property.tenant_preferred }}</td>
+                                        <td>{{ property.area_type }}</td>
+                                        <td>{{ property.price }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
                     <div class="main__logo">
                         <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
-                            <img class="main__logo--img" src="{{ url_for('static', filename='img/logo/nav-log.png') }}" alt="logo-img">
+                            <img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img">
                         </a></h1>
                     </div>
                     <div class="header__menu d-none d-lg-block">
@@ -59,21 +698,6 @@
                             <ul class="d-flex">
                                 <li class="header__menu--items">
                                     <a class="header__menu--link" href="index.html">Home</a>
-                                </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link" href="listing.html">Properties</a>
-                                </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link active" href="rent-prediction.html">Rent Prediction</a>
-                                </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link" href="about.html">About</a>
-                                </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link" href="contact.html">Contact</a>
-                                </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link" href="dashboard.html">Dashboard</a>
                                 </li>
                             </ul>
                         </nav>
@@ -110,143 +734,250 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <div class="contact__form" data-aos="fade-up">
-                        <h2 class="text-center mb-4">Predict Your Property's Rental Value</h2>
-                        <p class="text-center mb-4">Fill in the details below to get an accurate prediction of your property's rental value based on our advanced machine learning model.</p>
+                    <!-- Enhanced Rent Prediction Form -->
+                    <div class="prediction-container">
+                        <div class="prediction-header text-center mb-5">
+                            <h2 class="prediction-title">🎯 Smart Rent Predictor</h2>
+                            <p class="prediction-subtitle">Get AI-powered rent estimates in seconds</p>
+                        </div>
                         
-                        <form class="prediction-form" method="post">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="bhk" class="contact__form--label">BHK (Bedrooms)</label>
-                                        <select class="contact__form--input" id="bhk" name="bhk" required>
-                                            <option value="" selected disabled>Select BHK</option>
-                                            <option value="1">1 BHK</option>
-                                            <option value="2">2 BHK</option>
-                                            <option value="3">3 BHK</option>
-                                            <option value="4">4 BHK</option>
-                                            <option value="5">5 BHK</option>
-                                            <option value="6">6+ BHK</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="size" class="contact__form--label">Size (sq.ft)</label>
-                                        <input type="number" class="contact__form--input" id="size" name="size" placeholder="e.g. 1200" required>
-                                    </div>
-                                </div>
+                        <div class="prediction-form-card">
+                            <div class="card-header-custom">
+                                <h4 class="mb-0"><i class="fas fa-home me-2"></i>Property Details</h4>
                             </div>
                             
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="floor" class="contact__form--label">Floor</label>
-                                        <input type="text" class="contact__form--input" id="floor" name="floor" placeholder="e.g. 3 out of 5" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="bathroom" class="contact__form--label">Bathrooms</label>
-                                        <select class="contact__form--input" id="bathroom" name="bathroom" required>
-                                            <option value="" selected disabled>Select Bathrooms</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4+</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="area_type" class="contact__form--label">Area Type</label>
-                                        <select class="contact__form--input" id="area_type" name="area_type" required>
-                                            <option value="" selected disabled>Select Area Type</option>
-                                            <option value="Super Area">Super Area</option>
-                                            <option value="Carpet Area">Carpet Area</option>
-                                            <option value="Built Area">Built Area</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="city" class="contact__form--label">City</label>
-                                        <select class="contact__form--input" id="city" name="city" required>
-                                            <option value="" selected disabled>Select City</option>
-                                            <option value="Kolkata">Kolkata</option>
-                                            <option value="Mumbai">Mumbai</option>
-                                            <option value="Delhi">Delhi</option>
-                                            <option value="Bangalore">Bangalore</option>
-                                            <option value="Chennai">Chennai</option>
-                                            <option value="Hyderabad">Hyderabad</option>
-                                            <option value="Pune">Pune</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="furnishing" class="contact__form--label">Furnishing Status</label>
-                                        <select class="contact__form--input" id="furnishing" name="furnishing" required>
-                                            <option value="" selected disabled>Select Furnishing Status</option>
-                                            <option value="Unfurnished">Unfurnished</option>
-                                            <option value="Semi-Furnished">Semi-Furnished</option>
-                                            <option value="Fully Furnished">Fully Furnished</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label for="tenant" class="contact__form--label">Tenant Preferred</label>
-                                        <select class="contact__form--input" id="tenant" name="tenant" required>
-                                            <option value="" selected disabled>Select Tenant Preference</option>
-                                            <option value="Bachelors/Family">Bachelors/Family</option>
-                                            <option value="Bachelors">Bachelors</option>
-                                            <option value="Family">Family</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="contact__form--list mb-20">
-                                <label for="area_locality" class="contact__form--label">Area Locality</label>
-                                <input type="text" class="contact__form--input" id="area_locality" name="area_locality" placeholder="e.g. Salt Lake, Sector 5" required>
-                            </div>
-                            
-                            <div class="contact__form--list mb-20">
-                                <label for="point_of_contact" class="contact__form--label">Point of Contact</label>
-                                <select class="contact__form--input" id="point_of_contact" name="point_of_contact" required>
-                                    <option value="" selected disabled>Select Point of Contact</option>
-                                    <option value="Contact Owner">Contact Owner</option>
-                                    <option value="Contact Agent">Contact Agent</option>
-                                    <option value="Contact Builder">Contact Builder</option>
-                                </select>
-                            </div>
-                            
-                            <button class="contact__form--btn primary__btn" type="submit">Predict Rent</button>
-                        </form>
-                    </div>
-                    
-                    <!-- Prediction Result (Will be shown after form submission) -->
-                    <div class="prediction-result mt-5" data-aos="fade-up" style="display: none;">
-                        <div class="card border-0 shadow">
-                            <div class="card-body p-4 text-center">
-                                <h3 class="mb-4">Predicted Monthly Rent</h3>
-                                <div class="prediction-amount mb-3">
-                                    <span class="display-4 fw-bold text-primary">₹25,000</span>
-                                    <span class="text-muted">/month</span>
-                                </div>
-                                <p class="mb-4">This prediction is based on current market trends and similar properties in the selected area.</p>
-                                <div class="row justify-content-center">
-                                    <div class="col-md-8">
-                                        <div class="prediction-accuracy p-3 bg-light rounded">
-                                            <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i> Our prediction model has an accuracy of approximately 85-90% for the selected area.</p>
+                            <form id="predictionForm" action="/predict-rent" method="POST" class="prediction-form">
+                                <!-- Property Specifications Grid -->
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-bed"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="bedroom" class="form-label-custom">BHK Configuration</label>
+                                                <select class="form-select-custom" id="bedroom" name="bedroom" required>
+                                                    <option value="" selected disabled>Choose BHK</option>
+                                                    <option value="1">🏠 1 BHK</option>
+                                                    <option value="2">🏡 2 BHK</option>
+                                                    <option value="3">🏘️ 3 BHK</option>
+                                                    <option value="4">🏰 4+ BHK</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-ruler-combined"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="size" class="form-label-custom">Property Size</label>
+                                                <input type="number" class="form-input-custom" id="size" name="size" placeholder="1200 sq.ft" required>
+                                                <small class="form-help">Enter area in square feet</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <div class="row g-4 mb-4">
+
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-bath"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="bathroom" class="form-label-custom">Bathrooms</label>
+                                                <select class="form-select-custom" id="bathroom" name="bathroom" required>
+                                                    <option value="" selected disabled>Choose Bathrooms</option>
+                                                    <option value="1">🚿 1 Bathroom</option>
+                                                    <option value="2">🚿🚿 2 Bathrooms</option>
+                                                    <option value="3">🚿🚿🚿 3 Bathrooms</option>
+                                                    <option value="4">🚿🚿🚿🚿 4+ Bathrooms</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <!-- Location & Type Grid -->
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-map-marked-alt"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="area_type" class="form-label-custom">Area Type</label>
+                                                <select class="form-select-custom" id="area_type" name="area_type" required>
+                                                    <option value="" selected disabled>Select Area Type</option>
+                                                    <option value="Super Area">📐 Super Area</option>
+                                                    <option value="Carpet Area">🏠 Carpet Area</option>
+                                                    <option value="Built Area">🏗️ Built Area</option>
+                                                </select>
+                                                <small class="form-help">Measurement type</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-city"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="city" class="form-label-custom">City</label>
+                                                <select class="form-select-custom" id="city" name="city" required>
+                                                    <option value="" selected disabled>Choose City</option>
+                                                    <option value="Kolkata">🌆 Kolkata</option>
+                                                    <option value="Mumbai">🏙️ Mumbai</option>
+                                                    <option value="Delhi">🏛️ Delhi</option>
+                                                    <option value="Bangalore">🌃 Bangalore</option>
+                                                    <option value="Chennai">🏖️ Chennai</option>
+                                                    <option value="Hyderabad">🏰 Hyderabad</option>
+                                                    <option value="Pune">🌉 Pune</option>
+                                                </select>
+                                                <small class="form-help">Select your city</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-couch"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="furnishing" class="form-label-custom">Furnishing</label>
+                                                <select class="form-select-custom" id="furnishing" name="furnishing" required>
+                                                    <option value="" selected disabled>Choose Furnishing</option>
+                                                    <option value="Unfurnished">🏠 Unfurnished</option>
+                                                    <option value="Semi-Furnished">🪑 Semi-Furnished</option>
+                                                    <option value="Fully Furnished">🛋️ Fully Furnished</option>
+                                                </select>
+                                                <small class="form-help">Furniture status</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="tenant" class="form-label-custom">Tenant Type</label>
+                                                <select class="form-select-custom" id="tenant" name="tenant" required>
+                                                    <option value="" selected disabled>Choose Tenant</option>
+                                                    <option value="Bachelors/Family">👨‍👩‍👧‍👦 Bachelors/Family</option>
+                                                    <option value="Bachelors">👨‍💼 Bachelors</option>
+                                                    <option value="Family">👪 Family</option>
+                                                </select>
+                                                <small class="form-help">Preferred tenant type</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Additional Details -->
+                                <div class="row g-4 mb-5">
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-map-pin"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="area_locality" class="form-label-custom">Area Locality</label>
+                                                <input type="text" class="form-input-custom" id="area_locality" name="area_locality" placeholder="e.g. Salt Lake, Sector 5" required>
+                                                <small class="form-help">Specific area or locality</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group-box">
+                                            <div class="form-icon">
+                                                <i class="fas fa-phone-alt"></i>
+                                            </div>
+                                            <div class="form-content">
+                                                <label for="point_of_contact" class="form-label-custom">Contact Method</label>
+                                                <select class="form-select-custom" id="point_of_contact" name="point_of_contact" required>
+                                                    <option value="" selected disabled>Choose Contact</option>
+                                                    <option value="Contact Owner">👤 Contact Owner</option>
+                                                    <option value="Contact Agent">🤝 Contact Agent</option>
+                                                    <option value="Contact Builder">🏗️ Contact Builder</option>
+                                                </select>
+                                                <small class="form-help">Who to contact</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <!-- Submit Button -->
+                                <div class="text-center">
+                                    <button type="submit" class="predict-btn">
+                                        <i class="fas fa-magic me-2"></i>
+                                        Predict Rent
+                                        <span class="btn-ripple"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Prediction Result -->
+                    <div class="prediction-result mt-5" data-aos="fade-up" style="display: none;">
+                        <div class="result-card">
+                            <div class="result-header">
+                                <div class="result-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h3 class="result-title">Your Predicted Rent</h3>
+                                <p class="result-subtitle">AI-powered estimate based on market analysis</p>
+                            </div>
+                            
+                            <div class="result-body">
+                                <div class="price-display">
+                                    <div class="price-amount">₹25,000</div>
+                                    <div class="price-period">per month</div>
+                                </div>
+                                
+                                <div class="confidence-indicator">
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" style="width: 87%"></div>
+                                    </div>
+                                    <p class="confidence-text">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        87% Confidence Level
+                                    </p>
+                                </div>
+                                
+                                <div class="result-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt detail-icon"></i>
+                                        <span class="detail-text">Based on similar properties in your selected area</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-trending-up detail-icon"></i>
+                                        <span class="detail-text">Current market trends and historical data</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-calculator detail-icon"></i>
+                                        <span class="detail-text">Machine learning algorithm analysis</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button class="btn-save-result">
+                                        <i class="fas fa-bookmark me-2"></i>Save Result
+                                    </button>
+                                    <button class="btn-get-more">
+                                        <i class="fas fa-chart-bar me-2"></i>Detailed Analysis
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -256,12 +987,13 @@
             
             <!-- Dataset Statistics Section -->
             {% if stats %}
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h3 class="mb-0">Rental Market Statistics</h3>
-                        </div>
+            <div class="stats-container">
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">Rental Market Statistics</h3>
+                            </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -269,16 +1001,16 @@
                                         <h4>Rent Statistics</h4>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Average Rent
-                                                <span class="badge bg-primary rounded-pill">₹{{ stats.avg_rent|int }}</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Minimum Rent
-                                                <span class="badge bg-success rounded-pill">₹{{ stats.min_rent|int }}</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Maximum Rent
-                                                <span class="badge bg-danger rounded-pill">₹{{ stats.max_rent|int }}</span>
+                                            <span>Average Rent</span>
+                                            <span class="badge stat-badge rounded-pill">{{ stats.avg_rent|inr }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Minimum Rent</span>
+                                            <span class="badge stat-badge rounded-pill">{{ stats.min_rent|inr }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Maximum Rent</span>
+                                            <span class="badge stat-badge rounded-pill">{{ stats.max_rent|inr }}</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -289,15 +1021,15 @@
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 Average Size
-                                                <span class="badge bg-primary rounded-pill">{{ stats.avg_size|int }} sq.ft</span>
+                                                <span class="badge stat-badge rounded-pill">{{ stats.avg_size|int }} sq.ft</span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 Minimum Size
-                                                <span class="badge bg-success rounded-pill">{{ stats.min_size|int }} sq.ft</span>
+                                                <span class="badge stat-badge rounded-pill">{{ stats.min_size|int }} sq.ft</span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 Maximum Size
-                                                <span class="badge bg-danger rounded-pill">{{ stats.max_size|int }} sq.ft</span>
+                                                <span class="badge stat-badge rounded-pill">{{ stats.max_size|int }} sq.ft</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -336,6 +1068,7 @@
                     </div>
                 </div>
             </div>
+        </div>
             {% endif %}
         </div>
     </section>
@@ -490,12 +1223,347 @@
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
     <!-- All JS Plugins here -->
-    <script src="{{ url_for('static', filename='js/vendor/popper.js') }}" defer="defer"></script>
-    <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}" defer="defer"></script>
-    <script src="{{ url_for('static', filename='js/plugins/swiper-bundle.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/glightbox.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/aos.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="assets/js/vendor/popper.js" defer="defer"></script>
+    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
+    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
+    <script src="assets/js/plugins/glightbox.min.js"></script>
+    <script src="assets/js/plugins/aos.js"></script>
+    <script src="assets/js/script.js"></script>
+    
+    <!-- Custom Rent Prediction Script -->
+    <script>
+        // Rent Prediction Form Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const predictionForm = document.querySelector('.prediction-form');
+            const resultSection = document.querySelector('.prediction-result');
+            const predictButton = document.querySelector('.predict-btn');
+            
+            // Form field elements
+            const bhkSelect = document.getElementById('bhk');
+            const sizeInput = document.getElementById('size');
+            const floorSelect = document.getElementById('floor');
+            const bathroomsSelect = document.getElementById('bathrooms');
+            const areaTypeSelect = document.getElementById('area-type');
+            const citySelect = document.getElementById('city');
+            const furnishingSelect = document.getElementById('furnishing');
+            const tenantSelect = document.getElementById('tenant');
+            const areaLocalityInput = document.getElementById('area-locality');
+            
+            // Result elements
+            const predictedRentElement = document.getElementById('predicted-rent');
+            const predictionAccuracyElement = document.getElementById('prediction-accuracy');
+            const confidenceFillElement = document.getElementById('confidence-fill');
+            const locationDetailElement = document.getElementById('location-detail');
+            const propertyDetailElement = document.getElementById('property-detail');
+            
+            // Add form validation and interactivity
+            if (predictionForm) {
+                // Add input event listeners for real-time validation
+                const inputs = predictionForm.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.parentElement.classList.add('focused');
+                    });
+                    
+                    input.addEventListener('blur', function() {
+                        this.parentElement.classList.remove('focused');
+                    });
+                    
+                    input.addEventListener('change', function() {
+                        validateField(this);
+                    });
+                });
+                
+                // Handle form submission
+                predictionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    if (validateForm()) {
+                        showPredictionResult();
+                    }
+                });
+            }
+            
+            // Add ripple effect to predict button
+            if (predictButton) {
+                predictButton.addEventListener('click', function(e) {
+                    createRipple(e, this);
+                });
+            }
+            
+            // Add interactive features to result card
+            if (resultSection) {
+                // Animate confidence bar on show
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animateConfidenceBar();
+                        }
+                    });
+                });
+                
+                observer.observe(resultSection);
+            }
+        });
+        
+        // Field validation function
+        function validateField(field) {
+            const formGroup = field.closest('.form-group-box');
+            const value = field.value.trim();
+            
+            if (value === '' || value === '0') {
+                formGroup.classList.add('error');
+                formGroup.classList.remove('success');
+                return false;
+            } else {
+                formGroup.classList.remove('error');
+                formGroup.classList.add('success');
+                return true;
+            }
+        }
+        
+        // Form validation function
+        function validateForm() {
+            const requiredFields = document.querySelectorAll('select[required], input[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Show prediction result with animation
+        function showPredictionResult() {
+            const resultSection = document.querySelector('.prediction-result');
+            const predictedRent = calculatePredictedRent();
+            const confidence = calculateConfidence();
+            
+            // Update result values
+            updateResultValues(predictedRent, confidence);
+            
+            // Show result section with animation
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Trigger animation
+            setTimeout(() => {
+                resultSection.classList.add('show');
+                animateConfidenceBar();
+            }, 100);
+        }
+        
+        // Calculate predicted rent (mock calculation)
+        function calculatePredictedRent() {
+            const bhk = parseInt(document.getElementById('bhk').value) || 1;
+            const size = parseInt(document.getElementById('size').value) || 500;
+            const city = document.getElementById('city').value;
+            const furnishing = document.getElementById('furnishing').value;
+            
+            // Base calculation (mock)
+            let baseRent = (bhk * 8000) + (size * 15);
+            
+            // City multiplier
+            const cityMultipliers = {
+                'mumbai': 1.5,
+                'delhi': 1.4,
+                'bangalore': 1.3,
+                'hyderabad': 1.2,
+                'chennai': 1.2,
+                'kolkata': 1.0
+            };
+            
+            baseRent *= (cityMultipliers[city] || 1.0);
+            
+            // Furnishing multiplier
+            if (furnishing === 'furnished') {
+                baseRent *= 1.3;
+            } else if (furnishing === 'semi-furnished') {
+                baseRent *= 1.1;
+            }
+            
+            return Math.round(baseRent);
+        }
+        
+        // Calculate confidence level
+        function calculateConfidence() {
+            const filledFields = document.querySelectorAll('select:not([value=""]), input:not([value=""])').length;
+            const totalFields = document.querySelectorAll('select, input').length;
+            
+            return Math.min(95, 60 + (filledFields / totalFields) * 35);
+        }
+        
+        // Update result values
+        function updateResultValues(rent, confidence) {
+            const predictedRentElement = document.getElementById('predicted-rent');
+            const predictionAccuracyElement = document.getElementById('prediction-accuracy');
+            const confidenceFillElement = document.getElementById('confidence-fill');
+            const locationDetailElement = document.getElementById('location-detail');
+            const propertyDetailElement = document.getElementById('property-detail');
+            
+            // Format rent amount
+            predictedRentElement.textContent = '₹' + rent.toLocaleString('en-IN');
+            
+            // Update confidence
+            const confidenceText = confidence >= 85 ? 'High Confidence' : 
+                                 confidence >= 70 ? 'Medium Confidence' : 'Low Confidence';
+            predictionAccuracyElement.textContent = `${confidenceText} (${Math.round(confidence)}%)`;
+            
+            // Update confidence bar
+            confidenceFillElement.style.width = confidence + '%';
+            
+            // Update details
+            const city = document.getElementById('city').value;
+            const bhk = document.getElementById('bhk').value;
+            locationDetailElement.textContent = `Location: ${city.charAt(0).toUpperCase() + city.slice(1)}`;
+            propertyDetailElement.textContent = `Property: ${bhk} BHK ${document.getElementById('furnishing').value}`;
+        }
+        
+        // Animate confidence bar
+        function animateConfidenceBar() {
+            const confidenceFill = document.getElementById('confidence-fill');
+            const width = confidenceFill.style.width;
+            confidenceFill.style.width = '0%';
+            
+            setTimeout(() => {
+                confidenceFill.style.width = width;
+            }, 200);
+        }
+        
+        // Create ripple effect
+        function createRipple(e, button) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('btn-ripple');
+            
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // Action button functions
+        function savePrediction() {
+            const predictedRent = document.getElementById('predicted-rent').textContent;
+            const predictionData = {
+                rent: predictedRent,
+                timestamp: new Date().toISOString(),
+                propertyDetails: {
+                    bhk: document.getElementById('bhk').value,
+                    size: document.getElementById('size').value,
+                    city: document.getElementById('city').value,
+                    furnishing: document.getElementById('furnishing').value
+                }
+            };
+            
+            // Save to localStorage (or send to server)
+            localStorage.setItem('rentPrediction_' + Date.now(), JSON.stringify(predictionData));
+            
+            // Show success message
+            showNotification('Prediction saved successfully!', 'success');
+        }
+        
+        function getMorePredictions() {
+            // Show loading state
+            showNotification('Loading detailed analysis...', 'info');
+            
+            // Simulate loading
+            setTimeout(() => {
+                showNotification('Detailed analysis coming soon!', 'info');
+            }, 2000);
+        }
+        
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close">&times;</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+            
+            // Manual close
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.remove();
+            });
+        }
+        
+        // Add notification styles
+        const notificationStyles = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                padding: 1rem;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 300px;
+            }
+            
+            .notification-success {
+                border-left: 4px solid #28a745;
+            }
+            
+            .notification-info {
+                border-left: 4px solid #17a2b8;
+            }
+            
+            .notification-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .notification-close {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+                color: #999;
+                margin-left: 1rem;
+            }
+            
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        
+        // Add styles to head
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = notificationStyles;
+        document.head.appendChild(styleSheet);
+    </script>
 </body>
 
 </html>
