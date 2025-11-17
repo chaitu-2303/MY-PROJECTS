@@ -812,8 +812,8 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="area_type" class="form-label-custom">Area Type</label>
-                                                <select class="form-select-custom" id="area_type" name="area_type" required>
-                                                    <option value="" selected disabled>Select Area Type</option>
+                                                <select class="form-select-custom" id="area_type" name="area_type">
+                                                    <option value="Any" selected>Any</option>
                                                     <option value="Super Area">📐 Super Area</option>
                                                     <option value="Carpet Area">🏠 Carpet Area</option>
                                                     <option value="Built Area">🏗️ Built Area</option>
@@ -830,8 +830,8 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="city" class="form-label-custom">City</label>
-                                                <select class="form-select-custom" id="city" name="city" required>
-                                                    <option value="" selected disabled>Choose City</option>
+                                                <select class="form-select-custom" id="city" name="city">
+                                                    <option value="Any" selected>Any</option>
                                                     <option value="Kolkata">🌆 Kolkata</option>
                                                     <option value="Mumbai">🏙️ Mumbai</option>
                                                     <option value="Delhi">🏛️ Delhi</option>
@@ -854,8 +854,8 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="furnishing" class="form-label-custom">Furnishing</label>
-                                                <select class="form-select-custom" id="furnishing" name="furnishing" required>
-                                                    <option value="" selected disabled>Choose Furnishing</option>
+                                                <select class="form-select-custom" id="furnishing" name="furnishing_status">
+                                                    <option value="Any" selected>Any</option>
                                                     <option value="Unfurnished">🏠 Unfurnished</option>
                                                     <option value="Semi-Furnished">🪑 Semi-Furnished</option>
                                                     <option value="Fully Furnished">🛋️ Fully Furnished</option>
@@ -872,8 +872,8 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="tenant" class="form-label-custom">Tenant Type</label>
-                                                <select class="form-select-custom" id="tenant" name="tenant" required>
-                                                    <option value="" selected disabled>Choose Tenant</option>
+                                                <select class="form-select-custom" id="tenant" name="tenant_preferred">
+                                                    <option value="Any" selected>Any</option>
                                                     <option value="Bachelors/Family">👨‍👩‍👧‍👦 Bachelors/Family</option>
                                                     <option value="Bachelors">👨‍💼 Bachelors</option>
                                                     <option value="Family">👪 Family</option>
@@ -1232,337 +1232,217 @@
     
     <!-- Custom Rent Prediction Script -->
     <script>
-        // Rent Prediction Form Handler
         document.addEventListener('DOMContentLoaded', function() {
-            const predictionForm = document.querySelector('.prediction-form');
+            const predictionForm = document.getElementById('predictionForm');
             const resultSection = document.querySelector('.prediction-result');
             const predictButton = document.querySelector('.predict-btn');
-            
-            // Form field elements
-            const bhkSelect = document.getElementById('bhk');
-            const sizeInput = document.getElementById('size');
-            const floorSelect = document.getElementById('floor');
-            const bathroomsSelect = document.getElementById('bathrooms');
-            const areaTypeSelect = document.getElementById('area-type');
-            const citySelect = document.getElementById('city');
-            const furnishingSelect = document.getElementById('furnishing');
-            const tenantSelect = document.getElementById('tenant');
-            const areaLocalityInput = document.getElementById('area-locality');
-            
-            // Result elements
-            const predictedRentElement = document.getElementById('predicted-rent');
-            const predictionAccuracyElement = document.getElementById('prediction-accuracy');
-            const confidenceFillElement = document.getElementById('confidence-fill');
-            const locationDetailElement = document.getElementById('location-detail');
-            const propertyDetailElement = document.getElementById('property-detail');
-            
-            // Add form validation and interactivity
+            const matchingPropertiesContainer = document.createElement('div');
+            matchingPropertiesContainer.className = 'row mt-5';
+            document.querySelector('.prediction-container').appendChild(matchingPropertiesContainer);
+
             if (predictionForm) {
-                // Add input event listeners for real-time validation
-                const inputs = predictionForm.querySelectorAll('input, select');
-                inputs.forEach(input => {
-                    input.addEventListener('focus', function() {
-                        this.parentElement.classList.add('focused');
-                    });
-                    
-                    input.addEventListener('blur', function() {
-                        this.parentElement.classList.remove('focused');
-                    });
-                    
-                    input.addEventListener('change', function() {
-                        validateField(this);
-                    });
-                });
-                
-                // Handle form submission
                 predictionForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     
                     if (validateForm()) {
-                        showPredictionResult();
+                        const formData = new FormData(predictionForm);
+                        const plainFormData = Object.fromEntries(formData.entries());
+                        const formDataJsonString = JSON.stringify(plainFormData);
+
+                        fetch('/predict_rent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token() }}'
+                            },
+                            body: formDataJsonString
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                showNotification(data.error, 'error');
+                            } else {
+                                showPredictionResult(data);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showNotification('An unexpected error occurred.', 'error');
+                        });
                     }
                 });
             }
-            
-            // Add ripple effect to predict button
-            if (predictButton) {
-                predictButton.addEventListener('click', function(e) {
-                    createRipple(e, this);
-                });
-            }
-            
-            // Add interactive features to result card
-            if (resultSection) {
-                // Animate confidence bar on show
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            animateConfidenceBar();
-                        }
-                    });
+
+            function validateForm() {
+                const requiredFields = document.querySelectorAll('select[required], input[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!validateField(field)) {
+                        isValid = false;
+                    }
                 });
                 
-                observer.observe(resultSection);
+                return isValid;
             }
-        });
-        
-        // Field validation function
-        function validateField(field) {
-            const formGroup = field.closest('.form-group-box');
-            const value = field.value.trim();
-            
-            if (value === '' || value === '0') {
-                formGroup.classList.add('error');
-                formGroup.classList.remove('success');
-                return false;
-            } else {
-                formGroup.classList.remove('error');
-                formGroup.classList.add('success');
-                return true;
-            }
-        }
-        
-        // Form validation function
-        function validateForm() {
-            const requiredFields = document.querySelectorAll('select[required], input[required]');
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                if (!validateField(field)) {
-                    isValid = false;
+
+            function validateField(field) {
+                const formGroup = field.closest('.form-group-box');
+                const value = field.value.trim();
+                
+                if (value === '' || value === '0') {
+                    formGroup.classList.add('error');
+                    formGroup.classList.remove('success');
+                    return false;
+                } else {
+                    formGroup.classList.remove('error');
+                    formGroup.classList.add('success');
+                    return true;
                 }
-            });
-            
-            return isValid;
-        }
-        
-        // Show prediction result with animation
-        function showPredictionResult() {
-            const resultSection = document.querySelector('.prediction-result');
-            const predictedRent = calculatePredictedRent();
-            const confidence = calculateConfidence();
-            
-            // Update result values
-            updateResultValues(predictedRent, confidence);
-            
-            // Show result section with animation
-            resultSection.style.display = 'block';
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Trigger animation
-            setTimeout(() => {
-                resultSection.classList.add('show');
-                animateConfidenceBar();
-            }, 100);
-        }
-        
-        // Calculate predicted rent (mock calculation)
-        function calculatePredictedRent() {
-            const bhk = parseInt(document.getElementById('bhk').value) || 1;
-            const size = parseInt(document.getElementById('size').value) || 500;
-            const city = document.getElementById('city').value;
-            const furnishing = document.getElementById('furnishing').value;
-            
-            // Base calculation (mock)
-            let baseRent = (bhk * 8000) + (size * 15);
-            
-            // City multiplier
-            const cityMultipliers = {
-                'mumbai': 1.5,
-                'delhi': 1.4,
-                'bangalore': 1.3,
-                'hyderabad': 1.2,
-                'chennai': 1.2,
-                'kolkata': 1.0
-            };
-            
-            baseRent *= (cityMultipliers[city] || 1.0);
-            
-            // Furnishing multiplier
-            if (furnishing === 'furnished') {
-                baseRent *= 1.3;
-            } else if (furnishing === 'semi-furnished') {
-                baseRent *= 1.1;
             }
-            
-            return Math.round(baseRent);
-        }
-        
-        // Calculate confidence level
-        function calculateConfidence() {
-            const filledFields = document.querySelectorAll('select:not([value=""]), input:not([value=""])').length;
-            const totalFields = document.querySelectorAll('select, input').length;
-            
-            return Math.min(95, 60 + (filledFields / totalFields) * 35);
-        }
-        
-        // Update result values
-        function updateResultValues(rent, confidence) {
-            const predictedRentElement = document.getElementById('predicted-rent');
-            const predictionAccuracyElement = document.getElementById('prediction-accuracy');
-            const confidenceFillElement = document.getElementById('confidence-fill');
-            const locationDetailElement = document.getElementById('location-detail');
-            const propertyDetailElement = document.getElementById('property-detail');
-            
-            // Format rent amount
-            predictedRentElement.textContent = '₹' + rent.toLocaleString('en-IN');
-            
-            // Update confidence
-            const confidenceText = confidence >= 85 ? 'High Confidence' : 
-                                 confidence >= 70 ? 'Medium Confidence' : 'Low Confidence';
-            predictionAccuracyElement.textContent = `${confidenceText} (${Math.round(confidence)}%)`;
-            
-            // Update confidence bar
-            confidenceFillElement.style.width = confidence + '%';
-            
-            // Update details
-            const city = document.getElementById('city').value;
-            const bhk = document.getElementById('bhk').value;
-            locationDetailElement.textContent = `Location: ${city.charAt(0).toUpperCase() + city.slice(1)}`;
-            propertyDetailElement.textContent = `Property: ${bhk} BHK ${document.getElementById('furnishing').value}`;
-        }
-        
-        // Animate confidence bar
-        function animateConfidenceBar() {
-            const confidenceFill = document.getElementById('confidence-fill');
-            const width = confidenceFill.style.width;
-            confidenceFill.style.width = '0%';
-            
-            setTimeout(() => {
-                confidenceFill.style.width = width;
-            }, 200);
-        }
-        
-        // Create ripple effect
-        function createRipple(e, button) {
-            const ripple = document.createElement('span');
-            ripple.classList.add('btn-ripple');
-            
-            const rect = button.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            
-            button.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }
-        
-        // Action button functions
-        function savePrediction() {
-            const predictedRent = document.getElementById('predicted-rent').textContent;
-            const predictionData = {
-                rent: predictedRent,
-                timestamp: new Date().toISOString(),
-                propertyDetails: {
-                    bhk: document.getElementById('bhk').value,
-                    size: document.getElementById('size').value,
-                    city: document.getElementById('city').value,
-                    furnishing: document.getElementById('furnishing').value
+
+            function showPredictionResult(data) {
+                const { predicted_rent, matching_properties } = data;
+
+                // Update predicted rent
+                const priceAmount = resultSection.querySelector('.price-amount');
+                if (priceAmount) {
+                    priceAmount.textContent = predicted_rent;
                 }
-            };
-            
-            // Save to localStorage (or send to server)
-            localStorage.setItem('rentPrediction_' + Date.now(), JSON.stringify(predictionData));
-            
-            // Show success message
-            showNotification('Prediction saved successfully!', 'success');
-        }
-        
-        function getMorePredictions() {
-            // Show loading state
-            showNotification('Loading detailed analysis...', 'info');
-            
-            // Simulate loading
-            setTimeout(() => {
-                showNotification('Detailed analysis coming soon!', 'info');
-            }, 2000);
-        }
-        
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span class="notification-message">${message}</span>
-                    <button class="notification-close">&times;</button>
-                </div>
+                
+                resultSection.style.display = 'block';
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Update matching properties table
+                matchingPropertiesContainer.innerHTML = '';
+                if (matching_properties && matching_properties.length > 0) {
+                    const tableHtml = `
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0">Properties in Predicted Range</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>BHK</th>
+                                                <th>Bathroom</th>
+                                                <th>City</th>
+                                                <th>Furnishing Status</th>
+                                                <th>Tenant Preferred</th>
+                                                <th>Area Type</th>
+                                                <th>Rent</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${matching_properties.map(prop => `
+                                                <tr>
+                                                    <td>${prop.BHK}</td>
+                                                    <td>${prop.Bathroom}</td>
+                                                    <td>${prop.City}</td>
+                                                    <td>${prop['Furnishing Status']}</td>
+                                                    <td>${prop['Tenant Preferred']}</td>
+                                                    <td>${prop['Area Type']}</td>
+                                                    <td>${prop.Rent}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    matchingPropertiesContainer.innerHTML = tableHtml;
+                } else {
+                    matchingPropertiesContainer.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info" role="alert">
+                                No properties found in the predicted rent range.
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <span class="notification-message">${message}</span>
+                        <button class="notification-close">&times;</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+                
+                notification.querySelector('.notification-close').addEventListener('click', () => {
+                    notification.remove();
+                });
+            }
+
+            const notificationStyles = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: white;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                    padding: 1rem;
+                    z-index: 10000;
+                    animation: slideInRight 0.3s ease;
+                    max-width: 300px;
+                }
+                
+                .notification-success {
+                    border-left: 4px solid #28a745;
+                }
+
+                .notification-error {
+                    border-left: 4px solid #dc3545;
+                }
+                
+                .notification-info {
+                    border-left: 4px solid #17a2b8;
+                }
+                
+                .notification-content {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                
+                .notification-close {
+                    background: none;
+                    border: none;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    color: #999;
+                    margin-left: 1rem;
+                }
+                
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
             `;
             
-            document.body.appendChild(notification);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-            
-            // Manual close
-            notification.querySelector('.notification-close').addEventListener('click', () => {
-                notification.remove();
-            });
-        }
-        
-        // Add notification styles
-        const notificationStyles = `
-            .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-                padding: 1rem;
-                z-index: 10000;
-                animation: slideInRight 0.3s ease;
-                max-width: 300px;
-            }
-            
-            .notification-success {
-                border-left: 4px solid #28a745;
-            }
-            
-            .notification-info {
-                border-left: 4px solid #17a2b8;
-            }
-            
-            .notification-content {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            
-            .notification-close {
-                background: none;
-                border: none;
-                font-size: 1.2rem;
-                cursor: pointer;
-                color: #999;
-                margin-left: 1rem;
-            }
-            
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        `;
-        
-        // Add styles to head
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = notificationStyles;
-        document.head.appendChild(styleSheet);
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = notificationStyles;
+            document.head.appendChild(styleSheet);
+        });
     </script>
 </body>
 

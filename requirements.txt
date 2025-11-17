@@ -18,3 +18,5 @@ xgboost
 matplotlib
 seaborn
 flask-uploads
+PyJWT
+flask_dance

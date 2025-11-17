@@ -171,26 +171,23 @@ def signup():
 def listing():
     # Load dataset for property listings
     import os
+    import random
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'House_Rent_Dataset.csv')
     df = pd.read_csv(file_path, on_bad_lines='skip')
     # Clean column names by removing extra spaces
     df.columns = [col.strip() for col in df.columns]
     # Convert to list of dictionaries for template
     properties = df.to_dict('records')
-    # Use simplified template for testing
-    return render_template('simple_listing.html', properties=properties)
+    
+    # Add image URLs to properties
+    image_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Frontend', 'assets', 'img', 'property')
+    image_files = [f for f in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, f))]
+    
+    for prop in properties:
+        prop['image_url'] = url_for('static', filename=f'img/property/{random.choice(image_files)}')
 
-@app.route('/simple_listing')
-def simple_listing():
-    # Load dataset for property listings
-    import os
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'House_Rent_Dataset.csv')
-    df = pd.read_csv(file_path, on_bad_lines='skip')
-    # Clean column names by removing extra spaces
-    df.columns = [col.strip() for col in df.columns]
-    # Convert to list of dictionaries for template
-    properties = df.to_dict('records')
-    return render_template('simple_listing.html', properties=properties)
+    # Use simplified template for testing
+    return render_template('listing.html', properties=properties)
 
 @app.route('/rent_prediction', methods=['GET', 'POST'])
 def rent_prediction():
@@ -921,27 +918,20 @@ model = best_model
 # Save feature names for prediction
 model_features = numeric_features + categorical_features
 
-@app.route('/predict_rent', methods=['GET', 'POST'])
-@login_required
+@app.route('/predict_rent', methods=['POST'])
 def predict_rent():
-    predicted_rent = None
-    matching_properties = []
-    model_name = None
-    prediction_accuracy = None
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Invalid JSON data'}), 400
 
-    # Get dropdown options from dataset
-    cities = sorted(list(set(df['City'].dropna().unique())))
-    furnishing_statuses = sorted(list(set(df['Furnishing Status'].dropna().unique())))
-    tenant_preferences = sorted(list(set(df['Tenant Preferred'].dropna().unique())))
-    area_types = sorted(list(set(df['Area Type'].dropna().unique())))
+    form = PredictRentForm(data=data)
+    
+    form.city.choices = ['Any', 'Kolkata', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune']
+    form.furnishing_status.choices = ['Any', 'Unfurnished', 'Semi-Furnished', 'Fully Furnished']
+    form.tenant_preferred.choices = ['Any', 'Bachelors/Family', 'Bachelors', 'Family']
+    form.area_type.choices = ['Any', 'Super Area', 'Carpet Area', 'Built Area']
 
-    form = PredictRentForm()
-    form.city.choices = [('Any', 'Any')] + [(city, city) for city in cities]
-    form.furnishing_status.choices = [('Any', 'Any')] + [(status, status) for status in furnishing_statuses]
-    form.tenant_preferred.choices = [('Any', 'Any')] + [(pref, pref) for pref in tenant_preferences]
-    form.area_type.choices = [('Any', 'Any')] + [(type_, type_) for type_ in area_types]
-
-    if form.validate_on_submit():
+    if form.validate():
         try:
             size = float(form.size.data)
             bedroom = int(form.bedroom.data)
@@ -965,35 +955,31 @@ def predict_rent():
 
             min_price = predicted_rent * 0.9
             max_price = predicted_rent * 1.1
-            query = Property.query.filter(
-                Property.price >= min_price,
-                Property.price <= max_price
-            )
+            
+            # Filter the dataframe instead of querying the database
+            matching_df = df[
+                (df['Rent'] >= min_price) & (df['Rent'] <= max_price)
+            ]
             if city != 'Any':
-                query = query.filter(Property.city == city)
+                matching_df = matching_df[matching_df['City'] == city]
             if furnishing_status != 'Any':
-                query = query.filter(Property.furnishing_status == furnishing_status)
+                matching_df = matching_df[matching_df['Furnishing Status'] == furnishing_status]
             if tenant_preferred != 'Any':
-                query = query.filter(Property.tenant_preferred == tenant_preferred)
+                matching_df = matching_df[matching_df['Tenant Preferred'] == tenant_preferred]
             if area_type != 'Any':
-                query = query.filter(Property.area_type == area_type)
-            matching_properties = query.all()
+                matching_df = matching_df[matching_df['Area Type'] == area_type]
+            
+            matching_properties = matching_df.to_dict('records')
+
+            return jsonify({
+                'predicted_rent': f'${predicted_rent:.2f}',
+                'matching_properties': matching_properties
+            })
+
         except Exception as e:
-            flash(f'Prediction error: {str(e)}', 'danger')
-            predicted_rent = None
-            matching_properties = []
-    return render_template(
-        'rent-prediction.html',
-        form=form,
-        predicted_rent=predicted_rent,
-        matching_properties=matching_properties,
-        model_name=model_name,
-        prediction_accuracy=prediction_accuracy,
-        cities=cities,
-        furnishing_statuses=furnishing_statuses,
-        tenant_preferences=tenant_preferences,
-        area_types=area_types
-    )
+            return jsonify({'error': str(e)}), 500
+            
+    return jsonify({'error': 'Invalid form submission', 'errors': form.errors}), 400
 
 @app.route('/property/<int:property_id>')
 def property_detail(property_id):
