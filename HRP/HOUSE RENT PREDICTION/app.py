@@ -677,11 +677,56 @@ def profile():
         current_user.timezone = form.timezone.data
         current_user.verified = form.verified.data
 
+        # Handle profile picture upload securely
         pic_file = form.profile_pic.data
         if hasattr(pic_file, 'filename') and pic_file.filename:
             filename = secure_filename(pic_file.filename)
             filename = str(uuid.uuid4().hex) + '_' + filename
-            pic_dir = os.path.join(app.root_path, 'static/profile_pics')
-            os.makedirs(p
+
+            pic_dir = os.path.join(app.root_path, 'static', 'profile_pics')
+            os.makedirs(pic_dir, exist_ok=True)
+
+            pic_path = os.path.join(pic_dir, filename)
+            pic_file.save(pic_path)
+
+            # Delete old profile pic if not default
+            if current_user.profile_pic and current_user.profile_pic != 'default.jpg':
+                old_pic_path = os.path.join(pic_dir, current_user.profile_pic)
+                if os.path.exists(old_pic_path):
+                    os.remove(old_pic_path)
+
+            current_user.profile_pic = filename
+
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))
+
+    # Build profile data dict for template
+    profile_data = {
+        'profile_pic': current_user.profile_pic,
+        'name': current_user.name,
+        'username': current_user.username,
+        'bio': current_user.bio,
+        'email': current_user.email,
+        'phone': current_user.phone,
+        'dob': str(current_user.dob) if current_user.dob else '',
+        'location': current_user.location,
+        'timezone': current_user.timezone,
+        'verified': current_user.verified,
+        'role': current_user.role,
+        'member_since': str(current_user.member_since) if current_user.member_since else '',
+        'two_factor_enabled': getattr(current_user, 'two_factor_enabled', False),
+    }
+
+    # Choose template based on user role
+    if current_user.role == 'admin':
+        template = 'admin/profile.html'
+    elif current_user.role == 'owner':
+        template = 'owner/profile.html'
+    else:
+        template = 'customer/profile.html'
+
+    return render_template(template, form=form, profile_data=profile_data)
+
 
 ::contentReference[oaicite:0]{index=0}
