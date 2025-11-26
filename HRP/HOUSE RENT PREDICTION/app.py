@@ -729,4 +729,3 @@ def profile():
     return render_template(template, form=form, profile_data=profile_data)
 
 
-::contentReference[oaicite:0]{index=0}
