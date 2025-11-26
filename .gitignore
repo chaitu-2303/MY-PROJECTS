@@ -1,0 +1,8 @@
+# never track the huge 10M dataset
+HRP/HOUSE RENT PREDICTION/House_Rent_10M_balanced_40cities.csv
+HRP/HOUSE RENT PREDICTION/House_Rent_*10M*.csv
+*.csv.gz
+
+# local env + VS Code history
+.venv/
+.history/
