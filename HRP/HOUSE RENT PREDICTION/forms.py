@@ -69,7 +69,7 @@ class PropertyForm(FlaskForm):
                 raise ValidationError('Invalid file extension. Only jpg, jpeg, and png files are allowed')
             
             # Check filename for security
-            if any(char in image_file.data.filename for char in '\/":*?<>|'):
+            if any(char in image_file.data.filename for char in r'\/":*?<>|'):
                 raise ValidationError('Filename contains invalid characters')
             
             # Check filename length
