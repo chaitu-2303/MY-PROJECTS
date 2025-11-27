@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from flask import (
     Flask, render_template, request, redirect,
-    url_for, flash, jsonify, Response, send_from_directory
+    url_for, flash, jsonify, Response, send_from_directory, abort
 )
 from flask_login import (
     LoginManager, login_user, current_user,
@@ -18,7 +18,7 @@ from sqlalchemy import or_
 
 from config import Config
 from database import db
-from models import User, Property, Booking, Favorite, Review
+from models import User, Property, Booking, Favorite, Review, PredictionResult
 from forms import (
     LoginForm, RegistrationForm, PropertyForm, BookingForm, SearchForm,
     EditProfileForm, ChangePasswordForm, ReviewForm,
@@ -61,6 +61,13 @@ login_manager.login_view = "login"
 # CSRF & Mail
 csrf = CSRFProtect(app)
 mail = Mail(app)
+
+# Initialize database tables (including PredictionResult)
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        app.logger.error(f"DB init error: {e}")
 
 # File upload config
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg"}
@@ -157,7 +164,7 @@ def rate_limit(max_attempts=10, window_seconds=600):
             ]
             if len(login_attempts[ip]) >= max_attempts:
                 return render_template(
-                    "errors/error.html",
+                    "error.html",
                     error_code=429,
                     error_title="Too Many Attempts",
                     error_message=f"Too many login attempts. Please try again after {window_seconds // 60} minutes.",
@@ -175,9 +182,25 @@ def rate_limit(max_attempts=10, window_seconds=600):
 # These files live in the same folder as app.py
 MODEL_PATH = os.path.join(BASE_DIR, "house_rent_model.pkl")
 UI_DATASET_PATH = os.path.join(BASE_DIR, "House_Rent_10k_major_cities.csv")
+DATASET_PATH = os.getenv("DATASET_PATH", UI_DATASET_PATH)
 
 model = None
 ui_df = None
+
+def load_ui_dataset(path: str) -> None:
+    global ui_df
+    try:
+        if os.path.exists(path):
+            df = pd.read_csv(path)
+            df.columns = df.columns.str.strip()
+            ui_df = df
+            app.logger.info(f"UI dataset loaded from {path}")
+        else:
+            ui_df = None
+            app.logger.warning(f"Dataset not found at {path}")
+    except Exception as e:
+        ui_df = None
+        app.logger.error(f"Dataset load error: {e}")
 
 try:
     if os.path.exists(MODEL_PATH):
@@ -185,15 +208,9 @@ try:
         app.logger.info("ML model loaded successfully.")
     else:
         app.logger.warning(f"Model file not found at {MODEL_PATH}")
-
-    if os.path.exists(UI_DATASET_PATH):
-        ui_df = pd.read_csv(UI_DATASET_PATH)
-        ui_df.columns = ui_df.columns.str.strip()
-        app.logger.info("UI dataset loaded successfully.")
-    else:
-        app.logger.warning(f"UI dataset not found at {UI_DATASET_PATH}")
+    load_ui_dataset(DATASET_PATH)
 except Exception as e:
-    app.logger.error(f"Error loading model or dataset: {e}")
+    app.logger.error(f"Error initializing model or dataset: {e}")
     model = None
     ui_df = None
 
@@ -343,7 +360,7 @@ def listing():
     for prop in properties:
         if image_files:
             prop["image_url"] = url_for(
-                "serve_assets",
+                "static",
                 filename=f"img/property/{random.choice(image_files)}",
             )
         else:
@@ -360,6 +377,48 @@ def listing():
 def rent_prediction():
     form = PredictRentForm()
     prediction_result = None
+
+    # Dynamic options from dataset for dropdowns
+    city_options = []
+    furnishing_options = []
+    tenant_options = []
+    area_type_options = []
+    contact_options = []
+    localities_by_city = {}
+
+    if ui_df is not None and not ui_df.empty:
+        try:
+            city_options = sorted(set(ui_df["City"].dropna().astype(str).tolist()))
+        except Exception:
+            city_options = []
+        try:
+            furnishing_options = sorted(set(ui_df["Furnishing Status"].dropna().astype(str).tolist()))
+        except Exception:
+            furnishing_options = ["Unfurnished", "Semi-Furnished", "Furnished"]
+        try:
+            tenant_options = sorted(set(ui_df["Tenant Preferred"].dropna().astype(str).tolist()))
+        except Exception:
+            tenant_options = ["Bachelors", "Family", "Bachelors/Family"]
+        try:
+            area_type_options = sorted(set(ui_df["Area Type"].dropna().astype(str).tolist()))
+        except Exception:
+            area_type_options = ["Super Area", "Carpet Area", "Built Area", "Plot Area"]
+        try:
+            contact_options = sorted(set(ui_df["Point of Contact"].dropna().astype(str).tolist()))
+        except Exception:
+            contact_options = ["Contact Owner", "Contact Agent", "Contact Builder"]
+        try:
+            if "Area Locality" in ui_df.columns:
+                for city, sub in ui_df.groupby("City"):
+                    localities_by_city[str(city)] = sorted(set(sub["Area Locality"].dropna().astype(str).tolist()))
+        except Exception:
+            localities_by_city = {}
+
+    # Set choices for validation
+    form.city.choices = [(c, c) for c in city_options]
+    form.furnishing_status.choices = [(f, f) for f in furnishing_options]
+    form.tenant_preferred.choices = [(t, t) for t in tenant_options]
+    form.area_type.choices = [(a, a) for a in area_type_options]
 
     if form.validate_on_submit():
         if model is None:
@@ -383,7 +442,52 @@ def rent_prediction():
                 app.logger.error(f"Prediction error: {e}")
                 flash("An error occurred during prediction. Please try again.", "danger")
 
-    return render_template("rent-prediction.html", form=form, prediction_result=prediction_result)
+    return render_template(
+        "rent-prediction.html",
+        form=form,
+        prediction_result=prediction_result,
+        city_options=city_options,
+        furnishing_options=furnishing_options,
+        tenant_options=tenant_options,
+        area_type_options=area_type_options,
+        contact_options=contact_options,
+        localities_by_city=localities_by_city,
+    )
+
+# ======================================================
+# Legacy .html URL mappings (for static template links)
+# ======================================================
+
+@app.route("/<page>.html")
+def legacy_html(page):
+    """Support existing hardcoded links to .html by redirecting to routes
+    or rendering the template directly when appropriate.
+    """
+    route_map = {
+        "index": "index",
+        "listing": "listing",
+        "rent-prediction": "rent_prediction",
+        "login": "login",
+        "sign-up": "signup",
+        "about": "about",
+        "contact": "contact",
+        "bookings": "bookings",
+        "favorites": "favorites",
+        "dashboard": "dashboard",
+        "owner-dashboard": "owner_dashboard",
+        "profile": "profile",
+        "settings": "settings",
+    }
+
+    if page in route_map:
+        return redirect(url_for(route_map[page]))
+
+    # Fallback: try to render the template if it exists
+    template_name = f"{page}.html"
+    try:
+        return render_template(template_name)
+    except Exception:
+        abort(404)
 
 
 @app.route("/predict_rent", methods=["POST"])
@@ -393,7 +497,48 @@ def predict_rent_api():
         return jsonify({"error": "Model not available"}), 500
 
     data = request.get_json() or {}
-    form = PredictRentForm(data=data)
+    form = PredictRentForm(meta={'csrf': False}, data=data)
+
+    # Prepare choices for SelectFields
+    if ui_df is not None and not ui_df.empty:
+        city_options = sorted(set(ui_df["City"].dropna().astype(str).tolist()))
+        furnishing_options = sorted(set(ui_df["Furnishing Status"].dropna().astype(str).tolist()))
+        tenant_options = sorted(set(ui_df["Tenant Preferred"].dropna().astype(str).tolist()))
+        area_type_options = sorted(set(ui_df["Area Type"].dropna().astype(str).tolist()))
+    else:
+        city_options = []
+        furnishing_options = ["Unfurnished", "Semi-Furnished", "Furnished"]
+        tenant_options = ["Bachelors", "Family", "Bachelors/Family"]
+        area_type_options = ["Super Area", "Carpet Area", "Built Area", "Plot Area"]
+
+    form.city.choices = [(c, c) for c in city_options]
+    form.furnishing_status.choices = [(f, f) for f in furnishing_options]
+    form.tenant_preferred.choices = [(t, t) for t in tenant_options]
+    form.area_type.choices = [(a, a) for a in area_type_options]
+
+    if ui_df is not None and not ui_df.empty:
+        city_options = sorted(set(ui_df["City"].dropna().astype(str).tolist()))
+        furnishing_options = sorted(set(ui_df["Furnishing Status"].dropna().astype(str).tolist()))
+        tenant_options = sorted(set(ui_df["Tenant Preferred"].dropna().astype(str).tolist()))
+        area_type_options = sorted(set(ui_df["Area Type"].dropna().astype(str).tolist()))
+        # Area locality choices union for validation (optional)
+        try:
+            all_localities = sorted(set(ui_df["Area Locality"].dropna().astype(str).tolist()))
+        except Exception:
+            all_localities = []
+    else:
+        city_options = []
+        furnishing_options = ["Unfurnished", "Semi-Furnished", "Furnished"]
+        tenant_options = ["Bachelors", "Family", "Bachelors/Family"]
+        area_type_options = ["Super Area", "Carpet Area", "Built Area", "Plot Area"]
+        all_localities = []
+
+    form.city.choices = [(c, c) for c in city_options]
+    form.furnishing_status.choices = [(f, f) for f in furnishing_options]
+    form.tenant_preferred.choices = [(t, t) for t in tenant_options]
+    form.area_type.choices = [(a, a) for a in area_type_options]
+    if hasattr(form, 'area_locality'):
+        form.area_locality.choices = [(l, l) for l in all_localities]
 
     if not form.validate():
         return jsonify({"error": "Invalid form submission", "errors": form.errors}), 400
@@ -428,6 +573,62 @@ def predict_rent_api():
     except Exception as e:
         app.logger.error(f"Prediction API error: {e}")
         return jsonify({"error": "Internal error"}), 500
+
+
+# ======================================================
+# DATASET IMPORT
+# ======================================================
+
+def import_properties_from_df(df, limit: int = 500):
+    admin_email = app.config.get("ADMIN_EMAIL", "admin@example.com")
+    admin_user = User.query.filter_by(email=admin_email).first()
+    if not admin_user:
+        return 0
+    required = {"Rent", "Size", "BHK", "Bathroom", "City"}
+    if not required.issubset(set(df.columns)):
+        return 0
+    count = 0
+    for _, row in df.head(limit).iterrows():
+        try:
+            prop = Property(
+                title=f"{int(row['BHK']) if pd.notnull(row['BHK']) else 0}-BHK in {row['City']}",
+                description=str(row.get("Description", "")) or "",
+                address=str(row.get("Address", row["City"])) or str(row["City"]),
+                city=str(row["City"]),
+                price=float(row["Rent"]) if pd.notnull(row["Rent"]) else 0.0,
+                bedrooms=int(row["BHK"]) if pd.notnull(row["BHK"]) else None,
+                bathrooms=int(row["Bathroom"]) if pd.notnull(row["Bathroom"]) else None,
+                size=float(row["Size"]) if pd.notnull(row["Size"]) else None,
+                furnishing_status=str(row.get("Furnishing Status", "")) or None,
+                tenant_preferred=str(row.get("Tenant Preferred", "")) or None,
+                area_type=str(row.get("Area Type", "")) or None,
+                owner_id=admin_user.id,
+            )
+            db.session.add(prop)
+            count += 1
+        except Exception:
+            db.session.rollback()
+    db.session.commit()
+    return count
+
+
+@app.route("/admin/import_dataset", methods=["GET", "POST"])
+@login_required
+def admin_import_dataset():
+    if current_user.role != "admin":
+        flash("You are not authorized to access this page", "danger")
+        return redirect(url_for("dashboard"))
+    filename = request.values.get("filename") or DATASET_PATH
+    to_db = str(request.values.get("to_db", "0")).lower() in {"1", "true", "yes"}
+    if not filename or not os.path.exists(filename):
+        flash("Dataset file not found", "danger")
+        return redirect(url_for("admin_dashboard"))
+    load_ui_dataset(filename)
+    flash("UI dataset loaded", "success")
+    if ui_df is not None and to_db:
+        imported = import_properties_from_df(ui_df)
+        flash(f"Imported {imported} properties into the database", "success")
+    return redirect(url_for("admin_dashboard"))
 
 
 # ======================================================
@@ -517,7 +718,11 @@ def admin_dashboard():
     bookings = Booking.query.all()
     users = User.query.all()
     return render_template(
-        "owner-dashboard.html", properties=properties
+        "owner/owner-dashboard.html",
+        properties=properties,
+        bookings=bookings,
+        users=users,
+        reviews=Review.query.all(),
     )
 
 
@@ -535,7 +740,7 @@ def owner_dashboard():
     # Fetch all bookings related to those properties
     bookings = Booking.query.filter(Booking.property_id.in_(property_ids)).all()
     
-    return render_template("owner-dashboard.html", properties=properties, bookings=bookings)
+    return render_template("owner/owner-dashboard.html", properties=properties, bookings=bookings)
 
 
 @app.route("/customer/dashboard", methods=["GET", "POST"])
@@ -605,7 +810,7 @@ def customer_dashboard():
     map_html = m._repr_html_()
 
     return render_template(
-        "dashboard.html",
+        "customer/dashboard.html",
         form=form,
         properties=properties,
         map_html=map_html,
@@ -640,7 +845,7 @@ def add_property():
         db.session.commit()
         flash("Property added successfully!", "success")
         return redirect(url_for("owner_dashboard"))
-    return render_template("create-listing.html", form=form)
+    return render_template("owner/create-listing.html", form=form)
 
 
 @app.route("/owner/edit_property/<int:property_id>", methods=["GET", "POST"])
@@ -668,7 +873,7 @@ def edit_property(property_id):
         if image_file and image_file.filename:
             if not allowed_file(image_file.filename):
                 flash("Invalid file type. Only jpg, jpeg, and png are allowed.", "danger")
-                return render_template("create-listing.html", form=form, property=prop)
+                return render_template("owner/create-listing.html", form=form, property=prop)
 
             if prop.image_file and prop.image_file != "default.jpg":
                 old_path = os.path.join(app.root_path, "static", "property_pics", prop.image_file)
@@ -687,7 +892,7 @@ def edit_property(property_id):
         flash("Property updated successfully!", "success")
         return redirect(url_for("owner_dashboard"))
 
-    return render_template("create-listing.html", form=form, property=prop)
+    return render_template("owner/create-listing.html", form=form, property=prop)
 
 
 @app.route("/owner/delete_property/<int:property_id>", methods=["POST"])
@@ -786,7 +991,7 @@ def customer_bookings():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     bookings = Booking.query.filter_by(customer_id=current_user.id).all()
-    return render_template("bookings.html", bookings=bookings)
+    return render_template("customer/bookings.html", bookings=bookings)
 
 
 @app.route("/customer/booking/<int:booking_id>/cancel", methods=["POST"])
@@ -869,7 +1074,7 @@ def customer_favorites():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     favorites = Favorite.query.filter_by(user_id=current_user.id).all()
-    return render_template("favorites.html", favorites=favorites)
+    return render_template("customer/favorites.html", favorites=favorites)
 
 
 # ======================================================
@@ -927,11 +1132,11 @@ def profile():
     }
 
     if current_user.role == "admin":
-        template = "profile.html"
+        template = "customer/profile.html"
     elif current_user.role == "owner":
-        template = "owner-profile.html"
+        template = "owner/owner-profile.html"
     else:
-        template = "profile.html"
+        template = "customer/profile.html"
 
     return render_template(template, form=form, profile_data=profile_data)
 
@@ -993,7 +1198,7 @@ def admin_users():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     users = User.query.all()
-    return render_template("dashboard.html", users=users)
+    return render_template("customer/dashboard.html", users=users)
 
 
 @app.route("/admin/user/delete/<int:user_id>", methods=["POST"])
@@ -1097,3 +1302,41 @@ def initialize_database():
 if __name__ == "__main__":
     initialize_database()
     app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+# ======================================================
+# SAVE PREDICTION RESULTS
+# ======================================================
+
+@app.route("/save_prediction", methods=["POST"])
+def save_prediction():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Login required"}), 401
+    payload = request.get_json() or {}
+    try:
+        rec = PredictionResult(
+            user_id=current_user.id,
+            predicted_rent=float(payload.get("predicted_rent", 0) or 0),
+            city=payload.get("city") or None,
+            area_locality=payload.get("area_locality") or None,
+            bhk=int(payload.get("bhk", 0) or 0) or None,
+            bathroom=int(payload.get("bathroom", 0) or 0) or None,
+            size=float(payload.get("size", 0) or 0) or None,
+            furnishing_status=payload.get("furnishing_status") or None,
+            tenant_preferred=payload.get("tenant_preferred") or None,
+            area_type=payload.get("area_type") or None,
+            point_of_contact=payload.get("point_of_contact") or None,
+            notes=payload.get("notes") or None,
+        )
+        db.session.add(rec)
+        db.session.commit()
+        return jsonify({"ok": True, "id": rec.id})
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Save prediction error: {e}")
+        return jsonify({"error": "Could not save"}), 500
+
+@app.route("/save_analysis", methods=["POST"])
+def save_analysis():
+    # Reuse save_prediction, but mark notes field
+    payload = request.get_json() or {}
+    payload["notes"] = (payload.get("notes") or "Detailed analysis saved")
+    return save_prediction()

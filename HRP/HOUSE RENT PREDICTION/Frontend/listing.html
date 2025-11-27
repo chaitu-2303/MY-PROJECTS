@@ -99,10 +99,10 @@
               </a>
             </div>
             <div class="main__logo">
-              <a class="main__logo--link" href="index.html">
+              <a class="main__logo--link" href="{{ url_for('index') }}">
                 <img
                   class="main__logo--img"
-                  src="assets/img/logo/nav-log.png"
+                  src="{{ url_for('static', filename='img/logo/nav-log.png') }}"
                   alt="logo-img"
                 />
               </a>
@@ -111,7 +111,7 @@
               <nav class="main__menu--navigation">
                 <ul class="main__menu--wrapper d-flex">
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="./index.html"
+                    <a class="main__menu--link" href="{{ url_for('index') }}"
                       ><svg
                         width="11"
                         height="11"
@@ -127,15 +127,11 @@
                       Home
                   </li>
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="/listing">Listing</a>
+                    <a class="main__menu--link" href="{{ url_for('listing') }}">Listing</a>
                   </li>
+                  
                   <li class="main__menu--items">
-                    <a
-                      class="main__menu--link"
-                      href="/my-properties"
-                    >
-                      Properties
-                    </a>
+                    <a class="main__menu--link" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
                   </li>
                   <li class="main__menu--items">
                     <a class="main__menu--link" href="./dashboard.html">
@@ -332,9 +328,9 @@
     <div class="offcanvas__header">
       <div class="offcanvas__inner">
         <div class="offcanvas__logo">
-          <a class="offcanvas__logo_link" href="./index.html">
+          <a class="offcanvas__logo_link" href="{{ url_for('index') }}">
             <img
-              src="assets/img/logo/nav-log.png"
+              src="{{ url_for('static', filename='img/logo/nav-log.png') }}"
               alt="Logo-img"
               width="158"
               height="36"
@@ -346,16 +342,15 @@
         <nav class="offcanvas__menu">
           <ul class="offcanvas__menu_ul">
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./index.html">Home</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('index') }}">Home</a>
             </li>
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="/listing">Listing</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('listing') }}">Listing</a>
             </li>
 
+            
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./my-properties.html"
-                >Properties</a
-              >
+              <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
             </li>
             <li class="offcanvas__menu_li">
               <a class="offcanvas__menu_item" href="./dashboard.html"
@@ -1043,7 +1038,7 @@
         card.innerHTML = `
           <div class="product__card--thumbnail">
             <a class="product__card--thumbnail__link" href="/property/${property.id}">
-              <img class="product__card--thumbnail__img" src="${property.image_url || 'assets/img/property/default.jpg'}" alt="${property.title}">
+              <img class="product__card--thumbnail__img" src="${property.image_url || '{{ url_for('static', filename='img/property/default.jpg') }}'}" alt="${property.title}">
             </a>
             <div class="product__card--badge">
               <span class="product__card--badge__field">${property.category}</span>
@@ -1076,7 +1071,7 @@
         card.innerHTML = `
           <div class="product__card--thumbnail">
             <a class="product__card--thumbnail__link" href="/property/${property.id}">
-              <img class="product__card--thumbnail__img" src="${property.image_url || 'assets/img/property/default.jpg'}" alt="${property.title}">
+              <img class="product__card--thumbnail__img" src="${property.image_url || '{{ url_for('static', filename='img/property/default.jpg') }}'}" alt="${property.title}">
             </a>
             <div class="product__card--badge">
               <span class="product__card--badge__field">${property.category}</span>

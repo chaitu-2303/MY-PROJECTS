@@ -131,7 +131,8 @@ pipeline.fit(X_train, y_train)
 # =========================
 
 y_pred = pipeline.predict(X_test)
-rmse = mean_squared_error(y_test, y_pred, squared=False)
+# Compute RMSE manually to avoid signature differences across sklearn versions
+rmse = mean_squared_error(y_test, y_pred) ** 0.5
 r2 = r2_score(y_test, y_pred)
 
 print(f"RMSE: {rmse:,.2f}")

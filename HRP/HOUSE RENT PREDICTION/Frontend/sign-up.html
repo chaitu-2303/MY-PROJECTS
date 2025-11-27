@@ -78,7 +78,7 @@
               <nav class="main__menu--navigation">
                 <ul class="main__menu--wrapper d-flex">
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="./index.html"
+                    <a class="main__menu--link" href="{{ url_for('index') }}"
                       ><svg
                         width="11"
                         height="11"
@@ -136,7 +136,7 @@
                     </ul>
                   </li>
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="./listing.html">
+                    <a class="main__menu--link" href="{{ url_for('listing') }}">
                       Listing
                     </a>
                     <svg
@@ -183,14 +183,7 @@
                       </li>
                     </ul>
                   </li>
-                  <li class="main__menu--items">
-                    <a
-                      class="main__menu--link"
-                      href="./my-properties.html"
-                    >
-                      Properties
-                    </a>
-                  </li>
+                  
                   <li class="main__menu--items">
                     <a class="main__menu--link" href="./dashboard.html">
                       Dashboard
@@ -400,7 +393,7 @@
         <nav class="offcanvas__menu">
           <ul class="offcanvas__menu_ul">
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./index.html">Home</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('index') }}">Home</a>
               <ul class="offcanvas__sub_menu">
                 <li class="offcanvas__sub_menu_li">
                   <a href="./index.html" class="offcanvas__sub_menu_item"
@@ -430,7 +423,7 @@
               </ul>
             </li>
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./listing.html">Listing</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('listing') }}">Listing</a>
               <ul class="offcanvas__sub_menu">
                 <li class="offcanvas__sub_menu_li">
                   <a href="./listing.html" class="offcanvas__sub_menu_item"
@@ -464,11 +457,8 @@
               </ul>
             </li>
 
-            <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./my-properties.html"
-                >Properties</a
-              >
-            </li>
+            
+            <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a></li>
             <li class="offcanvas__menu_li">
               <a class="offcanvas__menu_item" href="./dashboard.html"
                 >Dashboard</a
@@ -790,7 +780,8 @@
                 </p>
               </div>
               <div class="account__form">
-                <form action="#">
+                <form method="POST" action="{{ url_for('register') }}">
+                  {{ form.hidden_tag() }}
                   <div class="account__form--input mb-30">
                     <label class="account__form--input__label mb-12" for="name"
                       >Your Name</label
@@ -800,6 +791,7 @@
                       id="name"
                       placeholder="Enter your name*"
                       type="text"
+                      name="name"
                     />
                   </div>
                   <div class="account__form--input mb-30">
@@ -811,6 +803,7 @@
                       id="email"
                       placeholder="Enter Email Adress"
                       type="email"
+                      name="email"
                     />
                   </div>
                   <div class="account__form--input mb-30">
@@ -827,6 +820,7 @@
                         id="password"
                         placeholder="Create password"
                         type="password"
+                        name="password"
                       />
                       <button class="account__form--password__show--icon">
                         <svg
@@ -843,6 +837,33 @@
                         </svg>
                       </button>
                     </div>
+                  </div>
+                  <div class="account__form--input mb-30">
+                    <label class="account__form--input__label mb-12" for="confirm_password">Confirm Password</label>
+                    <input
+                      class="account__form--input__field"
+                      id="confirm_password"
+                      placeholder="Confirm password"
+                      type="password"
+                      name="confirm_password"
+                    />
+                  </div>
+                  <div class="account__form--input mb-30">
+                    <label class="account__form--input__label mb-12" for="phone">Phone</label>
+                    <input
+                      class="account__form--input__field"
+                      id="phone"
+                      placeholder="Enter your phone number"
+                      type="text"
+                      name="phone"
+                    />
+                  </div>
+                  <div class="account__form--input mb-30">
+                    <label class="account__form--input__label mb-12" for="role">Role</label>
+                    <select class="account__form--input__field" id="role" name="role">
+                      <option value="customer">Customer</option>
+                      <option value="owner">Owner</option>
+                    </select>
                   </div>
                   <p class="account__form--condition position-relative m-0">
                     <label

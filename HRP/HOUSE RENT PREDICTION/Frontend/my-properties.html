@@ -8,26 +8,26 @@
     <link
       rel="shortcut icon"
       type="image/x-icon"
-      href="/assets/img/favicon.ico"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
     />
 
     <!-- ======= All CSS Plugins here ======== -->
-    <link rel="stylesheet" href="/assets/css/plugins/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <!-- Plugin css -->
-    <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="/assets/css/plugins/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="/assets/css/plugins/glightbox.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/glightbox.min.css') }}" />
 
     <!-- Custom Style CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="stylesheet" href="/assets/css/dashboard.css" />
-    <link rel="stylesheet" href="/assets/css/table.css" />
-    <link rel="stylesheet" href="/assets/css/dark.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark.css') }}" />
 
     <script>
       // On page load or when changing themes, best to add inline in `head` to avoid FOUC
@@ -77,21 +77,17 @@
           <nav class="offcanvas__menu">
             <ul class="offcanvas__menu_ul">
               <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="../index.html">Home</a>
+                <a class="offcanvas__menu_item" href="{{ url_for('index') }}">Home</a>
               </li>
               <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="../listing.html"
+                <a class="offcanvas__menu_item" href="{{ url_for('listing') }}"
                   >Listing</a
                 >
               </li>
 
+              
               <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="./my-properties.html"
-                  >Properties</a
-                >
-              </li>
-              <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="./rent-prediction.html">Rent Prediction</a>
+                <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
               </li>
               <li class="offcanvas__menu_li">
                 <a class="offcanvas__menu_item" href="../blog.html">News</a>
@@ -289,7 +285,7 @@
                             >
                               <div class="properties__author--thumb">
                                 <img
-                                  src="{{ url_for('serve_assets', filename='img/dashboard/properties-author1.png') }}"
+                                  src="{{ url_for('static', filename='img/dashboard/properties-author1.png') }}"
                                   alt="img"
                                 />
                               </div>

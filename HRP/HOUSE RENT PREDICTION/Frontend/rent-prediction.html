@@ -54,23 +54,26 @@
         }
         
         .prediction-form-card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            border: 0;
+            border-radius: 26px;
+            box-shadow: 0 30px 60px rgba(97, 117, 254, 0.25);
+            overflow: visible;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
         }
         
         .prediction-form-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 40px 80px rgba(97, 117, 254, 0.35);
+            background: linear-gradient(135deg, #8ec5fc 0%, #e0c3fc 100%);
         }
         
         .card-header-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #7dd3fc 0%, #a78bfa 100%);
+            color: #ffffff;
             padding: 2rem;
             text-align: center;
+            border-bottom: 0;
         }
         
         .card-header-custom h4 {
@@ -84,18 +87,15 @@
         
         /* Form Group Box Design - Enhanced Grid Layout */
         .form-group-box {
-            background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
-            border-radius: 24px;
-            padding: 2.2rem;
-            border: 2px solid transparent;
+            background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(167, 139, 250, 0.35);
             background-clip: padding-box;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
-            overflow: hidden;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
+            overflow: visible;
+            box-shadow: 0 15px 35px rgba(167, 139, 250, 0.15);
         }
         
         .form-group-box::before {
@@ -113,10 +113,10 @@
         }
         
         .form-group-box:hover {
-            border-color: #667eea;
-            background: #ffffff;
-            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
+            border-color: #7c3aed;
+            box-shadow: 0 25px 55px rgba(124, 58, 237, 0.25);
             transform: translateY(-6px) scale(1.02);
+            background: linear-gradient(135deg, #fdfbff 0%, #e9d5ff 100%);
         }
         
         .form-group-box:hover::before {
@@ -124,10 +124,10 @@
         }
         
         .form-group-box:focus-within {
-            border-color: #667eea;
-            background: #ffffff;
-            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.25);
+            border-color: #6366f1;
+            box-shadow: 0 30px 70px rgba(99, 102, 241, 0.25);
             transform: translateY(-4px) scale(1.01);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
         }
         
         .form-group-box:focus-within::before {
@@ -153,13 +153,12 @@
         
         .form-icon {
             position: absolute;
-            top: 1.2rem;
-            right: 1.2rem;
+            top: 1rem;
+            right: 1rem;
             font-size: 1.8rem;
-            color: #667eea;
-            opacity: 0.2;
+            opacity: 0.8;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #34d399 0%, #60a5fa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -183,13 +182,12 @@
         
         .form-label-custom {
             display: block;
-            font-weight: 700;
-            color: #2d3748;
+            font-weight: 800;
             margin-bottom: 0.8rem;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #a78bfa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -199,22 +197,21 @@
         .form-select-custom {
             width: 100%;
             padding: 1rem 1.2rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border: 2px solid #c4b5fd;
+            border-radius: 14px;
             font-size: 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
+            background-color: #ffffff;
+            color: #1f2937;
             font-family: inherit;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 16px rgba(165, 180, 252, 0.25);
         }
         
         .form-input-custom:focus,
         .form-select-custom:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 
-                0 0 0 4px rgba(102, 126, 234, 0.15),
-                0 4px 12px rgba(102, 126, 234, 0.2);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 8px 20px rgba(99, 102, 241, 0.25);
             transform: translateY(-2px);
             background: #ffffff;
         }
@@ -246,18 +243,18 @@
         
         /* Enhanced Submit Button */
         .predict-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #34d399 0%, #60a5fa 100%);
             color: white;
             border: none;
             padding: 1rem 3rem;
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 16px 36px rgba(96, 165, 250, 0.35);
         }
         
         .predict-btn:hover {
@@ -301,7 +298,7 @@
         /* Modern Grid Layout for Form */
         .prediction-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             padding: 3rem;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -313,13 +310,15 @@
         /* Advanced Grid Layout - Responsive */
         @media (min-width: 1200px) {
             .prediction-form {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 2.5rem;
                 padding: 4rem;
             }
-            
-
         }
+
+        .prediction-form .row,
+        .prediction-form .col-md-6 { display: contents; }
+        .prediction-form > .text-center { grid-column: 1 / -1; justify-self: center; }
         
         @media (min-width: 768px) and (max-width: 1199px) {
             .prediction-form {
@@ -411,23 +410,31 @@
         /* Dark Mode Support */
         @media (prefers-color-scheme: dark) {
             .prediction-form-card {
-                background: #2d3748;
-                color: #e2e8f0;
+                background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 100%);
+                color: #1f2937;
+            }
+            
+            .card-header-custom {
+                background: linear-gradient(135deg, #93c5fd 0%, #c4b5fd 100%);
+                color: #111827;
             }
             
             .form-group-box {
-                background: #4a5568;
-            }
-            
-            .form-group-box:hover {
-                background: #2d3748;
+                background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+                border-color: #c4b5fd;
             }
             
             .form-input-custom,
             .form-select-custom {
-                background: #2d3748;
-                border-color: #4a5568;
-                color: #e2e8f0;
+                background-color: #ffffff;
+                border-color: #c4b5fd;
+                color: #1f2937;
+            }
+            
+            .form-input-custom:focus,
+            .form-select-custom:focus {
+                border-color: #6366f1;
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.20), 0 8px 20px rgba(99, 102, 241, 0.25);
             }
         }
         
@@ -485,16 +492,21 @@
             padding: 2rem;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .price-amount {
-            font-size: 3.5rem;
+            font-size: 3.6rem;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
+            line-height: 1;
+            margin: 0.25rem 0 0.5rem;
         }
         
         .price-period {
@@ -746,7 +758,7 @@
                                 <h4 class="mb-0"><i class="fas fa-home me-2"></i>Property Details</h4>
                             </div>
                             
-                            <form id="predictionForm" action="/predict-rent" method="POST" class="prediction-form">
+                            <form id="predictionForm" action="/predict_rent" method="POST" class="prediction-form">
                                 <!-- Property Specifications Grid -->
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
@@ -755,8 +767,8 @@
                                                 <i class="fas fa-bed"></i>
                                             </div>
                                             <div class="form-content">
-                                                <label for="bedroom" class="form-label-custom">BHK Configuration</label>
-                                                <select class="form-select-custom" id="bedroom" name="bedroom" required>
+                                                <label for="bhk" class="form-label-custom">BHK Configuration</label>
+                                                <select class="form-select-custom" id="bhk" name="bhk" required>
                                                     <option value="" selected disabled>Choose BHK</option>
                                                     <option value="1">🏠 1 BHK</option>
                                                     <option value="2">🏡 2 BHK</option>
@@ -812,11 +824,11 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="area_type" class="form-label-custom">Area Type</label>
-                                                <select class="form-select-custom" id="area_type" name="area_type">
-                                                    <option value="Any" selected>Any</option>
-                                                    <option value="Super Area">📐 Super Area</option>
-                                                    <option value="Carpet Area">🏠 Carpet Area</option>
-                                                    <option value="Built Area">🏗️ Built Area</option>
+                                                <select class="form-select-custom" id="area_type" name="area_type" required>
+                                                    <option value="" selected disabled>Choose Area Type</option>
+                                                    {% for at in area_type_options %}
+                                                    <option value="{{ at }}">{{ at }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 <small class="form-help">Measurement type</small>
                                             </div>
@@ -830,15 +842,11 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="city" class="form-label-custom">City</label>
-                                                <select class="form-select-custom" id="city" name="city">
-                                                    <option value="Any" selected>Any</option>
-                                                    <option value="Kolkata">🌆 Kolkata</option>
-                                                    <option value="Mumbai">🏙️ Mumbai</option>
-                                                    <option value="Delhi">🏛️ Delhi</option>
-                                                    <option value="Bangalore">🌃 Bangalore</option>
-                                                    <option value="Chennai">🏖️ Chennai</option>
-                                                    <option value="Hyderabad">🏰 Hyderabad</option>
-                                                    <option value="Pune">🌉 Pune</option>
+                                                <select class="form-select-custom" id="city" name="city" required>
+                                                    <option value="" selected disabled>Choose City</option>
+                                                    {% for c in city_options %}
+                                                    <option value="{{ c }}">{{ c }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 <small class="form-help">Select your city</small>
                                             </div>
@@ -854,11 +862,11 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="furnishing" class="form-label-custom">Furnishing</label>
-                                                <select class="form-select-custom" id="furnishing" name="furnishing_status">
-                                                    <option value="Any" selected>Any</option>
-                                                    <option value="Unfurnished">🏠 Unfurnished</option>
-                                                    <option value="Semi-Furnished">🪑 Semi-Furnished</option>
-                                                    <option value="Fully Furnished">🛋️ Fully Furnished</option>
+                                                <select class="form-select-custom" id="furnishing" name="furnishing_status" required>
+                                                    <option value="" selected disabled>Choose Furnishing</option>
+                                                    {% for f in furnishing_options %}
+                                                    <option value="{{ f }}">{{ f }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 <small class="form-help">Furniture status</small>
                                             </div>
@@ -872,11 +880,11 @@
                                             </div>
                                             <div class="form-content">
                                                 <label for="tenant" class="form-label-custom">Tenant Type</label>
-                                                <select class="form-select-custom" id="tenant" name="tenant_preferred">
-                                                    <option value="Any" selected>Any</option>
-                                                    <option value="Bachelors/Family">👨‍👩‍👧‍👦 Bachelors/Family</option>
-                                                    <option value="Bachelors">👨‍💼 Bachelors</option>
-                                                    <option value="Family">👪 Family</option>
+                                                <select class="form-select-custom" id="tenant" name="tenant_preferred" required>
+                                                    <option value="" selected disabled>Choose Tenant</option>
+                                                    {% for t in tenant_options %}
+                                                    <option value="{{ t }}">{{ t }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 <small class="form-help">Preferred tenant type</small>
                                             </div>
@@ -890,13 +898,21 @@
                                             <div class="form-icon">
                                                 <i class="fas fa-map-pin"></i>
                                             </div>
-                                            <div class="form-content">
-                                                <label for="area_locality" class="form-label-custom">Area Locality</label>
-                                                <input type="text" class="form-input-custom" id="area_locality" name="area_locality" placeholder="e.g. Salt Lake, Sector 5" required>
-                                                <small class="form-help">Specific area or locality</small>
-                                            </div>
+                                        <div class="form-content">
+                                            <label for="area_locality" class="form-label-custom">Area Locality</label>
+                                            <select class="form-select-custom" id="area_locality" name="area_locality" required>
+                                                <option value="" selected disabled>Choose Area Locality</option>
+                                                {% if localities_by_city and city_options %}
+                                                    {% set first_city = city_options[0] if city_options else '' %}
+                                                    {% for l in localities_by_city.get(first_city, []) %}
+                                                    <option value="{{ l }}">{{ l }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                            <small class="form-help">Specific area or locality</small>
                                         </div>
                                     </div>
+                                </div>
                                     
                                     <div class="col-md-6">
                                         <div class="form-group-box">
@@ -1236,10 +1252,31 @@
             const predictionForm = document.getElementById('predictionForm');
             const resultSection = document.querySelector('.prediction-result');
             const predictButton = document.querySelector('.predict-btn');
+            const citySelect = document.getElementById('city');
+            const localitySelect = document.getElementById('area_locality');
             const matchingPropertiesContainer = document.createElement('div');
             matchingPropertiesContainer.className = 'row mt-5';
-            document.querySelector('.prediction-container').appendChild(matchingPropertiesContainer);
+            const container = document.querySelector('.prediction-container');
+            if (container && resultSection) {
+                resultSection.insertAdjacentElement('afterend', matchingPropertiesContainer);
+            } else if (container) {
+                container.appendChild(matchingPropertiesContainer);
+            }
 
+            // Dynamic locality options based on city
+            const LOCALITIES_BY_CITY = {{ localities_by_city|tojson|safe if localities_by_city else '{}' }};
+            function updateLocalitiesForCity(city) {
+                const list = LOCALITIES_BY_CITY[city] || [];
+                if (!localitySelect) return;
+                localitySelect.innerHTML = '<option value="" disabled selected>Choose Area Locality</option>' +
+                    list.map(l => `<option value="${l}">${l}</option>`).join('');
+            }
+            if (citySelect) {
+                citySelect.addEventListener('change', function() {
+                    updateLocalitiesForCity(this.value);
+                });
+            }
+            
             if (predictionForm) {
                 predictionForm.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -1286,6 +1323,15 @@
                 return isValid;
             }
 
+            function formatINR(value) {
+                const num = Number(value) || 0;
+                try {
+                    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(num);
+                } catch (e) {
+                    return `₹${num.toLocaleString('en-IN')}`;
+                }
+            }
+
             function validateField(field) {
                 const formGroup = field.closest('.form-group-box');
                 const value = field.value.trim();
@@ -1307,7 +1353,7 @@
                 // Update predicted rent
                 const priceAmount = resultSection.querySelector('.price-amount');
                 if (priceAmount) {
-                    priceAmount.textContent = predicted_rent;
+                    priceAmount.textContent = formatINR(Number(predicted_rent));
                 }
                 
                 resultSection.style.display = 'block';
@@ -1316,11 +1362,13 @@
                 // Update matching properties table
                 matchingPropertiesContainer.innerHTML = '';
                 if (matching_properties && matching_properties.length > 0) {
+                    const selectedCity = (document.getElementById('city')?.value || '').trim();
+                    const headerTitle = selectedCity ? `Properties in ${selectedCity} Predicted Range` : 'Properties in Predicted Range';
                     const tableHtml = `
                         <div class="col-12">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-primary text-white">
-                                    <h3 class="mb-0">Properties in Predicted Range</h3>
+                                    <h3 class="mb-0">${headerTitle}</h3>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-striped">
@@ -1329,10 +1377,13 @@
                                                 <th>BHK</th>
                                                 <th>Bathroom</th>
                                                 <th>City</th>
+                                                <th>Area Locality</th>
                                                 <th>Furnishing Status</th>
                                                 <th>Tenant Preferred</th>
                                                 <th>Area Type</th>
+                                                <th>Size</th>
                                                 <th>Rent</th>
+                                                <th>Point of Contact</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1341,10 +1392,13 @@
                                                     <td>${prop.BHK}</td>
                                                     <td>${prop.Bathroom}</td>
                                                     <td>${prop.City}</td>
+                                                    <td>${prop['Area Locality'] ?? ''}</td>
                                                     <td>${prop['Furnishing Status']}</td>
                                                     <td>${prop['Tenant Preferred']}</td>
                                                     <td>${prop['Area Type']}</td>
-                                                    <td>${prop.Rent}</td>
+                                                    <td>${prop['Size'] ?? ''}</td>
+                                                    <td>${formatINR(prop.Rent)}</td>
+                                                    <td>${prop['Point of Contact'] ?? ''}</td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
@@ -1442,6 +1496,52 @@
             const styleSheet = document.createElement('style');
             styleSheet.textContent = notificationStyles;
             document.head.appendChild(styleSheet);
+
+            // Save Result and Detailed Analysis
+            const btnSave = document.querySelector('.btn-save-result');
+            const btnAnalysis = document.querySelector('.btn-get-more');
+            function collectPayload(pred) {
+                const formData = new FormData(predictionForm);
+                const payload = Object.fromEntries(formData.entries());
+                payload.predicted_rent = parseFloat((pred || '0').toString());
+                return payload;
+            }
+            function getPredictedFromUI() {
+                const val = resultSection.querySelector('.price-amount')?.textContent || '0';
+                return (val.match(/[0-9.]+/g) || ['0'])[0];
+            }
+            if (btnSave) {
+                btnSave.addEventListener('click', () => {
+                    const predicted = getPredictedFromUI();
+                    fetch('/save_prediction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(collectPayload(predicted))
+                    }).then(r => r.json()).then(resp => {
+                        if (resp.ok) {
+                            showNotification('Result saved to your account', 'success');
+                        } else {
+                            showNotification(resp.error || 'Please login to save', 'error');
+                        }
+                    }).catch(() => showNotification('Could not save', 'error'));
+                });
+            }
+            if (btnAnalysis) {
+                btnAnalysis.addEventListener('click', () => {
+                    const predicted = getPredictedFromUI();
+                    fetch('/save_analysis', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(collectPayload(predicted))
+                    }).then(r => r.json()).then(resp => {
+                        if (resp.ok) {
+                            showNotification('Detailed analysis saved', 'success');
+                        } else {
+                            showNotification(resp.error || 'Please login to save', 'error');
+                        }
+                    }).catch(() => showNotification('Could not save', 'error'));
+                });
+            }
         });
     </script>
 </body>

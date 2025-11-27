@@ -8,24 +8,24 @@
     <link
       rel="shortcut icon"
       type="image/x-icon"
-      href="assets/img/favicon.ico"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
     />
 
     <!-- ======= All CSS Plugins here ======== -->
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <!-- Plugin css -->
-    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/aos.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/glightbox.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/aos.css') }}" />
 
     <!-- Custom Style CSS -->
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
 
   <body>
@@ -66,10 +66,10 @@
               </a>
             </div>
             <div class="main__logo">
-              <a class="main__logo--link" href="index.html">
+              <a class="main__logo--link" href="{{ url_for('index') }}">
                 <img
                   class="main__logo--img"
-                  src="assets/img/logo/nav-log.png"
+                  src="{{ url_for('serve_assets', filename='img/logo/nav-log.png') }}"
                   alt="logo-img"
                 />
               </a>
@@ -78,7 +78,7 @@
               <nav class="main__menu--navigation">
                 <ul class="main__menu--wrapper d-flex">
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="./index.html"
+                    <a class="main__menu--link" href="{{ url_for('index') }}"
                       ><svg
                         width="11"
                         height="11"
@@ -136,7 +136,7 @@
                     </ul>
                   </li>
                   <li class="main__menu--items">
-                    <a class="main__menu--link" href="./listing.html">
+                    <a class="main__menu--link" href="{{ url_for('listing') }}">
                       Listing
                     </a>
                     <svg
@@ -183,16 +183,9 @@
                       </li>
                     </ul>
                   </li>
+                  
                   <li class="main__menu--items">
-                    <a
-                      class="main__menu--link"
-                      href="./my-properties.html"
-                    >
-                      Properties
-                    </a>
-                  </li>
-                  <li class="main__menu--items">
-                    <a class="main__menu--link" href="./rent-prediction.html">
+                    <a class="main__menu--link" href="{{ url_for('rent_prediction') }}">
                       Rent Prediction
                     </a>
                   </li>
@@ -310,9 +303,9 @@
     <div class="offcanvas__header">
       <div class="offcanvas__inner">
         <div class="offcanvas__logo">
-          <a class="offcanvas__logo_link" href="./index.html">
+          <a class="offcanvas__logo_link" href="{{ url_for('index') }}">
             <img
-              src="assets/img/logo/nav-log.png"
+              src="{{ url_for('serve_assets', filename='img/logo/nav-log.png') }}"
               alt="Logo-img"
               width="158"
               height="36"
@@ -324,7 +317,7 @@
         <nav class="offcanvas__menu">
           <ul class="offcanvas__menu_ul">
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./index.html">Home</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('index') }}">Home</a>
               <ul class="offcanvas__sub_menu">
                 <li class="offcanvas__sub_menu_li">
                   <a href="./index.html" class="offcanvas__sub_menu_item"
@@ -354,7 +347,7 @@
               </ul>
             </li>
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./listing.html">Listing</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('listing') }}">Listing</a>
               <ul class="offcanvas__sub_menu">
                 <li class="offcanvas__sub_menu_li">
                   <a href="./listing.html" class="offcanvas__sub_menu_item"
@@ -389,12 +382,10 @@
             </li>
 
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./my-properties.html"
-                >Properties</a
-              >
+              
             </li>
             <li class="offcanvas__menu_li">
-              <a class="offcanvas__menu_item" href="./rent-prediction.html">Rent Prediction</a>
+              <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
             </li>
             <li class="offcanvas__menu_li">
               <a class="offcanvas__menu_item" href="./blog.html">News</a>
@@ -1916,11 +1907,11 @@
                     <div class="footer__logo">
                       <a
                         class="footer__logo--link display-block"
-                        href="index.html"
+                        href="{{ url_for('index') }}"
                       >
                         <img
                           class="footer__logo--img"
-                          src="assets/img/logo/nav-log-white.png"
+                          src="{{ url_for('serve_assets', filename='img/logo/nav-log-white.png') }}"
                           alt="logo-img"
                         />
                       </a>
@@ -2353,7 +2344,7 @@
                 . All Rights Reserved.
               </p>
               <div class="footer__payment">
-                <img src="assets/img/icon/payment-img.png" alt="payment-img" />
+                <img src="{{ url_for('serve_assets', filename='img/icon/payment-img.png') }}" alt="payment-img" />
               </div>
               <ul class="footer__bottom--menu d-flex">
                 <li><a href="./create-listing.html">Terms of Use</a></li>
@@ -2386,13 +2377,13 @@
     </button>
 
     <!-- All Script JS Plugins here  -->
-    <script src="assets/js/vendor/popper.js" defer="defer"></script>
-    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
-    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
-    <script src="assets/js/plugins/glightbox.min.js"></script>
-    <script src="assets/js/plugins/aos.js"></script>
+    <script src="{{ url_for('serve_assets', filename='js/vendor/popper.js') }}" defer="defer"></script>
+    <script src="{{ url_for('serve_assets', filename='js/vendor/bootstrap.min.js') }}" defer="defer"></script>
+    <script src="{{ url_for('serve_assets', filename='js/plugins/swiper-bundle.min.js') }}"></script>
+    <script src="{{ url_for('serve_assets', filename='js/plugins/glightbox.min.js') }}"></script>
+    <script src="{{ url_for('serve_assets', filename='js/plugins/aos.js') }}"></script>
 
     <!-- Customscript js -->
-    <script src="assets/js/script.js"></script>
+    <script src="{{ url_for('serve_assets', filename='js/script.js') }}"></script>
   </body>
 </html>

@@ -5,14 +5,14 @@
     <title>RentRight - Property Comparison</title>
     <meta name="description" content="Compare properties side by side">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 
     <!-- ======= All CSS Plugins here ======== -->
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
     <style>
         .comparison-table {
@@ -239,13 +239,13 @@
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
     
     <!-- All Script JS Plugins here  -->
-    <script src="assets/js/vendor/popper.js" defer="defer"></script>
-    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
-    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
-    <script src="assets/js/plugins/glightbox.min.js"></script>
+    <script src="{{ url_for('static', filename='js/vendor/popper.js') }}" defer="defer"></script>
+    <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}" defer="defer"></script>
+    <script src="{{ url_for('static', filename='js/plugins/swiper-bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/glightbox.min.js') }}"></script>
 
     <!-- Custom script -->
-    <script src="assets/js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     
     <!-- Property comparison script -->
     <script>

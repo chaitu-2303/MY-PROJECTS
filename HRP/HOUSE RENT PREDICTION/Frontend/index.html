@@ -47,7 +47,7 @@
                         </a>
                     </div>
                     <div class="main__logo">
-                        <h1 class="main__logo--title"><a class="main__logo--link" href="index.html">
+                        <h1 class="main__logo--title"><a class="main__logo--link" href="{{ url_for('index') }}">
                             <img class="main__logo--img" src="{{ url_for('static', filename='img/logo/nav-log.png') }}" alt="logo-img">
                         </a></h1>
                     </div>
@@ -55,20 +55,20 @@
                         <nav class="main__menu--navigation">
                             <ul class="main__menu--wrapper d-flex">
                                 <li class="main__menu--items">
-                                    <a class="main__menu--link" href="./index.html"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <a class="main__menu--link" href="{{ url_for('index') }}"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5.5 0L0 4.125V11H3.72581V8.59381C3.72581 7.64165 4.51713 6.87506 5.5 6.87506C6.48287 6.87506 7.27419 7.64165 7.27419 8.59381V11H11V4.125L5.5 0Z" fill="#FA4A4A"/>
                                         </svg>
                                         Home
                                     </a>
                                 </li>
                                 <li class="main__menu--items">
-                                    <a class="main__menu--link" href="/listing"> Listing </a>
+                                    <a class="main__menu--link" href="{{ url_for('listing') }}"> Listing </a>
                                 </li>
                                 <li class="main__menu--items">
                                     <a class="main__menu--link" href="./my-properties.html"> Properties </a>
                                 </li>
                                 <li class="main__menu--items">
-                                    <a class="main__menu--link" href="./rent-prediction.html"> Rent Prediction </a>
+                                    <a class="main__menu--link" href="{{ url_for('rent_prediction') }}"> Rent Prediction </a>
                                 </li>
                                 <li class="main__menu--items">
                                     <a class="main__menu--link" href="#"> Pages </a>
@@ -80,7 +80,7 @@
                                         <li class="sub__menu--items"><a href="./contact.html" class="sub__menu--link">Contact Us</a></li>
                                         <li class="sub__menu--items"><a href="./project.html" class="sub__menu--link">Project</a></li>
                                         <li class="sub__menu--items"><a href="./project-details.html" class="sub__menu--link">Project Details</a></li>
-                                        <li class="sub__menu--items"><a href="./rent-prediction.html" class="sub__menu--link">Rent Prediction</a></li>
+                                        <li class="sub__menu--items"><a href="{{ url_for('rent_prediction') }}" class="sub__menu--link">Rent Prediction</a></li>
                                         <li class="sub__menu--items"><a href="{{ url_for('login') }}" class="sub__menu--link">Login</a></li>
                                         <li class="sub__menu--items"><a href="{{ url_for('signup') }}" class="sub__menu--link">Sign Up</a></li>
                                         <li class="sub__menu--items"><a href="./error.html" class="sub__menu--link">Error 404</a></li>
@@ -208,8 +208,8 @@
     <div class="offcanvas__header">
         <div class="offcanvas__inner">
             <div class="offcanvas__logo">
-                <a class="offcanvas__logo_link" href="./index.html">
-                    <img src="assets/img/logo/nav-log.png" alt="Logo-img" width="158" height="36">
+                <a class="offcanvas__logo_link" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/logo/nav-log.png') }}" alt="Logo-img" width="158" height="36">
                 </a>
                 <button class="offcanvas__close--btn" data-offcanvas>close</button>
             </div>
@@ -217,15 +217,15 @@
             <nav class="offcanvas__menu">
                 <ul class="offcanvas__menu_ul">
                     <li class="offcanvas__menu_li">
-                        <a class="offcanvas__menu_item" href="./index.html">Home</a>
+                        <a class="offcanvas__menu_item" href="{{ url_for('index') }}">Home</a>
                     </li>
                     <li class="offcanvas__menu_li">
-                        <a class="offcanvas__menu_item" href="./listing.html">Listing</a>
+                        <a class="offcanvas__menu_item" href="{{ url_for('listing') }}">Listing</a>
                     </li>
 
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="./my-properties.html">Properties</a></li>
+                    
                     <li class="offcanvas__menu_li">
-                        <a class="offcanvas__menu_item" href="./rent-prediction.html">Rent Prediction</a>
+                        <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
                     </li>
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="./blog.html">News</a></li>
                     <li class="offcanvas__menu_li">
@@ -235,7 +235,7 @@
                             <li class="offcanvas__sub_menu_li"><a href="./contact.html" class="offcanvas__sub_menu_item">Contact Us</a></li>
                             <li class="offcanvas__sub_menu_li"><a href="./project.html" class="offcanvas__sub_menu_item">Project</a></li>
                             <li class="offcanvas__sub_menu_li"><a href="./project-details.html" class="offcanvas__sub_menu_item">Project Details</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="./rent-prediction.html" class="offcanvas__sub_menu_item">Rent Prediction</a></li>
+                            <li class="offcanvas__sub_menu_li"><a href="{{ url_for('rent_prediction') }}" class="offcanvas__sub_menu_item">Rent Prediction</a></li>
                             <li class="offcanvas__sub_menu_li"><a href="{{ url_for('login') }}" class="offcanvas__sub_menu_item">Login</a></li>
                             <li class="offcanvas__sub_menu_li"><a href="{{ url_for('signup') }}" class="offcanvas__sub_menu_item">Sign Up</a></li>
                             <li class="offcanvas__sub_menu_li"><a href="./error.html" class="offcanvas__sub_menu_item">Error 404</a></li>
@@ -2518,7 +2518,7 @@
                                 <div class="footer__widget--inner">
                                     <div class="footer__logo">
                                         <a class="footer__logo--link display-block" href="index.html">
-                                            <img class="footer__logo--img" src="assets/img/logo/nav-log-white.png" alt="logo-img">
+    <img class="footer__logo--img" src="{{ url_for('static', filename='img/logo/nav-log-white.png') }}" alt="logo-img">
                                         </a>
                                     </div>
                                     <p class="footer__widget--desc">The world’s first and largest digital market for crypto collectibles and non-fungible (NFTs). Buy</p>
@@ -2666,7 +2666,7 @@
                     <div class="footer__bottom--inner d-flex justify-content-between align-items-center">
                         <p class="copyright__content mb-0"><span class="text__secondary">© 2024</span> Powered By <a class="copyright__content--link" target="_blank" href="https://themeforest.net/search/hooktheme">Hooktheme</a> . All Rights Reserved.</p>
                         <div class="footer__payment">
-                            <img src="assets/img/icon/payment-img.png" alt="payment-img">
+    <img src="{{ url_for('static', filename='img/icon/payment-img.png') }}" alt="payment-img">
                         </div>
                         <ul class="footer__bottom--menu d-flex">
                             <li><a href="./create-listing.html">Terms of Use</a></li>
