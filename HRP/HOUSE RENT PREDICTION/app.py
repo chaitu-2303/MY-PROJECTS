@@ -31,7 +31,7 @@ import folium
 
 from flask_mail import Mail, Message
 
-# Optional: Google OAuth (wrapped in try so it doesn't crash if unset)
+# Optional: Google OAuth (only if configured)
 try:
     from flask_dance.contrib.google import make_google_blueprint, google
     GOOGLE_OAUTH_AVAILABLE = True
@@ -51,30 +51,29 @@ app = Flask(
     static_folder="Frontend/assets",
     static_url_path="/assets",
 )
-
 app.config.from_object(Config)
 
-# DB
+# DB & Login
 db.init_app(app)
-
-# Login
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-# CSRF
+# CSRF & Mail
 csrf = CSRFProtect(app)
-
-# Mail
 mail = Mail(app)
+
+# File upload config
+ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg"}
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 
 # ======================================================
-# SECURITY / HEADERS / ERROR HANDLERS
+# SECURITY HEADERS & ERROR HANDLERS
 # ======================================================
 
 @app.after_request
 def add_security_headers(response):
-    # Basic security headers
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
@@ -173,8 +172,9 @@ def rate_limit(max_attempts=10, window_seconds=600):
 # MODEL & DATASET LOADING
 # ======================================================
 
-MODEL_PATH = os.path.join(BASE_DIR, "HRP", "HOUSE RENT PREDICTION", "house_rent_model.pkl")
-UI_DATASET_PATH = os.path.join(BASE_DIR, "HRP", "HOUSE RENT PREDICTION", "House_Rent_10k_major_cities.csv")
+# These files live in the same folder as app.py
+MODEL_PATH = os.path.join(BASE_DIR, "house_rent_model.pkl")
+UI_DATASET_PATH = os.path.join(BASE_DIR, "House_Rent_10k_major_cities.csv")
 
 model = None
 ui_df = None
@@ -192,7 +192,6 @@ try:
         app.logger.info("UI dataset loaded successfully.")
     else:
         app.logger.warning(f"UI dataset not found at {UI_DATASET_PATH}")
-
 except Exception as e:
     app.logger.error(f"Error loading model or dataset: {e}")
     model = None
@@ -247,10 +246,6 @@ if GOOGLE_OAUTH_AVAILABLE:
 # HELPERS
 # ======================================================
 
-ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg"}
-MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
-app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
-
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
@@ -287,7 +282,7 @@ app.jinja_env.filters["inr"] = format_inr
 
 
 # ======================================================
-# STATIC ROUTES
+# STATIC & VITE
 # ======================================================
 
 @app.route("/assets/<path:filename>")
@@ -301,7 +296,7 @@ def handle_vite_client():
 
 
 # ======================================================
-# FRONT-FACING PAGES USING DATASET
+# PUBLIC PAGES (HOME / ABOUT / CONTACT / LISTING)
 # ======================================================
 
 @app.route("/")
@@ -353,7 +348,7 @@ def listing():
 
 
 # ======================================================
-# RENT PREDICTION (FORM PAGE)
+# RENT PREDICTION (PAGE + API)
 # ======================================================
 
 @app.route("/rent_prediction", methods=["GET", "POST"])
@@ -366,6 +361,7 @@ def rent_prediction():
             flash("Prediction model is not available.", "danger")
         else:
             try:
+                # Use field names consistent with your original PredictRentForm
                 data = {
                     "Size": [form.size.data],
                     "BHK": [form.bhk.data],
@@ -386,7 +382,7 @@ def rent_prediction():
 
 
 @app.route("/predict_rent", methods=["POST"])
-@csrf.exempt  # if called via JS fetch without CSRF, you can keep this; otherwise remove
+@csrf.exempt  # if called from JS without CSRF token
 def predict_rent_api():
     if model is None:
         return jsonify({"error": "Model not available"}), 500
@@ -409,15 +405,14 @@ def predict_rent_api():
         })
         predicted = model.predict(input_df)[0]
 
-        # Optionally find similar properties from ui_df
         matching_properties = []
-        if ui_df is not None and not ui_df.empty:
+        if ui_df is not None and not ui_df.empty and "Rent" in ui_df.columns:
             min_price = predicted * 0.9
             max_price = predicted * 1.1
             df_match = ui_df[
                 (ui_df["Rent"] >= min_price) & (ui_df["Rent"] <= max_price)
             ]
-            if form.city.data != "Any":
+            if form.city.data and form.city.data != "Any":
                 df_match = df_match[df_match["City"] == form.city.data]
             matching_properties = df_match.head(50).to_dict("records")
 
@@ -431,15 +426,15 @@ def predict_rent_api():
 
 
 # ======================================================
-# AUTH: LOGIN / REGISTER / LOGOUT
+# AUTH: LOGIN / REGISTER / SIGNUP / LOGOUT
 # ======================================================
 
 class SimpleRegistrationForm(RegistrationForm):
-    # Remove strict email validator if needed
+    """Use your existing RegistrationForm but without strict email validator (if needed)."""
     pass
 
 class SimpleLoginForm(LoginForm):
-    # Remove strict email validator if needed
+    """Use your existing LoginForm but without strict email validator (if needed)."""
     pass
 
 
@@ -477,6 +472,13 @@ def register():
         flash("Your account has been created! You are now able to log in", "success")
         return redirect(url_for("login"))
     return render_template("auth/register.html", title="Register", form=form)
+
+
+# 🔥 This fixes the current error in your logs
+@app.route("/sign-up")
+def signup():
+    # Navbar uses url_for('signup'), so we redirect to the register page
+    return redirect(url_for("register"))
 
 
 @app.route("/logout")
@@ -1060,7 +1062,7 @@ def settings():
 
 
 # ======================================================
-# DB INIT (for local dev)
+# DB INIT (LOCAL DEV) + ENTRYPOINT
 # ======================================================
 
 def initialize_database():
