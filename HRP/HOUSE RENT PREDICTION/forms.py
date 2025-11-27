@@ -164,7 +164,7 @@ class ResetPasswordForm(FlaskForm):
 
 class PredictRentForm(FlaskForm):
     size = FloatField('Size (sqft)', validators=[DataRequired(), NumberRange(min=100, max=10000, message="Size must be between 100 and 10000 sqft")])
-    bedroom = IntegerField('Bedrooms (BHK)', validators=[DataRequired(), NumberRange(min=1, max=10, message="Number of bedrooms must be between 1 and 10")])
+    bhk = IntegerField('BHK', validators=[DataRequired(), NumberRange(min=1, max=10, message="Number of bedrooms must be between 1 and 10")])
     bathroom = IntegerField('Bathrooms', validators=[DataRequired(), NumberRange(min=1, max=10, message="Number of bathrooms must be between 1 and 10")])
     city = SelectField('City', validators=[Optional()])
     furnishing_status = SelectField('Furnishing Status', validators=[Optional()])

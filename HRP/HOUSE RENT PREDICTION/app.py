@@ -313,8 +313,13 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
+    if request.method == "POST":
+        # In a real application, you would process the form data here
+        # For example, send an email or save to a database
+        flash("Your message has been sent successfully!", "success")
+        return redirect(url_for("contact"))
     return render_template("contact.html")
 
 
@@ -451,7 +456,7 @@ def login():
             login_user(user)
             return redirect(url_for("dashboard"))
         flash("Login Unsuccessful. Please check email and password", "danger")
-    return render_template("auth/login.html", title="Login", form=form)
+    return render_template("login.html", title="Login", form=form)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -471,7 +476,7 @@ def register():
         db.session.commit()
         flash("Your account has been created! You are now able to log in", "success")
         return redirect(url_for("login"))
-    return render_template("auth/register.html", title="Register", form=form)
+    return render_template("sign-up.html", title="Register", form=form)
 
 
 # 🔥 This fixes the current error in your logs
@@ -512,7 +517,7 @@ def admin_dashboard():
     bookings = Booking.query.all()
     users = User.query.all()
     return render_template(
-        "admin/dashboard.html", properties=properties, bookings=bookings, users=users
+        "owner-dashboard.html", properties=properties
     )
 
 
@@ -523,7 +528,14 @@ def owner_dashboard():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     properties = Property.query.filter_by(owner_id=current_user.id).all()
-    return render_template("owner/dashboard.html", properties=properties)
+    
+    # Get all property IDs owned by the current user
+    property_ids = [prop.id for prop in properties]
+    
+    # Fetch all bookings related to those properties
+    bookings = Booking.query.filter(Booking.property_id.in_(property_ids)).all()
+    
+    return render_template("owner-dashboard.html", properties=properties, bookings=bookings)
 
 
 @app.route("/customer/dashboard", methods=["GET", "POST"])
@@ -593,7 +605,7 @@ def customer_dashboard():
     map_html = m._repr_html_()
 
     return render_template(
-        "customer/dashboard.html",
+        "dashboard.html",
         form=form,
         properties=properties,
         map_html=map_html,
@@ -628,7 +640,7 @@ def add_property():
         db.session.commit()
         flash("Property added successfully!", "success")
         return redirect(url_for("owner_dashboard"))
-    return render_template("owner/add_property.html", form=form)
+    return render_template("create-listing.html", form=form)
 
 
 @app.route("/owner/edit_property/<int:property_id>", methods=["GET", "POST"])
@@ -656,7 +668,7 @@ def edit_property(property_id):
         if image_file and image_file.filename:
             if not allowed_file(image_file.filename):
                 flash("Invalid file type. Only jpg, jpeg, and png are allowed.", "danger")
-                return render_template("owner/edit_property.html", form=form, property=prop)
+                return render_template("create-listing.html", form=form, property=prop)
 
             if prop.image_file and prop.image_file != "default.jpg":
                 old_path = os.path.join(app.root_path, "static", "property_pics", prop.image_file)
@@ -675,7 +687,7 @@ def edit_property(property_id):
         flash("Property updated successfully!", "success")
         return redirect(url_for("owner_dashboard"))
 
-    return render_template("owner/edit_property.html", form=form, property=prop)
+    return render_template("create-listing.html", form=form, property=prop)
 
 
 @app.route("/owner/delete_property/<int:property_id>", methods=["POST"])
@@ -701,7 +713,7 @@ def owner_property_detail(property_id):
         flash("You are not authorized to view this property", "danger")
         return redirect(url_for("owner_dashboard"))
     bookings = Booking.query.filter_by(property_id=prop.id).all()
-    return render_template("owner/property_detail.html", property=prop, bookings=bookings)
+    return render_template("listing-details.html", property=prop, bookings=bookings)
 
 
 @app.route("/owner/booking/<int:booking_id>/confirm", methods=["POST"])
@@ -764,7 +776,7 @@ def customer_property_detail(property_id):
             flash("Booking request sent! The owner will confirm soon.", "success")
             return redirect(url_for("customer_bookings"))
 
-    return render_template("customer/property_detail.html", property=prop, form=form)
+    return render_template("listing-details.html", property=prop, form=form)
 
 
 @app.route("/customer/bookings")
@@ -774,7 +786,7 @@ def customer_bookings():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     bookings = Booking.query.filter_by(customer_id=current_user.id).all()
-    return render_template("customer/bookings.html", bookings=bookings)
+    return render_template("bookings.html", bookings=bookings)
 
 
 @app.route("/customer/booking/<int:booking_id>/cancel", methods=["POST"])
@@ -803,7 +815,7 @@ def property_detail(property_id):
         fav = Favorite.query.filter_by(user_id=current_user.id, property_id=property_id).first()
         is_favorited = fav is not None
     return render_template(
-        "property_detail.html",
+        "listing-details.html",
         property=prop,
         review_form=review_form,
         reviews=reviews,
@@ -857,7 +869,7 @@ def customer_favorites():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     favorites = Favorite.query.filter_by(user_id=current_user.id).all()
-    return render_template("customer/favorites.html", favorites=favorites)
+    return render_template("favorites.html", favorites=favorites)
 
 
 # ======================================================
@@ -915,11 +927,11 @@ def profile():
     }
 
     if current_user.role == "admin":
-        template = "admin/profile.html"
+        template = "profile.html"
     elif current_user.role == "owner":
-        template = "owner/profile.html"
+        template = "owner-profile.html"
     else:
-        template = "customer/profile.html"
+        template = "profile.html"
 
     return render_template(template, form=form, profile_data=profile_data)
 
@@ -936,7 +948,7 @@ def change_password():
             return redirect(url_for("profile"))
         else:
             flash("Current password is incorrect.", "danger")
-    return render_template("auth/change_password.html", title="Change Password", form=form)
+    return render_template("settings.html", title="Change Password", form=form)
 
 
 @app.route("/reset_password", methods=["GET", "POST"])
@@ -950,7 +962,7 @@ def reset_request():
             send_reset_email(user)
         flash("An email has been sent with instructions to reset your password.", "info")
         return redirect(url_for("login"))
-    return render_template("auth/reset_request.html", title="Reset Password", form=form)
+    return render_template("login.html", title="Reset Password", form=form)
 
 
 @app.route("/reset_password/<token>", methods=["GET", "POST"])
@@ -967,7 +979,7 @@ def reset_token(token):
         db.session.commit()
         flash("Your password has been updated! You are now able to log in", "success")
         return redirect(url_for("login"))
-    return render_template("auth/reset_token.html", title="Reset Password", form=form)
+    return render_template("login.html", title="Reset Password", form=form)
 
 
 # ======================================================
@@ -981,7 +993,7 @@ def admin_users():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     users = User.query.all()
-    return render_template("admin/users.html", users=users)
+    return render_template("dashboard.html", users=users)
 
 
 @app.route("/admin/user/delete/<int:user_id>", methods=["POST"])
@@ -1009,7 +1021,7 @@ def admin_properties():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     properties = Property.query.all()
-    return render_template("admin/properties.html", properties=properties)
+    return render_template("my-properties.html", properties=properties)
 
 
 @app.route("/admin/property/delete/<int:property_id>", methods=["POST"])
@@ -1034,7 +1046,7 @@ def admin_delete_property(property_id):
 @login_required
 def available_properties():
     properties = Property.query.all()
-    return render_template("available_properties.html", properties=properties)
+    return render_template("listing.html", properties=properties)
 
 
 @app.route("/bookings")
@@ -1052,7 +1064,7 @@ def favorites():
 @app.route("/reviews")
 @login_required
 def reviews_page():
-    return render_template("reviews.html")
+    return render_template("listing-details.html")
 
 
 @app.route("/settings")

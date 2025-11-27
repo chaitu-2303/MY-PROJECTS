@@ -126,20 +126,20 @@
                     <div class="dashboard__sidebar">
                         <div class="dashboard__user">
                             <div class="dashboard__user--thumb">
-                                <img src="assets/img/other/user.jpg" alt="user">
+                                <img src="{{ url_for('serve_assets', filename='img/other/user.jpg') }}" alt="user">
                             </div>
                             <div class="dashboard__user--content">
-                                <h2 class="dashboard__user--name">John Doe</h2>
-                                <span class="dashboard__user--email">john.doe@example.com</span>
+                                <h2 class="dashboard__user--name">{{ current_user.name }}</h2>
+                                <span class="dashboard__user--email">{{ current_user.email }}</span>
                             </div>
                         </div>
                         <ul class="dashboard__menu">
-                            <li class="dashboard__menu--list active"><a href="owner-dashboard.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span> Dashboard</a></li>
-                            <li class="dashboard__menu--list"><a href="add-property.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span> Add Property</a></li>
-                            <li class="dashboard__menu--list"><a href="my-properties.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span> My Properties</a></li>
-                            <li class="dashboard__menu--list"><a href="owner-bookings.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Booking Requests</a></li>
-                            <li class="dashboard__menu--list"><a href="owner-profile.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> My Profile</a></li>
-                            <li class="dashboard__menu--list"><a href="login.html"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Logout</a></li>
+                            <li class="dashboard__menu--list active"><a href="{{ url_for('owner_dashboard') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span> Dashboard</a></li>
+                            <li class="dashboard__menu--list"><a href="{{ url_for('add_property') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span> Add Property</a></li>
+                            <li class="dashboard__menu--list"><a href="{{ url_for('owner_dashboard') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span> My Properties</a></li>
+                            <li class="dashboard__menu--list"><a href="{{ url_for('customer_bookings') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Booking Requests</a></li>
+                            <li class="dashboard__menu--list"><a href="{{ url_for('profile') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> My Profile</a></li>
+                            <li class="dashboard__menu--list"><a href="{{ url_for('logout') }}"><span class="dashboard__menu--icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                     <div class="dashboard__content">
                         <div class="dashboard__content--header d-flex align-items-center justify-content-between mb-30">
                             <h2 class="dashboard__content--header__title">Dashboard</h2>
-                            <a class="dashboard__content--header__btn primary__btn" href="add-property.html">Add New Property</a>
+                            <a class="dashboard__content--header__btn primary__btn" href="{{ url_for('add_property') }}">Add New Property</a>
                         </div>
                         <div class="dashboard__content--body">
                             <!-- Dashboard Stats -->
@@ -158,7 +158,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                                         </div>
                                         <div class="dashboard__card--content">
-                                            <h3 class="dashboard__card--content__title">5</h3>
+                                            <h3 class="dashboard__card--content__title">{{ properties|length }}</h3>
                                             <span class="dashboard__card--content__subtitle">Total Properties</span>
                                         </div>
                                     </div>
@@ -169,7 +169,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                         </div>
                                         <div class="dashboard__card--content">
-                                            <h3 class="dashboard__card--content__title">12</h3>
+                                            <h3 class="dashboard__card--content__title">{{ bookings|length }}</h3>
                                             <span class="dashboard__card--content__subtitle">Total Bookings</span>
                                         </div>
                                     </div>
@@ -180,7 +180,13 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
                                         </div>
                                         <div class="dashboard__card--content">
-                                            <h3 class="dashboard__card--content__title">4.8</h3>
+                                            <h3 class="dashboard__card--content__title">
+                                                {% if reviews %}
+                                                    {{ "%.1f"|format(reviews|map(attribute='rating')|sum / reviews|length) }}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            </h3>
                                             <span class="dashboard__card--content__subtitle">Average Rating</span>
                                         </div>
                                     </div>
@@ -191,7 +197,9 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                                         </div>
                                         <div class="dashboard__card--content">
-                                            <h3 class="dashboard__card--content__title">$8,500</h3>
+                                            <h3 class="dashboard__card--content__title">
+                                                ₹{{ bookings|map(attribute='property.price')|sum|inr }}
+                                            </h3>
                                             <span class="dashboard__card--content__subtitle">Total Earnings</span>
                                         </div>
                                     </div>
@@ -214,94 +222,54 @@
                                             </tr>
                                         </thead>
                                         <tbody class="dashboard__table--body">
-                                            <tr class="dashboard__table--body__row">
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__property d-flex align-items-center">
-                                                        <div class="dashboard__property--thumbnail">
-                                                            <img src="assets/img/property/property1-small.jpg" alt="property">
-                                                        </div>
-                                                        <div class="dashboard__property--name">
-                                                            <h3>Luxury Apartment</h3>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">Sarah Johnson</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">15 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">22 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__status pending">Pending</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__action">
-                                                        <button class="dashboard__action--btn accept">Accept</button>
-                                                        <button class="dashboard__action--btn reject">Reject</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr class="dashboard__table--body__row">
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__property d-flex align-items-center">
-                                                        <div class="dashboard__property--thumbnail">
-                                                            <img src="assets/img/property/property2-small.jpg" alt="property">
-                                                        </div>
-                                                        <div class="dashboard__property--name">
-                                                            <h3>Modern Villa</h3>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">Michael Brown</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">10 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">20 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__status approved">Approved</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__action">
-                                                        <a href="#" class="dashboard__action--link">View Details</a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr class="dashboard__table--body__row">
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__property d-flex align-items-center">
-                                                        <div class="dashboard__property--thumbnail">
-                                                            <img src="assets/img/property/property3-small.jpg" alt="property">
-                                                        </div>
-                                                        <div class="dashboard__property--name">
-                                                            <h3>Cozy Studio</h3>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">Emily Davis</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">05 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__table--body__text">12 Jun, 2023</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <span class="dashboard__status rejected">Rejected</span>
-                                                </td>
-                                                <td class="dashboard__table--body__col">
-                                                    <div class="dashboard__action">
-                                                        <a href="#" class="dashboard__action--link">View Details</a>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            {% if bookings %}
+                                                {% for booking in bookings %}
+                                                    <tr class="dashboard__table--body__row">
+                                                        <td class="dashboard__table--body__col">
+                                                            <div class="dashboard__property d-flex align-items-center">
+                                                                <div class="dashboard__property--thumbnail">
+                                                                    <img src="{{ url_for('serve_assets', filename='img/property/property' ~ (loop.index % 3 + 1) ~ '-small.jpg') }}" alt="property">
+                                                                </div>
+                                                                <div class="dashboard__property--name">
+                                                                    <h3><a href="{{ url_for('property_detail', property_id=booking.property.id) }}">{{ booking.property.title }}</a></h3>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="dashboard__table--body__col">
+                                                            <span class="dashboard__table--body__text">{{ booking.customer.name }}</span>
+                                                        </td>
+                                                        <td class="dashboard__table--body__col">
+                                                            <span class="dashboard__table--body__text">{{ booking.start_date.strftime('%d %b, %Y') }}</span>
+                                                        </td>
+                                                        <td class="dashboard__table--body__col">
+                                                            <span class="dashboard__table--body__text">{{ booking.end_date.strftime('%d %b, %Y') }}</span>
+                                                        </td>
+                                                        <td class="dashboard__table--body__col">
+                                                            <span class="dashboard__status {{ booking.status }}">{{ booking.status }}</span>
+                                                        </td>
+                                                        <td class="dashboard__table--body__col">
+                                                            {% if booking.status == 'pending' %}
+                                                                <div class="dashboard__action">
+                                                                    <form action="{{ url_for('confirm_booking', booking_id=booking.id) }}" method="POST" style="display:inline;">
+                                                                        <button type="submit" class="dashboard__action--btn accept">Accept</button>
+                                                                    </form>
+                                                                    <form action="{{ url_for('reject_booking', booking_id=booking.id) }}" method="POST" style="display:inline;">
+                                                                        <button type="submit" class="dashboard__action--btn reject">Reject</button>
+                                                                    </form>
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="dashboard__action">
+                                                                    <a href="{{ url_for('owner_property_detail', property_id=booking.property.id) }}" class="dashboard__action--link">View Details</a>
+                                                                </div>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr class="dashboard__table--body__row">
+                                                    <td class="dashboard__table--body__col" colspan="6">No booking requests found.</td>
+                                                </tr>
+                                            {% endif %}
                                         </tbody>
                                     </table>
                                 </div>
@@ -311,63 +279,43 @@
                             <div class="dashboard__recent">
                                 <h3 class="dashboard__recent--title mb-20">Your Recent Properties</h3>
                                 <div class="row row-cols-1 row-cols-md-2 mb--n30">
-                                    <!-- Property Item 1 -->
-                                    <div class="col mb-30">
-                                        <div class="property__card">
-                                            <div class="property__card--thumbnail">
-                                                <a href="listing-details.html">
-                                                    <img class="property__card--thumbnail__img" src="assets/img/property/property1.jpg" alt="property">
-                                                </a>
-                                                <span class="property__card--badge">For Rent</span>
-                                                <button class="property__card--wishlist">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                                </button>
-                                            </div>
-                                            <div class="property__card--content">
-                                                <span class="property__card--content__subtitle">Apartment</span>
-                                                <h3 class="property__card--content__title"><a href="listing-details.html">Luxury Apartment in City Center</a></h3>
-                                                <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 123 Main St, New York</p>
-                                                <div class="property__card--content__list">
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> 3 Bed</span>
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> 2 Bath</span>
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> 1200 Sq Ft</span>
+                                    {% if properties %}
+                                        {% for property in properties %}
+                                            <div class="col mb-30">
+                                                <div class="property__card">
+                                                    <div class="property__card--thumbnail">
+                                                        <a href="{{ url_for('property_detail', property_id=property.id) }}">
+                                                            <img class="property__card--thumbnail__img" src="{{ url_for('serve_assets', filename='img/property/property' ~ (loop.index % 3 + 1) ~ '.jpg') }}" alt="property">
+                                                        </a>
+                                                        <span class="property__card--badge">For Rent</span>
+                                                        <form action="{{ url_for('toggle_favorite', property_id=property.id) }}" method="POST" style="display:inline;">
+                                                            <button type="submit" class="property__card--wishlist">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="property__card--content">
+                                                        <span class="property__card--content__subtitle">{{ property.property_type if property.property_type else 'Apartment' }}</span>
+                                                        <h3 class="property__card--content__title"><a href="{{ url_for('property_detail', property_id=property.id) }}">{{ property.title }}</a></h3>
+                                                        <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> {{ property.address }}, {{ property.city }}</p>
+                                                        <div class="property__card--content__list">
+                                                            <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> {{ property.bedrooms }} Bed</span>
+                                                            <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> {{ property.bathrooms }} Bath</span>
+                                                            <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> {{ property.size }} Sq Ft</span>
+                                                        </div>
+                                                        <div class="property__card--content__footer d-flex justify-content-between align-items-center">
+                                                            <span class="property__card--content__price">₹{{ property.price|inr }}<span>/month</span></span>
+                                                            <a class="property__card--content__btn primary__btn" href="{{ url_for('edit_property', property_id=property.id) }}">Edit</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="property__card--content__footer d-flex justify-content-between align-items-center">
-                                                    <span class="property__card--content__price">$1,200<span>/month</span></span>
-                                                    <a class="property__card--content__btn primary__btn" href="listing-details.html">Edit</a>
-                                                </div>
                                             </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col">
+                                            <p>You have not listed any properties yet.</p>
                                         </div>
-                                    </div>
-                                    
-                                    <!-- Property Item 2 -->
-                                    <div class="col mb-30">
-                                        <div class="property__card">
-                                            <div class="property__card--thumbnail">
-                                                <a href="listing-details.html">
-                                                    <img class="property__card--thumbnail__img" src="assets/img/property/property2.jpg" alt="property">
-                                                </a>
-                                                <span class="property__card--badge">For Rent</span>
-                                                <button class="property__card--wishlist">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                                </button>
-                                            </div>
-                                            <div class="property__card--content">
-                                                <span class="property__card--content__subtitle">Villa</span>
-                                                <h3 class="property__card--content__title"><a href="listing-details.html">Modern Villa with Pool</a></h3>
-                                                <p class="property__card--content__location"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 456 Park Ave, Los Angeles</p>
-                                                <div class="property__card--content__list">
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bed"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8v9"></path></svg> 4 Bed</span>
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bath"><path d="M9 6 C9 7 8.3 7 7.5 7 C6.7 7 6 7 6 6 C6 5 6.7 5 7.5 5 C8.3 5 9 5 9 6 Z"></path><path d="M9 18v-3H5v3"></path><path d="M9 18v-3h4v3"></path><path d="M13 15V5h2v10"></path><path d="M18 15V5h2v10"></path><path d="M3 6h18v12H3z"></path></svg> 3 Bath</span>
-                                                    <span class="property__card--content__list--text"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> 2500 Sq Ft</span>
-                                                </div>
-                                                <div class="property__card--content__footer d-flex justify-content-between align-items-center">
-                                                    <span class="property__card--content__price">$2,500<span>/month</span></span>
-                                                    <a class="property__card--content__btn primary__btn" href="listing-details.html">Edit</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
