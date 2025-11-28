@@ -298,6 +298,97 @@ def format_inr(value):
 app.jinja_env.filters["inr"] = format_inr
 
 
+def infer_built_type(bedrooms, bathrooms, area_type):
+    try:
+        b = int(bedrooms or 0)
+    except Exception:
+        b = 0
+    at = (area_type or "").strip()
+    if at.lower() == "plot area":
+        return "Plot"
+    if b <= 1:
+        return "Apartment"
+    if b == 2:
+        return "Apartment"
+    if b == 3:
+        return "Independent House"
+    if b >= 4:
+        return "Villa"
+    return "Apartment"
+
+def derive_pid_from_row(row: dict) -> str:
+    try:
+        import hashlib
+        base = f"{row.get('City','')}-{row.get('BHK','')}-{row.get('Bathroom','')}-{row.get('Size','')}-{row.get('Rent','')}"
+        digest = hashlib.md5(base.encode('utf-8')).hexdigest()
+        num = int(digest[:8], 16) % 100000000
+        return f"TH{str(num).zfill(8)}"
+    except Exception:
+        return "TH00000000"
+
+
+def enrich_from_dataset(payload: dict) -> dict:
+    try:
+        if ui_df is None or ui_df.empty:
+            return payload
+        city = str(payload.get("city") or payload.get("location") or "")
+        bhk = int(payload.get("bedrooms") or 0)
+        bath = int(payload.get("bathrooms") or 0)
+        size = float(payload.get("area") or payload.get("size") or 0)
+        rent = float(payload.get("price") or 0)
+
+        df = ui_df.copy()
+        if city:
+            try:
+                df = df[df["City"].astype(str) == city]
+            except Exception:
+                pass
+        if df.empty:
+            df = ui_df.copy()
+
+        def score(row):
+            s = 0.0
+            try:
+                s += abs(float(row.get("Size", 0) or 0) - size) / 1000.0
+            except Exception:
+                pass
+            try:
+                s += 0.5 * abs(float(row.get("Rent", 0) or 0) - rent) / max(rent or 1.0, 1.0)
+            except Exception:
+                pass
+            try:
+                s += 0.2 * abs(int(row.get("BHK", 0) or 0) - bhk)
+            except Exception:
+                pass
+            try:
+                s += 0.2 * abs(int(row.get("Bathroom", 0) or 0) - bath)
+            except Exception:
+                pass
+            return s
+
+        best_row = None
+        best_score = None
+        for row in df.to_dict("records"):
+            sc = score(row)
+            if best_score is None or sc < best_score:
+                best_score = sc
+                best_row = row
+
+        if best_row:
+            payload.setdefault("area_type", str(best_row.get("Area Type", "")))
+            if not payload.get("area_type"):
+                payload["area_type"] = str(best_row.get("Area Type", ""))
+            if not payload.get("locality"):
+                payload["locality"] = str(best_row.get("Area Locality", ""))
+            if not payload.get("contact"):
+                payload["contact"] = str(best_row.get("Point of Contact", ""))
+            if not payload.get("pid"):
+                payload["pid"] = str(best_row.get("Property ID") or best_row.get("Property_ID") or best_row.get("Post ID") or derive_pid_from_row(best_row))
+        return payload
+    except Exception:
+        return payload
+
+
 # ======================================================
 # STATIC & VITE
 # ======================================================
@@ -305,6 +396,11 @@ app.jinja_env.filters["inr"] = format_inr
 @app.route("/assets/<path:filename>")
 def serve_assets(filename):
     return send_from_directory("Frontend/assets", filename)
+
+
+@app.route("/property_pics/<path:filename>")
+def serve_property_pic(filename):
+    return send_from_directory(os.path.join(app.root_path, "static", "property_pics"), filename)
 
 
 @app.route("/@vite/client", methods=["GET"])
@@ -318,11 +414,38 @@ def handle_vite_client():
 
 @app.route("/")
 def index():
-    # Landing page with featured properties from dataset
     featured = []
+    home_cities = []
+    popular_cities = []
+    property_types = []
+
     if ui_df is not None and not ui_df.empty:
-        featured = ui_df.sample(min(6, len(ui_df))).to_dict("records")
-    return render_template("index.html", featured_properties=featured)
+        df = ui_df.copy()
+
+        # Featured properties
+        featured = df.sample(min(6, len(df))).to_dict("records")
+
+        # Cities and counts
+        if "City" in df.columns:
+            city_counts = df["City"].dropna().astype(str).value_counts()
+            home_cities = [{"name": c, "count": int(n)} for c, n in city_counts.items()]
+            popular_cities = [{"name": c, "count": int(n)} for c, n in city_counts.head(40).items()]
+
+        # Property types from built type (derived), not area type
+        try:
+            bt_series = df.apply(lambda r: infer_built_type(r.get("BHK"), r.get("Bathroom"), r.get("Area Type")), axis=1)
+            bt_counts = bt_series.dropna().astype(str).value_counts()
+            property_types = [{"name": name, "count": int(cnt)} for name, cnt in bt_counts.items()]
+        except Exception:
+            property_types = []
+
+    return render_template(
+        "index.html",
+        featured_properties=featured,
+        home_cities=home_cities,
+        popular_cities=popular_cities,
+        property_types=property_types,
+    )
 
 
 @app.route("/about")
@@ -344,30 +467,120 @@ def contact():
 def listing():
     import random
 
-    if ui_df is None or ui_df.empty:
-        properties = []
+    db_props = Property.query.order_by(Property.created_at.desc()).all()
+
+    properties = []
+    if db_props:
+        for p in db_props:
+            properties.append({
+                "id": p.id,
+                "title": p.title or f"Property in {p.city}",
+                "price": float(p.price) if p.price is not None else 0.0,
+                "location": p.city or "",
+                "description": p.description or "",
+                "address": getattr(p, "address", ""),
+                "category": infer_built_type(p.bedrooms, p.bathrooms, p.area_type),
+                "bedrooms": p.bedrooms or 0,
+                "bathrooms": p.bathrooms or 0,
+                "area": p.size or 0,
+                "furnishing_status": p.furnishing_status or "",
+                "tenant_preferred": p.tenant_preferred or "",
+                "area_type": p.area_type or "",
+                "locality": getattr(p, "locality", ""),
+                "contact": getattr(p, "point_of_contact", ""),
+                "pid": getattr(p, "property_id", None),
+                "created_at": (p.created_at.isoformat() if p.created_at else ""),
+                "image_url": (url_for("serve_property_pic", filename=p.image_file) if p.image_file else None),
+            })
     else:
-        properties = ui_df.to_dict("records")
+        # Fallback to dataset if DB has no properties
+        ds = ui_df.to_dict("records") if (ui_df is not None and not ui_df.empty) else []
 
-    image_dir = os.path.join(BASE_DIR, "Frontend", "assets", "img", "property")
-    image_files = []
-    if os.path.isdir(image_dir):
-        image_files = [
-            f for f in os.listdir(image_dir)
-            if os.path.isfile(os.path.join(image_dir, f))
-        ]
+        image_dir = os.path.join(BASE_DIR, "Frontend", "assets", "img", "property")
+        image_files = []
+        if os.path.isdir(image_dir):
+            image_files = [
+                f for f in os.listdir(image_dir)
+                if os.path.isfile(os.path.join(image_dir, f))
+            ]
 
-    for prop in properties:
-        if image_files:
-            prop["image_url"] = url_for(
-                "static",
-                filename=f"img/property/{random.choice(image_files)}",
-            )
-        else:
-            prop["image_url"] = None
+        for row in ds:
+            properties.append({
+                "id": None,
+                "title": f"{int(row.get('BHK', 0))}-BHK in {row.get('City', '')}",
+                "price": float(row.get("Rent", 0) or 0),
+                "location": str(row.get("City", "")),
+                "description": str(row.get("Description", "")),
+                "address": str(row.get("Address", "")),
+                "category": infer_built_type(row.get("BHK", 0), row.get("Bathroom", 0), row.get("Area Type", "")),
+                "bedrooms": int(row.get("BHK", 0) or 0),
+                "bathrooms": int(row.get("Bathroom", 0) or 0),
+                "area": float(row.get("Size", 0) or 0),
+                "furnishing_status": str(row.get("Furnishing Status", "")),
+                "tenant_preferred": str(row.get("Tenant Preferred", "")),
+                "area_type": str(row.get("Area Type", "")),
+                "locality": str(row.get("Area Locality", "")),
+                "contact": str(row.get("Point of Contact", "")),
+                "pid": str(row.get("Property ID") or row.get("Property_ID") or row.get("Post ID") or derive_pid_from_row(row)),
+                "created_at": "",
+                "image_url": (
+                    url_for("static", filename=f"img/property/{random.choice(image_files)}")
+                    if image_files else None
+                ),
+            })
 
     return render_template("listing.html", properties=properties)
 
+
+ 
+
+@app.route("/property_preview")
+def property_preview():
+    args = request.args
+    property_payload = {
+        "id": None,
+        "title": args.get("title") or "Property",
+        "price": float(args.get("price") or 0),
+        "bedrooms": int(args.get("bedrooms") or 0),
+        "bathrooms": int(args.get("bathrooms") or 0),
+        "area": float(args.get("area") or 0),
+        "category": args.get("category") or "Property",
+        "address": args.get("address") or "",
+        "city": args.get("city") or "",
+        "description": args.get("description") or "",
+        "furnishing_status": args.get("furnishing_status") or "",
+        "tenant_preferred": args.get("tenant_preferred") or "",
+        "pid": args.get("pid") or "",
+        "area_type": args.get("area_type") or "",
+        "locality": args.get("locality") or "",
+        "contact": args.get("contact") or "",
+        "image_url": None,
+        "owner": {
+            "name": "Listing Agent",
+            "role": "Agent",
+            "phone": "",
+        },
+    }
+    property_payload = enrich_from_dataset(property_payload)
+    featured = []
+    try:
+        import random
+        ds = ui_df.to_dict("records") if (ui_df is not None and not ui_df.empty) else []
+        city = property_payload["city"]
+        pool = [r for r in ds if (city and str(r.get("City",""))==city)] or ds
+        for row in pool[:3]:
+            title = f"{int(row.get('BHK',0))}-BHK in {row.get('City','')}"
+            url = url_for("property_preview", title=title, price=float(row.get("Rent",0) or 0), bedrooms=int(row.get("BHK",0) or 0), bathrooms=int(row.get("Bathroom",0) or 0), area=float(row.get("Size",0) or 0), category=str(row.get("Area Type","")), address=str(row.get("Address","")), city=str(row.get("City","")), furnishing_status=str(row.get("Furnishing Status","")), tenant_preferred=str(row.get("Tenant Preferred","")), pid=str(row.get("Property ID") or row.get("Property_ID") or derive_pid_from_row(row)), area_type=str(row.get("Area Type","")), locality=str(row.get("Area Locality","")), contact=str(row.get("Point of Contact","")))
+            featured.append({
+                "title": title,
+                "city": str(row.get("City","")),
+                "price": float(row.get("Rent",0) or 0),
+                "image_url": url_for("serve_assets", filename=f"img/property/featured-grid{random.randint(1,6)}.jpg"),
+                "url": url,
+            })
+    except Exception:
+        pass
+    return render_template("listing-details.html", property=property_payload, featured_properties=featured)
 
 # ======================================================
 # RENT PREDICTION (PAGE + API)
@@ -475,6 +688,7 @@ def legacy_html(page):
         "favorites": "favorites",
         "dashboard": "dashboard",
         "owner-dashboard": "owner_dashboard",
+        "my-properties": "owner_dashboard",
         "profile": "profile",
         "settings": "settings",
     }
@@ -797,6 +1011,10 @@ def customer_dashboard():
 
     properties = properties_query.all()
 
+    bookings_count = Booking.query.filter_by(customer_id=current_user.id).count()
+    favorites_count = Favorite.query.filter_by(user_id=current_user.id).count()
+    predictions_count = PredictionResult.query.filter_by(user_id=current_user.id).count()
+
     # Default map on India
     m = folium.Map(location=[20.5937, 78.9629], zoom_start=5)
     for prop in properties:
@@ -814,6 +1032,9 @@ def customer_dashboard():
         form=form,
         properties=properties,
         map_html=map_html,
+        bookings_count=bookings_count,
+        favorites_count=favorites_count,
+        predictions_count=predictions_count,
     )
 
 
@@ -1019,12 +1240,62 @@ def property_detail(property_id):
     if current_user.is_authenticated:
         fav = Favorite.query.filter_by(user_id=current_user.id, property_id=property_id).first()
         is_favorited = fav is not None
+    featured = []
+    try:
+        q = Property.query
+        if prop.city:
+            q = q.filter(Property.city == prop.city)
+        featured_q = q.filter(Property.id != property_id).order_by(Property.created_at.desc()).limit(3).all()
+        for fp in featured_q:
+            featured.append({
+                "title": fp.title or f"{fp.bedrooms or ''}-BHK in {fp.city or ''}",
+                "city": fp.city or "",
+                "price": float(fp.price or 0),
+                "image_url": (url_for("serve_property_pic", filename=fp.image_file) if fp.image_file else url_for("serve_assets", filename="img/property/featured-grid1.jpg")),
+                "url": url_for("property_detail", property_id=fp.id),
+            })
+    except Exception:
+        pass
+    # Enrich missing fields from dataset for display
+    try:
+        payload = {
+            "id": prop.id,
+            "title": prop.title,
+            "price": float(prop.price or 0),
+            "bedrooms": int(prop.bedrooms or 0),
+            "bathrooms": int(prop.bathrooms or 0),
+            "area": float(prop.size or 0),
+            "category": infer_built_type(prop.bedrooms, prop.bathrooms, prop.area_type),
+            "address": prop.address or "",
+            "city": prop.city or "",
+            "description": prop.description or "",
+            "furnishing_status": prop.furnishing_status or "",
+            "tenant_preferred": prop.tenant_preferred or "",
+            "pid": getattr(prop, "property_id", None) or "",
+            "area_type": prop.area_type or "",
+            "locality": getattr(prop, "locality", ""),
+            "contact": getattr(prop, "point_of_contact", ""),
+        }
+        payload = enrich_from_dataset(payload)
+        # Assign transient attributes so template access via prop works
+        try:
+            prop.pid = payload.get("pid")
+            prop.locality = payload.get("locality")
+            prop.point_of_contact = payload.get("contact")
+            if not prop.area_type:
+                prop.area_type = payload.get("area_type")
+        except Exception:
+            pass
+    except Exception:
+        pass
+
     return render_template(
         "listing-details.html",
         property=prop,
         review_form=review_form,
         reviews=reviews,
         is_favorited=is_favorited,
+        featured_properties=featured,
     )
 
 

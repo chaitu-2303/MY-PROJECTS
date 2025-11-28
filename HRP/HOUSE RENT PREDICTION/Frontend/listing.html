@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>RentRight - Listing Page</title>
+    <title>RentRight - Listing </title>
     <meta name="description" content="Morden Bootstrap HTML5 Template" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
@@ -26,39 +26,6 @@
 
     <!-- Custom Style CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-    
-    <!-- Interactive features styles -->
-    <style>
-      .filter-active {
-        background-color: #ff6d34 !important;
-        color: white !important;
-      }
-      .property-card {
-        transition: transform 0.3s ease;
-      }
-      .property-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      }
-      #quickFilterButtons {
-        margin-bottom: 20px;
-      }
-      #quickFilterButtons button {
-        margin-right: 10px;
-        margin-bottom: 10px;
-        padding: 8px 15px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        background: #f8f8f8;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      #quickFilterButtons button:hover {
-        background: #ff6d34;
-        color: white;
-        border-color: #ff6d34;
-      }
-    </style>
   </head>
 
   <body>
@@ -657,13 +624,14 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="listing__widget">
+                <div class="listing__widget--inner">
                 <div class="widget__list mb-40">
                   <h2 class="widget__title mb-30">Search Property</h2>
                   <div class="widget__search">
                     <form id="propertySearchForm">
-                      <div class="widget__search--box position__relative">
+                      <div class="widget__search--input position__relative">
                         <label>
-                          <input type="text" placeholder="Search by location" id="searchInput" />
+                          <input class="widget__search--input__field" type="text" placeholder="Search by location" id="searchInput" />
                         </label>
                         <button class="widget__search--btn" type="submit">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -676,14 +644,14 @@
                   </div>
                 </div>
                 <div class="widget__list mb-40">
-                  <h2 class="widget__title mb-30">Property Categories</h2>
-                  <div id="quickFilterButtons">
-                    <button data-category="all">All Properties</button>
-                    <button data-category="apartment">Apartment</button>
-                    <button data-category="house">House</button>
-                    <button data-category="condo">Condo</button>
-                    <button data-category="villa">Villa</button>
-                  </div>
+                  <h2 class="widget__title mb-30">Property Category</h2>
+                  <input id="categoryInput" class="filter__select--input" list="categoryList" placeholder="Select category" />
+                  <datalist id="categoryList"></datalist>
+                </div>
+                <div class="widget__list mb-40">
+                  <h2 class="widget__title mb-30">City</h2>
+                  <input id="cityInput" class="filter__select--input" list="cityList" placeholder="Select city" />
+                  <datalist id="cityList"></datalist>
                 </div>
                 <div class="widget__list mb-40">
                   <h2 class="widget__title mb-30">Price Range</h2>
@@ -696,14 +664,35 @@
                     <div class="price-slider">
                       <div class="progress"></div>
                     </div>
-                    <div class="range-input">
-                      <input type="range" class="range-min" min="0" max="10000" value="500" step="100" id="minPriceRange" />
-                      <input type="range" class="range-max" min="0" max="10000" value="5000" step="100" id="maxPriceRange" />
-                    </div>
-                    <button class="price__filtering--btn" id="priceFilterBtn">Filter</button>
+                  <div class="range-input">
+                    <input type="range" class="range-min" min="0" max="10000" value="500" step="100" id="minPriceRange" />
+                    <input type="range" class="range-max" min="0" max="10000" value="5000" step="100" id="maxPriceRange" />
                   </div>
+                  <button class="price__filtering--btn" id="priceFilterBtn">Filter</button>
+                </div>
+                <div class="widget__list mb-40">
+                  <h2 class="widget__title mb-30">Bedrooms</h2>
+                  <input id="bedroomsInput" class="filter__select--input" list="bedroomsList" placeholder="Select bedrooms" />
+                  <datalist id="bedroomsList"></datalist>
+                </div>
+                <div class="widget__list mb-40">
+                  <h2 class="widget__title mb-30">Bathrooms</h2>
+                  <input id="bathroomsInput" class="filter__select--input" list="bathroomsList" placeholder="Select bathrooms" />
+                  <datalist id="bathroomsList"></datalist>
+                </div>
+                <div class="widget__list mb-40">
+                  <h2 class="widget__title mb-30">Furnishing</h2>
+                  <input id="furnishingInput" class="filter__select--input" list="furnishingList" placeholder="Select furnishing" />
+                  <datalist id="furnishingList"></datalist>
+                </div>
+                <div class="widget__list mb-40">
+                  <h2 class="widget__title mb-30">Tenant Preferred</h2>
+                  <input id="tenantInput" class="filter__select--input" list="tenantList" placeholder="Select tenant type" />
+                  <datalist id="tenantList"></datalist>
+                </div>
                 </div>
               </div>
+            </div>
             </div>
             <div class="col-lg-8">
               <div class="listing__page--wrapper">
@@ -759,6 +748,9 @@
                 <!-- Property listings will be inserted here -->
                 <div id="propertyContainer">
                   <!-- Properties will be loaded dynamically -->
+                </div>
+                <div id="paginationContainer" class="page__pagination--area">
+                  <ul id="pagination" class="page__pagination--wrapper d-flex align-items-center justify-content-center"></ul>
                 </div>
               </div>
             </div>
@@ -854,13 +846,16 @@
       let allProperties = {{ properties|tojson }};
       let filteredProperties = [...allProperties];
       let currentView = 'grid';
+      let pageSize = 12;
+      let currentPage = 1;
       
       // DOM elements
       const propertyContainer = document.getElementById('propertyContainer');
       const propertyCount = document.getElementById('propertyCount');
       const searchForm = document.getElementById('propertySearchForm');
       const searchInput = document.getElementById('searchInput');
-      const categoryButtons = document.querySelectorAll('[data-category]');
+      const categoryInput = document.getElementById('categoryInput');
+      const cityInput = document.getElementById('cityInput');
       const minPriceInput = document.getElementById('minPrice');
       const maxPriceInput = document.getElementById('maxPrice');
       const minPriceRange = document.getElementById('minPriceRange');
@@ -868,13 +863,132 @@
       const priceFilterBtn = document.getElementById('priceFilterBtn');
       const sortSelect = document.getElementById('sortSelect');
       const viewButtons = document.querySelectorAll('[data-view]');
+      const bedroomsInput = document.getElementById('bedroomsInput');
+      const bathroomsInput = document.getElementById('bathroomsInput');
+      const furnishingInput = document.getElementById('furnishingInput');
+      const tenantInput = document.getElementById('tenantInput');
+      const paginationEl = document.getElementById('pagination');
       
       // Initialize the page
       document.addEventListener('DOMContentLoaded', function() {
+        renderCategoryOptions();
+        renderCityOptions();
+        renderFurnishingOptions();
+        renderTenantOptions();
+        renderBedroomOptions();
+        renderBathroomOptions();
+        applyQueryParams();
         renderProperties();
         setupEventListeners();
         updatePriceRangeSliders();
       });
+
+      function applyQueryParams() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const title = params.get('title') || '';
+          const city = params.get('city') || '';
+          const address = params.get('address') || '';
+          const category = params.get('category') || '';
+          const bedrooms = params.get('bedrooms') || '';
+          const bathrooms = params.get('bathrooms') || '';
+          const furnishing = params.get('furnishing_status') || '';
+          const tenant = params.get('tenant_preferred') || '';
+          const price = params.get('price');
+          const min_price = params.get('min_price');
+          const max_price = params.get('max_price');
+
+          if (title || city || address) {
+            searchInput.value = city || title || address || '';
+          }
+          if (category) {
+            categoryInput.value = category;
+          }
+          if (city) {
+            cityInput.value = city;
+          }
+          if (bedrooms) {
+            bedroomsInput.value = bedrooms;
+          }
+          if (bathrooms) {
+            bathroomsInput.value = bathrooms;
+          }
+          if (furnishing) {
+            furnishingInput.value = furnishing;
+          }
+          if (tenant) {
+            tenantInput.value = tenant;
+          }
+          if (min_price || max_price || price) {
+            minPriceInput.value = parseInt(min_price || 0) || 0;
+            maxPriceInput.value = parseInt(max_price || price || 10000) || 10000;
+          }
+          updatePriceRangeSliders();
+          filterProperties();
+        } catch (e) {}
+      }
+
+      function slugify(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$|\s+/g, '');
+      }
+
+      function debounce(fn, delay = 300) {
+        let t;
+        return function() {
+          clearTimeout(t);
+          const ctx = this, args = arguments;
+          t = setTimeout(function(){ fn.apply(ctx, args); }, delay);
+        };
+      }
+
+      function renderCategoryOptions() {
+        const dl = document.getElementById('categoryList');
+        const categories = Array.from(new Set(allProperties.map(p => p.category || 'Unknown')));
+        const options = ['<option value="All">All</option>'].concat(categories.map(cat => `<option value="${cat}"></option>`));
+        dl.innerHTML = options.join('');
+      }
+
+      function renderCityOptions() {
+        const cities = Array.from(new Set(allProperties.map(p => p.location).filter(Boolean))).sort();
+        const dl = document.getElementById('cityList');
+        const options = ['<option value="All Cities"></option>'].concat(cities.map(c => `<option value="${c}"></option>`));
+        dl.innerHTML = options.join('');
+      }
+
+      function renderFurnishingOptions() {
+        const vals = Array.from(new Set(allProperties.map(p => p.furnishing_status || '').filter(Boolean)));
+        const dl = document.getElementById('furnishingList');
+        const options = ['<option value="All"></option>'].concat(vals.map(v => `<option value="${v}"></option>`));
+        dl.innerHTML = options.join('');
+      }
+
+      function renderTenantOptions() {
+        const vals = Array.from(new Set(allProperties.map(p => p.tenant_preferred || '').filter(Boolean)));
+        const dl = document.getElementById('tenantList');
+        const options = ['<option value="All"></option>'].concat(vals.map(v => `<option value="${v}"></option>`));
+        dl.innerHTML = options.join('');
+      }
+
+      function renderBedroomOptions() {
+        const dl = document.getElementById('bedroomsList');
+        const nums = Array.from(new Set(allProperties.map(p => parseInt(p.bedrooms || 0)).filter(n => !isNaN(n)))).sort((a,b)=>a-b);
+        const base = [1,2,3,4,5];
+        const set = Array.from(new Set(base.concat(nums))).sort((a,b)=>a-b);
+        const options = ['<option value="All"></option>'].concat(set.map(n => `<option value="${n}"></option>`)).concat(['<option value="5+"></option>']);
+        dl.innerHTML = options.join('');
+      }
+
+      function renderBathroomOptions() {
+        const dl = document.getElementById('bathroomsList');
+        const nums = Array.from(new Set(allProperties.map(p => parseInt(p.bathrooms || 0)).filter(n => !isNaN(n)))).sort((a,b)=>a-b);
+        const base = [1,2,3,4,5];
+        const set = Array.from(new Set(base.concat(nums))).sort((a,b)=>a-b);
+        const options = ['<option value="All"></option>'].concat(set.map(n => `<option value="${n}"></option>`)).concat(['<option value="5+"></option>']);
+        dl.innerHTML = options.join('');
+      }
       
       // Setup event listeners
       function setupEventListeners() {
@@ -883,15 +997,14 @@
           e.preventDefault();
           filterProperties();
         });
+        searchInput.addEventListener('input', debounce(filterProperties, 300));
         
-        // Category filter buttons
-        categoryButtons.forEach(button => {
-          button.addEventListener('click', function() {
-            categoryButtons.forEach(btn => btn.classList.remove('filter-active'));
-            this.classList.add('filter-active');
-            filterProperties();
-          });
-        });
+        categoryInput.addEventListener('change', filterProperties);
+        cityInput.addEventListener('input', debounce(filterProperties, 200));
+        furnishingInput.addEventListener('change', filterProperties);
+        tenantInput.addEventListener('change', filterProperties);
+        bedroomsInput.addEventListener('change', filterProperties);
+        bathroomsInput.addEventListener('change', filterProperties);
         
         // Price range inputs
         minPriceInput.addEventListener('input', updatePriceRangeSliders);
@@ -933,9 +1046,14 @@
       // Filter properties based on search, category, and price
       function filterProperties() {
         const searchTerm = searchInput.value.toLowerCase();
-        const activeCategory = document.querySelector('[data-category].filter-active')?.dataset.category || 'all';
+        const activeCategory = categoryInput.value.trim() ? slugify(categoryInput.value.trim()) : 'all';
+        const activeFurnishing = furnishingInput.value.trim() ? slugify(furnishingInput.value.trim()) : 'all';
+        const activeTenant = tenantInput.value.trim() ? slugify(tenantInput.value.trim()) : 'all';
+        const selectedCity = cityInput.value.trim() || 'all';
         const minPrice = parseInt(minPriceInput.value) || 0;
         const maxPrice = parseInt(maxPriceInput.value) || 10000;
+        const selectedBeds = bedroomsInput.value.trim();
+        const selectedBaths = bathroomsInput.value.trim();
         
         filteredProperties = allProperties.filter(property => {
           const matchesSearch = !searchTerm || 
@@ -943,13 +1061,23 @@
             property.location.toLowerCase().includes(searchTerm) ||
             property.description.toLowerCase().includes(searchTerm);
           
-          const matchesCategory = activeCategory === 'all' || property.category.toLowerCase() === activeCategory;
+          const matchesCategory = activeCategory === 'all' || slugify(property.category) === activeCategory;
+          const matchesCity = selectedCity === 'all' || property.location === selectedCity;
           
           const matchesPrice = property.price >= minPrice && property.price <= maxPrice;
+
+          const beds = parseInt(property.bedrooms || 0);
+          const baths = parseInt(property.bathrooms || 0);
+          const matchesBeds = !selectedBeds || selectedBeds === 'All' ? true : (selectedBeds.endsWith('+') ? beds >= parseInt(selectedBeds) : beds === parseInt(selectedBeds));
+          const matchesBaths = !selectedBaths || selectedBaths === 'All' ? true : (selectedBaths.endsWith('+') ? baths >= parseInt(selectedBaths) : baths === parseInt(selectedBaths));
+
+          const matchesFurnishing = activeFurnishing === 'all' || slugify(property.furnishing_status || '') === activeFurnishing;
+          const matchesTenant = activeTenant === 'all' || slugify(property.tenant_preferred || '') === activeTenant;
           
-          return matchesSearch && matchesCategory && matchesPrice;
+          return matchesSearch && matchesCategory && matchesCity && matchesPrice && matchesBeds && matchesBaths && matchesFurnishing && matchesTenant;
         });
         
+        currentPage = 1;
         sortProperties();
       }
       
@@ -967,18 +1095,22 @@
           case '4': // Newest
             filteredProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             break;
-          default: // Recently Added
-            filteredProperties.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          default: // Recently Added (newest first)
+            filteredProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         }
         
+        currentPage = 1;
         renderProperties();
       }
       
       // Render properties
       function renderProperties() {
         propertyCount.textContent = filteredProperties.length;
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const displayProps = filteredProperties.slice(startIndex, endIndex);
         
-        if (filteredProperties.length === 0) {
+        if (displayProps.length === 0) {
           propertyContainer.innerHTML = `
             <div class="col-12 text-center">
               <div class="no-results">
@@ -987,22 +1119,51 @@
               </div>
             </div>
           `;
+          if (paginationEl) paginationEl.innerHTML = '';
           return;
         }
         
         if (currentView === 'grid') {
-          renderGridView();
+          renderGridView(displayProps);
         } else {
-          renderListView();
+          renderListView(displayProps);
         }
+
+        renderPagination();
+      }
+      function renderPagination() {
+        if (!paginationEl) return;
+        const totalPages = Math.max(1, Math.ceil(filteredProperties.length / pageSize));
+        let html = '';
+        html += `<li><a href="#" class="page__pagination--link" data-page="prev">&laquo;</a></li>`;
+        const windowSize = 5;
+        let start = Math.max(1, currentPage - Math.floor(windowSize/2));
+        let end = Math.min(totalPages, start + windowSize - 1);
+        if (end - start + 1 < windowSize) start = Math.max(1, end - windowSize + 1);
+        for (let i = start; i <= end; i++) {
+          html += `<li><a href="#" class="page__pagination--link ${i===currentPage?'active':''}" data-page="${i}">${i}</a></li>`;
+        }
+        html += `<li><a href="#" class="page__pagination--link" data-page="next">&raquo;</a></li>`;
+        paginationEl.innerHTML = html;
+        paginationEl.querySelectorAll('.page__pagination--link').forEach(a => {
+          a.addEventListener('click', function(e){
+            e.preventDefault();
+            const val = this.getAttribute('data-page');
+            const total = Math.max(1, Math.ceil(filteredProperties.length / pageSize));
+            if (val === 'prev') currentPage = Math.max(1, currentPage - 1);
+            else if (val === 'next') currentPage = Math.min(total, currentPage + 1);
+            else currentPage = parseInt(val);
+            renderProperties();
+          });
+        });
       }
       
       // Render grid view
-      function renderGridView() {
+      function renderGridView(items) {
         const row = document.createElement('div');
         row.className = 'row row-cols-lg-2 row-cols-md-2 row-cols-1 mb--n30';
         
-        filteredProperties.forEach(property => {
+        items.forEach(property => {
           const propertyCard = createPropertyCard(property);
           const col = document.createElement('div');
           col.className = 'col mb-30';
@@ -1015,11 +1176,11 @@
       }
       
       // Render list view
-      function renderListView() {
+      function renderListView(items) {
         const row = document.createElement('div');
         row.className = 'row';
         
-        filteredProperties.forEach(property => {
+        items.forEach(property => {
           const propertyCard = createPropertyListCard(property);
           const col = document.createElement('div');
           col.className = 'col-12 mb-30';
@@ -1035,10 +1196,11 @@
       function createPropertyCard(property) {
         const card = document.createElement('div');
         card.className = 'product__card property-card';
+        const detailsUrl = getDetailsUrl(property);
         card.innerHTML = `
           <div class="product__card--thumbnail">
-            <a class="product__card--thumbnail__link" href="/property/${property.id}">
-              <img class="product__card--thumbnail__img" src="${property.image_url || '{{ url_for('static', filename='img/property/default.jpg') }}'}" alt="${property.title}">
+            <a class="product__card--thumbnail__link" href="${detailsUrl}">
+              <img class="product__card--thumbnail__img" src="${getPropertyImage(property)}" alt="${property.title}" loading="lazy" onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/property/featured-grid1.jpg') }}'">
             </a>
             <div class="product__card--badge">
               <span class="product__card--badge__field">${property.category}</span>
@@ -1046,19 +1208,17 @@
           </div>
           <div class="product__card--content">
             <h3 class="product__card--title">
-              <a href="/property/${property.id}">${property.title}</a>
+              <a href="${detailsUrl}">${property.title}</a>
             </h3>
             <div class="product__card--price">
-              <span class="product__card--price__new">$${property.price}/mo</span>
+              <span class="product__card--price__new">₹${Number(property.price || 0).toLocaleString('en-IN')}/mo</span>
             </div>
-            <div class="product__card--location">
-              <span class="product__card--location__text">${property.location}</span>
+            <div class="property__badges property__badges--inline">
+              <span class="property__badge" title="Beds"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 11h16a3 3 0 013 3v4H1v-4a3 3 0 013-3z" fill="currentColor"/><path d="M6 7h8a2 2 0 012 2v2H4V9a2 2 0 012-2z" fill="currentColor"/></svg><span>${property.bedrooms || 0}</span></span>
+              <span class="property__badge" title="Baths"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10h14v8a3 3 0 01-3 3H8a3 3 0 01-3-3v-8z" fill="currentColor"/><path d="M7 6a3 3 0 016 0v4H7V6z" fill="currentColor"/></svg><span>${property.bathrooms || 0}</span></span>
+              <span class="property__badge" title="Sq.ft"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2"/></svg><span>${formatSqft(property.area)}</span></span>
             </div>
-            <div class="product__card--meta">
-              <span class="product__card--meta__item">${property.bedrooms} Beds</span>
-              <span class="product__card--meta__item">${property.bathrooms} Baths</span>
-              <span class="product__card--meta__item">${property.area} sqft</span>
-            </div>
+            
           </div>
         `;
         return card;
@@ -1068,10 +1228,11 @@
       function createPropertyListCard(property) {
         const card = document.createElement('div');
         card.className = 'product__card product__card--list property-card';
+        const detailsUrl = getDetailsUrl(property);
         card.innerHTML = `
           <div class="product__card--thumbnail">
-            <a class="product__card--thumbnail__link" href="/property/${property.id}">
-              <img class="product__card--thumbnail__img" src="${property.image_url || '{{ url_for('static', filename='img/property/default.jpg') }}'}" alt="${property.title}">
+            <a class="product__card--thumbnail__link" href="${detailsUrl}">
+              <img class="product__card--thumbnail__img" src="${getPropertyImage(property)}" alt="${property.title}" loading="lazy" onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/property/featured-grid1.jpg') }}'">
             </a>
             <div class="product__card--badge">
               <span class="product__card--badge__field">${property.category}</span>
@@ -1079,23 +1240,55 @@
           </div>
           <div class="product__card--content">
             <h3 class="product__card--title">
-              <a href="/property/${property.id}">${property.title}</a>
+              <a href="${detailsUrl}">${property.title}</a>
             </h3>
             <div class="product__card--price">
-              <span class="product__card--price__new">$${property.price}/mo</span>
+              <span class="product__card--price__new">₹${Number(property.price || 0).toLocaleString('en-IN')}/mo</span>
             </div>
-            <div class="product__card--location">
-              <span class="product__card--location__text">${property.location}</span>
+            <div class="property__badges property__badges--inline">
+              <span class="property__badge" title="Beds"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 11h16a3 3 0 013 3v4H1v-4a3 3 0 013-3z" fill="currentColor"/><path d="M6 7h8a2 2 0 012 2v2H4V9a2 2 0 012-2z" fill="currentColor"/></svg><span>${property.bedrooms || 0}</span></span>
+              <span class="property__badge" title="Baths"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10h14v8a3 3 0 01-3 3H8a3 3 0 01-3-3v-8z" fill="currentColor"/><path d="M7 6a3 3 0 016 0v4H7V6z" fill="currentColor"/></svg><span>${property.bathrooms || 0}</span></span>
+              <span class="property__badge" title="Sq.ft"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2"/></svg><span>${formatSqft(property.area)}</span></span>
             </div>
-            <p class="product__card--description">${property.description}</p>
-            <div class="product__card--meta">
-              <span class="product__card--meta__item">${property.bedrooms} Beds</span>
-              <span class="product__card--meta__item">${property.bathrooms} Baths</span>
-              <span class="product__card--meta__item">${property.area} sqft</span>
-            </div>
+            
           </div>
         `;
         return card;
+      }
+
+      function getPropertyImage(property) {
+        const DEFAULT_IMG = '{{ url_for('static', filename='img/property/featured-grid1.jpg') }}';
+        const src = String(property.image_url || '');
+        const isAvatar = /author|profile|user|avatar/i.test(src) || src.endsWith('properties-author2.png');
+        if (!src || isAvatar) return DEFAULT_IMG;
+        return src;
+      }
+
+      function getDetailsUrl(property) {
+        if (property.id) return `/property/${property.id}`;
+        const params = new URLSearchParams({
+          title: property.title || '',
+          price: property.price || 0,
+          bedrooms: property.bedrooms || 0,
+          bathrooms: property.bathrooms || 0,
+          area: property.area || 0,
+          category: property.category || '',
+          address: property.description || '',
+          city: property.location || '',
+          furnishing_status: property.furnishing_status || '',
+          tenant_preferred: property.tenant_preferred || '',
+          pid: property.pid || '',
+          area_type: property.area_type || '',
+          locality: property.locality || '',
+          contact: property.contact || ''
+        }).toString();
+        return `/property_preview?${params}`;
+      }
+
+      function formatSqft(value) {
+        const n = parseFloat(value || 0);
+        if (!isFinite(n) || n <= 0) return '—';
+        return `${Math.round(n).toLocaleString('en-IN')} sq.ft`;
       }
     </script>
   </body>

@@ -358,7 +358,7 @@ var swiper = new Swiper(".hero__thumbnail--swiper", {
 });
 
 /* product swiper column4 activation */
-var swiper = new Swiper(".featured__column4", {
+window.featuredSwiper = new Swiper(".featured__column4", {
   slidesPerView: 4,
   loop: false,
   clickable: true,
@@ -392,50 +392,53 @@ var swiper = new Swiper(".featured__column4", {
   },
 });
 
-/* popular featured column5 activation */
-var swiper = new Swiper(".popular__featured--column5", {
-  slidesPerView: 5,
-  loop: false,
-  clickable: true,
-  spaceBetween: 30,
-  speed: 1200,
+/* popular featured column5 activation – RentRight tuned */
+window.popularSwiper = new Swiper(".popular__featured--column5", {
+  slidesPerView: 'auto',
+  loop: true,
+  loopedSlides: 40,
+  spaceBetween: 28,
+  speed: 900,
   autoplay: {
-    delay: 2000,
+    delay: 2500,
     disableOnInteraction: false,
   },
   breakpoints: {
-    1200: {
-      slidesPerView: 5,
-      spaceBetween: 30,
-    },
-    992: {
-      slidesPerView: 4,
-      spaceBetween: 30,
-    },
-    768: {
-      slidesPerView: 3,
-      spaceBetween: 30,
-    },
-    480: {
-      slidesPerView: 2,
-      spaceBetween: 20,
-    },
-    0: {
-      slidesPerView: 1,
-    },
+    1600: { slidesPerView: 'auto', spaceBetween: 28 },
+    1366: { slidesPerView: 'auto', spaceBetween: 28 },
+    1200: { slidesPerView: 'auto', spaceBetween: 26 },
+    992:  { slidesPerView: 'auto', spaceBetween: 24 },
+    768:  { slidesPerView: 'auto', spaceBetween: 22 },
+    480:  { slidesPerView: 1, spaceBetween: 16 },
+    0:    { slidesPerView: 1, spaceBetween: 12 },
   },
   navigation: {
-    nextEl: " .swiper-button-next",
-    prevEl: " .swiper-button-prev",
+    nextEl: ".popular__featured--inner .swiper-button-next",
+    prevEl: ".popular__featured--inner .swiper-button-prev",
   },
   pagination: {
-    el: ".swiper-pagination",
+    el: ".popular__featured--inner .swiper-pagination",
     clickable: true,
+    dynamicBullets: true,  // only a few dots instead of 40
   },
 });
 
+// Make the whole card clickable (not just the image)
+try {
+  document.querySelectorAll('.popular__featured--card').forEach(function(card){
+    var link = card.querySelector('.popular__featured--link');
+    if (!link) return;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e){
+      var clickedAnchor = e.target.closest('a');
+      if (clickedAnchor) return; // default anchor behavior
+      window.location.href = link.getAttribute('href');
+    });
+  });
+} catch (e) {}
+
 /* testimonial swiper column2 activation */
-var swiper = new Swiper(".testimonial__swiper--column2", {
+window.testimonialSwiper = new Swiper(".testimonial__swiper--column2", {
   slidesPerView: 2,
   loop: false,
   clickable: true,
