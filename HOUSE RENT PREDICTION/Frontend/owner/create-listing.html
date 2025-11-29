@@ -2,32 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>RentRight - Settings</title>
+    <title>RentRight - Create Listing</title>
     <meta name="description" content="Morden Bootstrap HTML5 Template" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="shortcut icon"
       type="image/x-icon"
-      href="assets/img/favicon.ico"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
     />
 
     <!-- ======= All CSS Plugins here ======== -->
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <!-- Plugin css -->
-    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins/glightbox.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/swiper-bundle.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/glightbox.min.css') }}" />
 
     <!-- Custom Style CSS -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/dashboard.css" />
-    <link rel="stylesheet" href="assets/css/creat-listing.css" />
-    <link rel="stylesheet" href="assets/css/dark.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creat-listing.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark.css') }}" />
 
     <script>
       // On page load or when changing themes, best to add inline in `head` to avoid FOUC
@@ -58,14 +58,14 @@
             <a class="offcanvas__logo_link" href="./dashboard.html">
               <img
                 class="light__logo"
-                src="assets/img/logo/nav-log.png"
+                src="{{ url_for('static', filename='img/logo/nav-log.png') }}"
                 alt="Logo-img"
                 width="158"
                 height="36"
               />
               <img
                 class="dark__logo"
-                src="assets/img/logo/nav-log-white.png"
+                src="{{ url_for('static', filename='img/logo/nav-log-white.png') }}"
                 alt="Logo-img"
                 width="158"
                 height="36"
@@ -146,7 +146,10 @@
               </li>
 
             
-            <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a></li>
+            <li class="offcanvas__menu_li">
+              <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}"
+                >Rent Prediction</a
+              >
                 <ul class="offcanvas__sub_menu">
                   <li class="offcanvas__sub_menu_li">
                     <a href="./dashboard.html" class="offcanvas__sub_menu_item"
@@ -173,11 +176,7 @@
                     >
                   </li>
                   <li class="offcanvas__sub_menu_li">
-                    <a
-                      href="./my-properties.html"
-                      class="offcanvas__sub_menu_item"
-                      >My Properties</a
-                    >
+                    <a href="{{ url_for('owner_dashboard') }}" class="offcanvas__sub_menu_item">My Properties</a>
                   </li>
                   <li class="offcanvas__sub_menu_li">
                     <a href="./my-package.html" class="offcanvas__sub_menu_item"
@@ -209,57 +208,9 @@
                 </ul>
               </li>
               <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="../blog.html">News</a>
+                
               </li>
-              <li class="offcanvas__menu_li">
-                <a class="offcanvas__menu_item" href="#">Pages</a>
-                <ul class="offcanvas__sub_menu">
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../about.html" class="offcanvas__sub_menu_item"
-                      >About Us</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../contact.html" class="offcanvas__sub_menu_item"
-                      >Contact Us</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../project.html" class="offcanvas__sub_menu_item"
-                      >Project</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a
-                      href="../project-details.html"
-                      class="offcanvas__sub_menu_item"
-                      >Project Details</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a
-                      href="../services-details.html"
-                      class="offcanvas__sub_menu_item"
-                      >Services Details</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../login.html" class="offcanvas__sub_menu_item"
-                      >Login</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../sign-up.html" class="offcanvas__sub_menu_item"
-                      >Sing Up</a
-                    >
-                  </li>
-                  <li class="offcanvas__sub_menu_li">
-                    <a href="../404.html" class="offcanvas__sub_menu_item"
-                      >Error 404</a
-                    >
-                  </li>
-                </ul>
-              </li>
+              
             </ul>
           </nav>
           <div class="side__menu--footer mobile__menu--footer">
@@ -448,20 +399,20 @@
       <div class="dashboard__sidebar">
         <div class="main__logo logo-desktop-none">
           <h1 class="main__logo--title">
-            <a class="main__logo--link" href="./dashboard.html">
+            <a class="main__logo--link" href="./rent-prediction.html">
               <img
                 class="main__logo--img desktop light__logo"
-                src="assets/img/logo/nav-log.png"
+                src="{{ url_for('static', filename='img/logo/nav-log.png') }}"
                 alt="logo-img"
               />
               <img
                 class="main__logo--img desktop dark__logo"
-                src="assets/img/logo/nav-log-white.png"
+                src="{{ url_for('static', filename='img/logo/nav-log-white.png') }}"
                 alt="logo-img"
               />
               <img
                 class="main__logo--img mobile"
-                src="assets/img/logo/logo-mobile.png"
+                src="{{ url_for('static', filename='img/logo/logo-mobile.png') }}"
                 alt="logo-img"
               />
             </a>
@@ -488,7 +439,7 @@
               </a>
             </li>
             <li class="sidebar__menu--items">
-              <a class="sidebar__menu--link" href="./create-listing.html"
+              <a class="sidebar__menu--link active" href="./create-listing.html"
                 ><svg
                   class="sidebar__menu--icon"
                   width="20"
@@ -825,7 +776,7 @@
               </a>
             </li>
             <li class="sidebar__menu--items">
-              <a class="sidebar__menu--link active" href="./settings.html"
+              <a class="sidebar__menu--link" href="./settings.html"
                 ><svg
                   class="sidebar__menu--icon"
                   xmlns="http://www.w3.org/2000/svg"
@@ -999,20 +950,20 @@
                 </button>
               </div>
               <div class="main__logo logo-desktop-block">
-                <a class="main__logo--link" href="./dashboard.html">
+                <a class="main__logo--link" href="./rent-prediction.html">
                   <img
                     class="main__logo--img desktop light__logo"
-                    src="assets/img/logo/nav-log.png"
+                    src="{{ url_for('static', filename='img/logo/nav-log.png') }}"
                     alt="logo-img"
                   />
                   <img
                     class="main__logo--img desktop dark__logo"
-                    src="assets/img/logo/nav-log-white.png"
+                    src="{{ url_for('static', filename='img/logo/nav-log-white.png') }}"
                     alt="logo-img"
                   />
                   <img
                     class="main__logo--img mobile"
-                    src="assets/img/logo/logo-mobile.png"
+                    src="{{ url_for('static', filename='img/logo/logo-mobile.png') }}"
                     alt="logo-img"
                   />
                 </a>
@@ -1210,74 +1161,9 @@
                       </ul>
                     </li>
                     <li class="main__menu--items">
-                      <a class="main__menu--link" href="../blog.html">News </a>
+                      
                     </li>
-                    <li class="main__menu--items">
-                      <a class="main__menu--link" href="#">
-                        Pages
-                        <svg
-                          class="menu__arrowdown--icon"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="10"
-                          height="7"
-                          viewBox="0 0 12 7.41"
-                        >
-                          <path
-                            d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
-                            transform="translate(-6 -8.59)"
-                            fill="currentColor"
-                            opacity="0.7"
-                          />
-                        </svg>
-                      </a>
-
-                      <ul class="sub__menu">
-                        <li class="sub__menu--items">
-                          <a href="../about.html" class="sub__menu--link"
-                            >About Us</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a href="../contact.html" class="sub__menu--link"
-                            >Contact Us</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a href="../project.html" class="sub__menu--link"
-                            >Project</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a
-                            href="../project-details.html"
-                            class="sub__menu--link"
-                            >Project Details</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a
-                            href="../services-details.html"
-                            class="sub__menu--link"
-                            >Services Details</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a href="../login.html" class="sub__menu--link"
-                            >Login</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a href="../sign-up.html" class="sub__menu--link"
-                            >Sing Up</a
-                          >
-                        </li>
-                        <li class="sub__menu--items">
-                          <a href="../404.html" class="sub__menu--link"
-                            >Error 404</a
-                          >
-                        </li>
-                      </ul>
-                    </li>
+                    
                   </ul>
                 </nav>
               </div>
@@ -1750,228 +1636,834 @@
         <!-- End header area -->
         <main class="main__content_wrapper">
           <!-- dashboard container -->
-          <div class="dashboard__container setting__container">
-            <div class="add__property--heading mb-30">
-              <h2 class="add__property--heading__title">Settings Page</h2>
-              <p class="add__property--desc">We are glad to see you again!</p>
+          <div class="dashboard__container add__property--container">
+            <div class="add__property--heading mb-30 d-flex align-items-center justify-content-between">
+              <div>
+                <h2 class="add__property--heading__title">Add New Property</h2>
+                <p class="add__property--desc">We are glad to see you again!</p>
+              </div>
+              <a class="primary__btn" href="{{ url_for('owner_dashboard') }}">← Back to Dashboard</a>
             </div>
-            <div class="setting__page--inner d-flex">
-              <div class="setting__profile my-profile">
-                <div class="setting__my--profile">
-                  <h3 class="setting__profile--title">My Profile</h3>
-                  <div
-                    class="setting__profile--author d-flex align-items-center"
-                  >
-                    <div class="setting__profile--author__thumb">
-                      <img
-                        src="./assets/img/dashboard/edit-photo.png"
-                        alt="img"
-                      />
-                    </div>
-                    <div class="setting__profile--author__text">
-                      <h3 class="setting__profile--author__name">
-                        Edit your photo
-                      </h3>
-                      <div class="setting__profile--author__btn d-flex">
-                        <button class="delete">Delete</button>
-                        <button class="update">Update</button>
+            <div class="add__property__inner d-flex">
+              <div class="add__property--step left">
+                <div class="add__property--step__inner">
+                  <div class="add__property--box mb-30">
+                    <h3 class="add__property--box__title mb-20">
+                      Create Listing
+                    </h3>
+                    <form class="add__property--form" method="post" enctype="multipart/form-data">
+                      {{ form.hidden_tag() }}
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="input1"
+                              >Title</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="input1"
+                              placeholder="Your Name"
+                              type="text" name="title"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--textarea__box mb-15">
+                            <label
+                              class="add__listing--input__label"
+                              for="input2"
+                              >Description</label
+                            >
+                            <textarea
+                              class="add__listing--textarea__field"
+                              id="input2"
+                              placeholder="Description"
+                            name="description"></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label"
+                              >Type</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select">
+                                <option selected="" value="1">
+                                  Apartments
+                                </option>
+                                <option value="2">Office</option>
+                                <option value="3">Condo</option>
+                                <option value="4">Apartment</option>
+                                <option value="5">House</option>
+                                <option value="6">Single Family</option>
+                                <option value="7">Land</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label">
+                              Status</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select">
+                                <option selected="" value="1">
+                                  All Cities
+                                </option>
+                                <option value="2">Processing</option>
+                                <option value="3">Published</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="input3"
+                              >Price</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="input3"
+                              placeholder="Price"
+                              type="number" step="0.01" name="price"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="input4"
+                              >Area</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="input4"
+                              placeholder="Description"
+                              type="number" step="0.01" name="size"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label">
+                              Rooms</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select" name="bedrooms">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label" for="address">Address</label>
+                            <input class="add__listing--input__field" id="address" placeholder="Address" type="text" name="address" />
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label" for="city">City</label>
+                            <input class="add__listing--input__field" id="city" placeholder="City" type="text" name="city" />
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label" for="latitude">Latitude</label>
+                            <input class="add__listing--input__field" id="latitude" placeholder="Latitude" type="number" step="0.000001" name="latitude" />
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label" for="longitude">Longitude</label>
+                            <input class="add__listing--input__field" id="longitude" placeholder="Longitude" type="number" step="0.000001" name="longitude" />
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label" for="image_file">Property Image</label>
+                            <input class="add__listing--input__field" id="image_file" type="file" name="image_file" accept="image/*" />
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--input__box mb-20 d-flex align-items-center" style="gap:.6rem;">
+                            <input id="available" type="checkbox" name="available" checked>
+                            <label class="add__listing--input__label" for="available">Available for Rent</label>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="solid__btn add__property--btn">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+                  <div class="add__property--box" style="display:none">
+                    <h3 class="add__property--box__title mb-20">Location</h3>
+                    <form class="add__property--form" action="#">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="input5"
+                              >Address</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="input5"
+                              placeholder="Your Name"
+                              type="text"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--textarea__box mb-15">
+                            <label
+                              class="add__listing--input__label"
+                              for="input6"
+                              >County / State</label
+                            >
+                            <textarea
+                              class="add__listing--textarea__field"
+                              id="input6"
+                              placeholder="County / State"
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label"
+                              >Type</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select">
+                                <option selected="" value="1">
+                                  Apartments
+                                </option>
+                                <option value="2">Office</option>
+                                <option value="3">Condo</option>
+                                <option value="4">Apartment</option>
+                                <option value="5">House</option>
+                                <option value="6">Single Family</option>
+                                <option value="7">Land</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label">
+                              City</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select">
+                                <option selected="" value="1">New York</option>
+                                <option value="2">San Diego</option>
+                                <option value="3">Portugal</option>
+                                <option value="4">Spain</option>
+                                <option value="5">Iraq</option>
+                                <option value="6">Turkey</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="neighborhood"
+                              >Neighborhood</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="neighborhood"
+                              placeholder="Neighborhood"
+                              type="text"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label
+                              class="add__listing--input__label"
+                              for="input7"
+                              >Zip</label
+                            >
+                            <input
+                              class="add__listing--input__field"
+                              id="input7"
+                              placeholder="Zip"
+                              type="text"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="add__listing--input__box mb-20">
+                            <label class="add__listing--input__label">
+                              Country</label
+                            >
+                            <div class="select position-relative">
+                              <select class="add__listing--form__select">
+                                <option selected="" value="1">Portugal</option>
+                                <option value="2">Greece</option>
+                                <option value="3">United</option>
+                                <option value="4">Spain</option>
+                                <option value="5">Iraq</option>
+                                <option value="6">Turkey</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="add__listing--google__map mb-10">
+                            <iframe
+                              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19868.373358018045!2d-0.11951900000000001!3d51.503186!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487604b900d26973%3A0x4291f3172409ea92!2slastminute.com%20London%20Eye!5e0!3m2!1sen!2sus!4v1699801088151!5m2!1sen!2sus"
+                              allowfullscreen=""
+                              loading="lazy"
+                              referrerpolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="solid__btn add__property--btn">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="add__property--step" style="display:none">
+                <div class="add__property--box mb-30">
+                  <h3 class="add__property--box__title mb-20">
+                    Detailed Information
+                  </h3>
+                  <form class="add__property--form" action="#">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="property"
+                            >Property ID</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="property"
+                            placeholder="Property ID"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="size"
+                            >Area Size</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="size"
+                            placeholder="Area Size"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="prefix"
+                            >Size Prefix</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="prefix"
+                            placeholder="Size Prefix"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="area"
+                            >Land Area</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="area"
+                            placeholder="Land Area"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="landarea"
+                            >Land Area Size Postfix</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="landarea"
+                            placeholder="Land Area Size Postfix"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="bedrooms"
+                            >Bedrooms</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="bedrooms"
+                            placeholder="Bedrooms"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="bathrooms"
+                            >Bathrooms</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="bathrooms"
+                            placeholder="Bathrooms"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="garages"
+                            >Garages</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="garages"
+                            placeholder="Garages"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="garagessize"
+                            >Garages Size</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="garagessize"
+                            placeholder="Garages Size"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="built"
+                            >Year Built</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="built"
+                            placeholder="Year Built"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="video"
+                            >Video URL</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="video"
+                            placeholder="Video URL"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="add__listing--input__box mb-20">
+                          <label
+                            class="add__listing--input__label"
+                            for="virtual"
+                            >360° Virtual Tour</label
+                          >
+                          <input
+                            class="add__listing--input__field"
+                            id="virtual"
+                            placeholder="360° Virtual Tour"
+                            type="text"
+                          />
+                        </div>
                       </div>
                     </div>
+                    <button class="solid__btn add__property--btn">Save</button>
+                  </form>
+                  <h3 class="add__property--box__title pt-0">
+                    Amenities and Features
+                  </h3>
+                  <div
+                    class="advance__apeartment--inner d-flex justify-content-between"
+                  >
+                    <ul class="interior__amenities--check">
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check1"
+                          >Air Conditioning</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check1"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check2"
+                          >Swimming Pool</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check2"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check3"
+                          >Outdoor Shower</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check3"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check4"
+                          >Lawn</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check4"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                    </ul>
+                    <ul class="interior__amenities--check">
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check5"
+                          >Barbeque</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check5"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check6"
+                          >Washer</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check6"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check7"
+                          >Microwave</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check7"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check8"
+                          >Dryer</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check8"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                    </ul>
+                    <ul class="interior__amenities--check">
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check9"
+                          >TV Cable</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check9"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check10"
+                          >Refrigerator</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check10"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check11"
+                          >Laundry</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check11"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check12"
+                          >Gym</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check12"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                    </ul>
+                    <ul class="interior__amenities--check">
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check13"
+                          >Front yard</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check13"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check14"
+                          >WiFi</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check14"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check15"
+                          >Sauna</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check15"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                      <li class="interior__amenities--check__list">
+                        <label
+                          class="interior__amenities--check__label"
+                          for="check16"
+                          >Wine cellar</label
+                        >
+                        <input
+                          class="interior__amenities--check__input"
+                          id="check16"
+                          type="checkbox"
+                        />
+                        <span class="interior__amenities--checkmark"></span>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="setting__profile--inner">
-                    <div class="add__listing--textarea__box mb-15">
-                      <label class="add__listing--input__label" for="bio"
-                        >Bio</label
-                      >
-                      <textarea
-                        class="add__listing--textarea__field"
-                        id="bio"
-                        placeholder="Type Bio Here.........."
-                      ></textarea>
+                </div>
+                <div class="add__property--box mb-30">
+                  <h3 class="add__property--box__title mb-20">
+                    Property media
+                  </h3>
+                  <div
+                    class="property__media--wrapper d-flex justify-content-between"
+                  >
+                    <div class="browse__file--area position-relative">
+                      <button class="browse__file--btn">Choose File</button>
+                      <input class="browse__file--input__field" type="file" />
                     </div>
-                    <div class="add__listing--input__box mb-20">
-                      <label class="add__listing--input__label" for="email"
-                        >Email-Address</label
-                      >
-                      <input
-                        class="add__listing--input__field"
-                        id="email"
-                        placeholder="Email-Address"
-                        type="email"
-                      />
-                    </div>
-                    <div class="add__listing--input__box mb-20">
-                      <label class="add__listing--input__label" for="password"
-                        >Password</label
-                      >
-                      <input
-                        class="add__listing--input__field"
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                      />
-                    </div>
-                    <div class="add__listing--input__box mb-20">
-                      <label class="add__listing--input__label" for="website"
-                        >Website</label
-                      >
-                      <input
-                        class="add__listing--input__field"
-                        id="website"
-                        placeholder="Website"
-                        type="text"
-                      />
+                    <div class="browse__file--area position-relative">
+                      <button class="browse__file--btn">
+                        Select Attachment
+                      </button>
+                      <input class="browse__file--input__field" type="file" />
                     </div>
                     <button class="solid__btn add__property--btn">Save</button>
                   </div>
                 </div>
-              </div>
-              <div class="setting__profile edit-profile">
-                <div class="edit__profile--step">
-                  <h3 class="setting__profile--title">Edit Profile</h3>
-                  <div class="setting__profile--inner">
+                <div class="add__property--box">
+                  <h3 class="add__property--box__title mb-20">Floor Plans</h3>
+                  <form class="add__property--form" action="#">
                     <div class="row">
-                      <div class="col-lg-6 col-md-6">
+                      <div class="col-lg-12">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label" for="name1"
-                            >First Name</label
+                          <label class="add__listing--input__label" for="plan1"
+                            >Plan Description</label
                           >
                           <input
                             class="add__listing--input__field"
-                            id="name1"
-                            placeholder="First Name"
+                            id="plan1"
+                            placeholder="Property ID"
                             type="text"
                           />
                         </div>
                       </div>
-                      <div class="col-lg-6 col-md-6">
+                      <div class="col-lg-6">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label" for="name2"
-                            >Last Name</label
+                          <label class="add__listing--input__label" for="plan2"
+                            >Plan Bedrooms</label
                           >
                           <input
                             class="add__listing--input__field"
-                            id="name2"
-                            placeholder="Last Name"
+                            id="plan2"
+                            placeholder="Plan Bedrooms"
                             type="text"
                           />
                         </div>
                       </div>
-                      <div class="col-12">
-                        <div class="add__listing--input__box">
-                          <label class="add__listing--input__label" for="user"
-                            >User Name</label
-                          >
-                          <input
-                            class="add__listing--input__field"
-                            id="user"
-                            placeholder="user2413@gmail.com"
-                            type="email"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="edit__profile--step">
-                  <h3 class="setting__profile--title">
-                    Personal information :
-                  </h3>
-                  <div class="setting__profile--inner">
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6">
+                      <div class="col-lg-6">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label" for="email2"
-                            >Email Address :</label
+                          <label class="add__listing--input__label" for="plan3"
+                            >Plan Bathrooms</label
                           >
                           <input
                             class="add__listing--input__field"
-                            id="email2"
-                            placeholder="Email Address"
-                            type="email"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6">
-                        <div class="add__listing--input__box mb-20">
-                          <label
-                            class="add__listing--input__label"
-                            for="contact"
-                            >Contact Details :</label
-                          >
-                          <input
-                            class="add__listing--input__field"
-                            id="contact"
-                            placeholder="Contact Details "
+                            id="plan3"
+                            placeholder="Plan Bedrooms"
                             type="text"
                           />
                         </div>
                       </div>
-                      <div class="col-12">
+                      <div class="col-lg-6">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label" for="user2"
-                            >User Name</label
+                          <label class="add__listing--input__label" for="plan4"
+                            >Plan Price</label
                           >
                           <input
                             class="add__listing--input__field"
-                            id="user2"
-                            placeholder="user2413@gmail.com"
-                            type="email"
+                            id="plan4"
+                            placeholder="Plan Price"
+                            type="text"
                           />
                         </div>
                       </div>
-                      <div class="col-lg-6 col-md-6">
+                      <div class="col-lg-6">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label"
-                            >Language:</label
+                          <label class="add__listing--input__label" for="plan5"
+                            >Size Prefix</label
                           >
-                          <div class="select position-relative">
-                            <select class="add__listing--form__select">
-                              <option selected="" value="1">English</option>
-                              <option value="2">Arabic</option>
-                              <option value="3">Bangla</option>
-                            </select>
-                          </div>
+                          <input
+                            class="add__listing--input__field"
+                            id="plan5"
+                            placeholder="Size Prefix"
+                            type="text"
+                          />
                         </div>
                       </div>
-                      <div class="col-lg-6 col-md-6">
+                      <div class="col-lg-6">
                         <div class="add__listing--input__box mb-20">
-                          <label class="add__listing--input__label"
-                            >Country:</label
+                          <label class="add__listing--input__label" for="plan6"
+                            >Plan Size</label
                           >
-                          <div class="select position-relative">
-                            <select class="add__listing--form__select">
-                              <option selected="" value="1">United</option>
-                              <option value="2">Arabic</option>
-                              <option value="3">Bangladesh</option>
-                            </select>
-                          </div>
+                          <input
+                            class="add__listing--input__field"
+                            id="plan6"
+                            placeholder="Plan Size"
+                            type="text"
+                          />
                         </div>
                       </div>
-                      <div class="col-12">
-                        <div class="add__listing--textarea__box mb-15">
-                          <label class="add__listing--input__label" for="about"
-                            >About Me</label
+                      <div class="col-lg-6">
+                        <div class="add__listing--input__box mb-20">
+                          <label class="add__listing--input__label" for="plan7"
+                            >Plan Image</label
                           >
-                          <textarea
-                            class="add__listing--textarea__field"
-                            id="about"
-                            placeholder="Enter About description"
-                          ></textarea>
+                          <input
+                            class="add__listing--input__field"
+                            id="plan7"
+                            placeholder="Plan Image"
+                            type="text"
+                          />
                         </div>
                       </div>
                     </div>
-                    <div
-                      class="edit__profile--button d-flex justify-content-end"
-                    >
-                      <button class="edit__profile--default__btn">
-                        Restore Default
-                      </button>
-                      <button class="edit__profile--update__btn solid__btn">
-                        Update Profile
-                      </button>
-                    </div>
-                  </div>
+                    <button class="solid__btn add__property--btn">Save</button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -2017,13 +2509,11 @@
     </button>
 
     <!-- All Script JS Plugins here  -->
-    <script src="assets/js/vendor/popper.js" defer="defer"></script>
-    <script src="assets/js/vendor/bootstrap.min.js" defer="defer"></script>
-    <script src="assets/js/plugins/swiper-bundle.min.js"></script>
-    <script src="assets/js/plugins/glightbox.min.js"></script>
-
-    <!-- Customscript js -->
-    <script src="assets/js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/vendor/popper.js') }}" defer="defer"></script>
+    <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}" defer="defer"></script>
+    <script src="{{ url_for('static', filename='js/plugins/swiper-bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/glightbox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
     <!-- Dark to light js -->
     <script>

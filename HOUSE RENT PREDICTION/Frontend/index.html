@@ -65,33 +65,23 @@
                                     <a class="main__menu--link" href="{{ url_for('listing') }}"> Listing </a>
                                 </li>
                                 <li class="main__menu--items">
-                                    <a class="main__menu--link" href="{{ url_for('owner_dashboard') }}"> Properties </a>
+                                    <a class="main__menu--link" href="{{ url_for('owner_dashboard') }}"> Dashboard </a>
                                 </li>
                                 <li class="main__menu--items">
                                     <a class="main__menu--link" href="{{ url_for('rent_prediction') }}"> Rent Prediction </a>
                                 </li>
-                                <li class="main__menu--items">
-                                    <a class="main__menu--link" href="#"> Pages </a>
-                                    <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 12 7.41">
-                                        <path  d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
-                                    </svg>
-                                    <ul class="sub__menu">
-                                        <li class="sub__menu--items"><a href="./about.html" class="sub__menu--link">About Us</a></li>
-                                        <li class="sub__menu--items"><a href="./contact.html" class="sub__menu--link">Contact Us</a></li>
-                                        <li class="sub__menu--items"><a href="./project.html" class="sub__menu--link">Project</a></li>
-                                        <li class="sub__menu--items"><a href="./project-details.html" class="sub__menu--link">Project Details</a></li>
-                                        <li class="sub__menu--items"><a href="{{ url_for('rent_prediction') }}" class="sub__menu--link">Rent Prediction</a></li>
-                                        <li class="sub__menu--items"><a href="{{ url_for('login') }}" class="sub__menu--link">Login</a></li>
-                                        <li class="sub__menu--items"><a href="{{ url_for('signup') }}" class="sub__menu--link">Sign Up</a></li>
-                                        <li class="sub__menu--items"><a href="./error.html" class="sub__menu--link">Error 404</a></li>
-                                    </ul>
-                                </li>
+                                
                             </ul>
                         </nav>
                     </div>
                     <div class="main__header--right d-flex align-items-center">
+                        {% if current_user.is_authenticated %}
+                        <a class="login__register--link" href="{{ url_for('profile') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span>Profile</span></a>
+                        {% else %}
                         <a class="login__register--link" href="{{ url_for('login') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> <span>Login / Register</span></a>
+                        {% endif %}
                         <a class="add__listing--btn solid__btn" href="./create-listing.html"><span>Add Listing</span> <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 15.9992C12.4111 15.9992 16 12.4105 16 7.99962C16 3.58875 12.411 0 8 0C3.58901 0 0 3.58875 0 7.99962C0 12.4105 3.58901 15.9992 8 15.9992ZM4.19508 7.57155H7.57197V4.19439C7.57197 3.95805 7.76381 3.76636 8 3.76636C8.23634 3.76636 8.42804 3.95821 8.42804 4.19439V7.57155H11.8049C12.0413 7.57155 12.233 7.7634 12.233 7.99958C12.233 8.23592 12.0411 8.42762 11.8049 8.42762H8.42804V11.8046C8.42804 12.041 8.23619 12.2327 8 12.2327C7.76366 12.2327 7.57197 12.0408 7.57197 11.8046V8.42762H4.19508C3.95874 8.42762 3.76704 8.23577 3.76704 7.99958C3.76704 7.76324 3.9586 7.57155 4.19508 7.57155Z" fill="white"/>
                             </svg>
@@ -227,20 +217,8 @@
                     <li class="offcanvas__menu_li">
                         <a class="offcanvas__menu_item" href="{{ url_for('rent_prediction') }}">Rent Prediction</a>
                     </li>
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="./blog.html">News</a></li>
-                    <li class="offcanvas__menu_li">
-                        <a class="offcanvas__menu_item" href="#">Pages</a>
-                        <ul class="offcanvas__sub_menu">
-                            <li class="offcanvas__sub_menu_li"><a href="./about.html" class="offcanvas__sub_menu_item">About Us</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="./contact.html" class="offcanvas__sub_menu_item">Contact Us</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="./project.html" class="offcanvas__sub_menu_item">Project</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="./project-details.html" class="offcanvas__sub_menu_item">Project Details</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="{{ url_for('rent_prediction') }}" class="offcanvas__sub_menu_item">Rent Prediction</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="{{ url_for('login') }}" class="offcanvas__sub_menu_item">Login</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="{{ url_for('signup') }}" class="offcanvas__sub_menu_item">Sign Up</a></li>
-                            <li class="offcanvas__sub_menu_li"><a href="./error.html" class="offcanvas__sub_menu_item">Error 404</a></li>
-                        </ul>
-                    </li>
+                    
+                    
                 </ul>
             </nav>
             <a class="add__listing--btn offcanvas__listing--btn solid__btn" href="./create-listing.html"><span>Add Listing</span> <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -122,6 +122,10 @@ class ReviewForm(FlaskForm):
     submit = SubmitField('Submit Review')
 
 class EditProfileForm(FlaskForm):
+    # Split name fields for better UX; combine into `name` on save
+    first_name = StringField('First Name', validators=[])
+    middle_name = StringField('Middle Name', validators=[])
+    last_name = StringField('Last Name', validators=[])
     name = StringField('Name', validators=[DataRequired()])
     username = StringField('Username', validators=[])
     bio = StringField('Bio', validators=[])

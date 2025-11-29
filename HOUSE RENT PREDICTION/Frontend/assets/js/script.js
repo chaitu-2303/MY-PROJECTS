@@ -966,7 +966,7 @@ function offcanvsSidebar(openTrigger, closeTrigger, wrapper) {
   if (OpenTriggerprimary__btn && WrapperSidebar) {
     OpenTriggerprimary__btn.forEach(function (singleItem) {
       singleItem.addEventListener("click", function (e) {
-        if (e.target.dataset.offcanvas != undefined) {
+        if (e.currentTarget && e.currentTarget.dataset.offcanvas !== undefined) {
           WrapperSidebar.classList.add("active");
           document
             .querySelector("body")
@@ -979,7 +979,7 @@ function offcanvsSidebar(openTrigger, closeTrigger, wrapper) {
 
   if (closeTriggerprimary__btn && WrapperSidebar) {
     closeTriggerprimary__btn.addEventListener("click", function (e) {
-      if (e.target.dataset.offcanvas != undefined) {
+      if (e.currentTarget && e.currentTarget.dataset.offcanvas !== undefined) {
         WrapperSidebar.classList.remove("active");
         document
           .querySelector("body")
@@ -996,6 +996,25 @@ offcanvsSidebar(
   ".predictive__search--close__btn",
   ".predictive__search--box"
 );
+
+/* Hamburger offcanvas is handled below via Bootstrap or fallback */
+
+document.addEventListener("DOMContentLoaded", function () {
+  var ocEl = document.getElementById("offcanvasExample");
+  var openBtn = document.querySelector(".humberger__menu");
+  var closeBtn = ocEl ? ocEl.querySelector(".side__menu--close__btn") : null;
+  if (!ocEl || !openBtn) return;
+  var hasBootstrap = typeof window.bootstrap !== "undefined" && window.bootstrap.Offcanvas;
+  var instance = null;
+  if (hasBootstrap) {
+    instance = new window.bootstrap.Offcanvas(ocEl);
+    openBtn.addEventListener("click", function (e) { e.preventDefault(); instance.show(); });
+    if (closeBtn) closeBtn.addEventListener("click", function (e) { e.preventDefault(); instance.hide(); });
+  } else {
+    openBtn.addEventListener("click", function (e) { e.preventDefault(); ocEl.classList.add("show"); ocEl.style.visibility = "visible"; });
+    if (closeBtn) closeBtn.addEventListener("click", function (e) { e.preventDefault(); ocEl.classList.remove("show"); ocEl.style.visibility = "hidden"; });
+  }
+});
 
 /* Location Tab JS */
 const countryList = document.querySelectorAll(".location__list");

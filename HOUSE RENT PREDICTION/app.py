@@ -947,14 +947,43 @@ def owner_dashboard():
         flash("You are not authorized to access this page", "danger")
         return redirect(url_for("dashboard"))
     properties = Property.query.filter_by(owner_id=current_user.id).all()
-    
     # Get all property IDs owned by the current user
     property_ids = [prop.id for prop in properties]
-    
     # Fetch all bookings related to those properties
-    bookings = Booking.query.filter(Booking.property_id.in_(property_ids)).all()
-    
-    return render_template("owner/owner-dashboard.html", properties=properties, bookings=bookings)
+    bookings = Booking.query.filter(Booking.property_id.in_(property_ids)).order_by(Booking.created_at.desc()).all()
+    # Reviews for owner's properties
+    reviews = Review.query.filter(Review.property_id.in_(property_ids)).all()
+    # Earnings from confirmed bookings
+    earnings_total = sum((b.property.price or 0) for b in bookings if b.status == "confirmed")
+    # Average rating across all owner's properties
+    avg_rating = round(sum(r.rating for r in reviews) / len(reviews), 1) if reviews else 0
+    # Recent properties
+    recent_properties = Property.query.filter_by(owner_id=current_user.id).order_by(Property.created_at.desc()).limit(6).all()
+    # Additional metrics
+    active_listings = sum(1 for p in properties if p.available)
+    pending_bookings = sum(1 for b in bookings if b.status == "pending")
+    confirmed_bookings = sum(1 for b in bookings if b.status == "confirmed")
+    # Monthly earnings (confirmed bookings in current month)
+    from datetime import datetime
+    now = datetime.utcnow()
+    monthly_earnings = sum((b.property.price or 0) for b in bookings if b.status == "confirmed" and b.created_at.year == now.year and b.created_at.month == now.month)
+    # Favorites on owner's properties
+    favorites_count = Favorite.query.join(Property, Favorite.property_id == Property.id).filter(Property.owner_id == current_user.id).count()
+
+    return render_template(
+        "owner/owner-dashboard.html",
+        properties=properties,
+        bookings=bookings,
+        reviews=reviews,
+        earnings_total=earnings_total,
+        avg_rating=avg_rating,
+        recent_properties=recent_properties,
+        active_listings=active_listings,
+        pending_bookings=pending_bookings,
+        confirmed_bookings=confirmed_bookings,
+        monthly_earnings=monthly_earnings,
+        favorites_count=favorites_count,
+    )
 
 
 @app.route("/customer/dashboard", methods=["GET", "POST"])
@@ -1372,7 +1401,7 @@ def profile():
         if pic_file and hasattr(pic_file, "filename") and pic_file.filename:
             filename = secure_filename(pic_file.filename)
             filename = f"{uuid.uuid4().hex}_{filename}"
-            pic_dir = os.path.join(app.root_path, "static", "profile_pics")
+            pic_dir = os.path.join(app.static_folder, "profile_pics")
             os.makedirs(pic_dir, exist_ok=True)
             pic_path = os.path.join(pic_dir, filename)
             pic_file.save(pic_path)
@@ -1402,14 +1431,35 @@ def profile():
         "two_factor_enabled": getattr(current_user, "two_factor_enabled", False),
     }
 
-    if current_user.role == "admin":
-        template = "customer/profile.html"
-    elif current_user.role == "owner":
-        template = "owner/owner-profile.html"
-    else:
-        template = "customer/profile.html"
+    if current_user.role == "owner":
+        properties = Property.query.filter_by(owner_id=current_user.id).all()
+        property_ids = [prop.id for prop in properties]
+        bookings = Booking.query.filter(Booking.property_id.in_(property_ids)).order_by(Booking.created_at.desc()).all()
+        reviews = Review.query.filter(Review.property_id.in_(property_ids)).all()
+        earnings_total = sum((b.property.price or 0) for b in bookings if b.status == "confirmed")
+        avg_rating = round(sum(r.rating for r in reviews) / len(reviews), 1) if reviews else 0
+        active_listings = sum(1 for p in properties if p.available)
+        pending_bookings = sum(1 for b in bookings if b.status == "pending")
+        confirmed_bookings = sum(1 for b in bookings if b.status == "confirmed")
+        from datetime import datetime
+        now = datetime.utcnow()
+        monthly_earnings = sum((b.property.price or 0) for b in bookings if b.status == "confirmed" and b.created_at.year == now.year and b.created_at.month == now.month)
+        favorites_count = Favorite.query.join(Property, Favorite.property_id == Property.id).filter(Property.owner_id == current_user.id).count()
 
-    return render_template(template, form=form, profile_data=profile_data)
+        return render_template(
+            "owner/owner-profile.html",
+            form=form,
+            profile_data=profile_data,
+            earnings_total=earnings_total,
+            avg_rating=avg_rating,
+            active_listings=active_listings,
+            pending_bookings=pending_bookings,
+            confirmed_bookings=confirmed_bookings,
+            monthly_earnings=monthly_earnings,
+            favorites_count=favorites_count,
+        )
+    else:
+        return render_template("customer/profile.html", form=form, profile_data=profile_data)
 
 
 @app.route("/change_password", methods=["GET", "POST"])
@@ -1543,10 +1593,62 @@ def reviews_page():
     return render_template("listing-details.html")
 
 
-@app.route("/settings")
+@app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
-    return render_template("settings.html")
+    form = EditProfileForm(obj=current_user)
+    # Pre-populate split name fields from existing `name`
+    try:
+        parts = (current_user.name or "").split()
+        if not form.first_name.data:
+            form.first_name.data = parts[0] if parts else ""
+        if not form.middle_name.data:
+            form.middle_name.data = parts[1] if len(parts) > 2 else (parts[1] if len(parts) > 1 else "")
+        if not form.last_name.data:
+            form.last_name.data = parts[-1] if len(parts) > 1 else ""
+    except Exception:
+        pass
+    if form.validate_on_submit():
+        # Combine split fields into `name` (fallback to existing `name` field)
+        fn = (form.first_name.data or "").strip()
+        mn = (form.middle_name.data or "").strip()
+        ln = (form.last_name.data or "").strip()
+        combined_name = " ".join([p for p in [fn, mn, ln] if p]).strip()
+        current_user.name = combined_name or (form.name.data or current_user.name)
+        # Auto-generate username if empty
+        if (not form.username.data) or (form.username.data.strip()==""):
+            base = (fn or current_user.name or "user").lower().replace(" ", "")
+            short = base[:12]
+            import random
+            form.username.data = f"{short}{random.randint(100,999)}"
+        current_user.username = form.username.data
+        current_user.bio = form.bio.data
+        current_user.email = form.email.data
+        current_user.phone = form.phone.data
+        current_user.dob = form.dob.data
+        current_user.location = form.location.data
+        current_user.timezone = form.timezone.data
+        current_user.verified = form.verified.data
+
+        pic_file = form.profile_pic.data
+        if pic_file and hasattr(pic_file, "filename") and pic_file.filename:
+            filename = secure_filename(pic_file.filename)
+            filename = f"{uuid.uuid4().hex}_{filename}"
+            pic_dir = os.path.join(app.root_path, "static", "profile_pics")
+            os.makedirs(pic_dir, exist_ok=True)
+            pic_path = os.path.join(pic_dir, filename)
+            pic_file.save(pic_path)
+            if current_user.profile_pic and current_user.profile_pic != "default.jpg":
+                old_pic_path = os.path.join(pic_dir, current_user.profile_pic)
+                if os.path.exists(old_pic_path):
+                    os.remove(old_pic_path)
+            current_user.profile_pic = filename
+
+        db.session.commit()
+        flash("Account settings updated!", "success")
+        return redirect(url_for("settings"))
+
+    return render_template("settings.html", form=form)
 
 
 # ======================================================
